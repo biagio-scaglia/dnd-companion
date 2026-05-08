@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_shadows.dart';
+import '../../../../presentation/widgets/dnd_card.dart';
 import '../../domain/models/note.dart';
 
 class NoteCard extends StatelessWidget {
@@ -19,18 +21,10 @@ class NoteCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
-        highlightColor: AppColors.surfaceSecondary.withOpacity(0.5),
-        splashColor: AppColors.highlight.withOpacity(0.1),
-        child: Ink(
+        child: DndCard(
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: note.isImportant ? AppColors.magicAccent : AppColors.surfaceSecondary,
-              width: note.isImportant ? 2 : 1,
-            ),
-          ),
+          borderColor: note.isImportant ? AppColors.magicAccent.withOpacity(0.5) : AppColors.surfaceSecondary,
+          shadow: note.isImportant ? AppShadows.glow(AppColors.magicAccent, opacity: 0.1) : null,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

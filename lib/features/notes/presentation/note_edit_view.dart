@@ -94,38 +94,62 @@ class _NoteEditViewState extends State<NoteEditView> {
           children: [
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Titolo',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
-                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.magicAccent)),
+                labelStyle: const TextStyle(color: AppColors.textSecondary),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColors.surfaceSecondary),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColors.magicAccent),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: AppColors.surface,
               ),
-              style: const TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.bold),
               validator: (value) => value == null || value.isEmpty ? 'Inserisci un titolo' : null,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _contentController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Contenuto',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
+                labelStyle: const TextStyle(color: AppColors.textSecondary),
                 alignLabelWithHint: true,
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
-                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.magicAccent)),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColors.surfaceSecondary),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColors.magicAccent),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: AppColors.surface,
               ),
               style: const TextStyle(color: AppColors.textPrimary),
               maxLines: 10,
               minLines: 5,
               validator: (value) => value == null || value.isEmpty ? 'Inserisci il contenuto' : null,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _tagsController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Tag (separati da virgola)',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
-                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.magicAccent)),
+                labelStyle: const TextStyle(color: AppColors.textSecondary),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColors.surfaceSecondary),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: AppColors.magicAccent),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: AppColors.surface,
               ),
               style: const TextStyle(color: AppColors.textPrimary),
             ),

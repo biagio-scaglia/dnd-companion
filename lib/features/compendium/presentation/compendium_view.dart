@@ -10,6 +10,7 @@ import 'widgets/compendium_empty_state.dart';
 import 'compendium_detail_view.dart';
 import 'widgets/add_custom_item_dialog.dart';
 import '../domain/models/compendium_item.dart';
+import '../../../presentation/widgets/dnd_loading_indicator.dart';
 
 class CompendiumView extends StatefulWidget {
   const CompendiumView({super.key});
@@ -153,7 +154,7 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
     if (_controller.isLoading) {
       return const Center(
         key: ValueKey('loading'),
-        child: CircularProgressIndicator(color: AppColors.highlight),
+        child: DndLoadingIndicator(message: 'Caricamento compendio...'),
       );
     }
 

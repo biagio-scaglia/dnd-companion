@@ -6,6 +6,8 @@ import 'features/notes/data/notes_repository_impl.dart';
 import 'features/notes/data/calendar_repository_impl.dart';
 import 'features/notes/presentation/notes_controller.dart';
 import 'features/notes/presentation/calendar_controller.dart';
+import 'features/settings/data/settings_repository_impl.dart';
+import 'features/settings/presentation/settings_controller.dart';
 
 void main() {
   runApp(
@@ -16,6 +18,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => CalendarController(repository: CalendarRepositoryImpl()),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SettingsController(repository: SettingsRepositoryImpl()),
         ),
       ],
       child: const DndCompanionApp(),
