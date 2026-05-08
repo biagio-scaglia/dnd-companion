@@ -17,6 +17,14 @@ class QuickActions extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
+        const SizedBox(height: 4),
+        const Text(
+          'Strumenti essenziali per il tavolo',
+          style: TextStyle(
+            fontSize: 14,
+            color: AppColors.textSecondary,
+          ),
+        ),
         const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,7 +96,7 @@ class QuickActions extends StatelessWidget {
                     child: Icon(
                       icon,
                       color: color,
-                      size: 24,
+                      size: 28,
                     ),
                   ),
                   const SizedBox(height: 12),

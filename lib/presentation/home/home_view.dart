@@ -81,20 +81,30 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   ),
                 ],
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 32),
+              
+              const Text(
+                'La tua prossima mossa',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 16),
               
               // HeroCard con dati mock
-              HeroCard(
+              const HeroCard(
                 campaignName: 'La Miniera Perduta',
                 characterName: 'Eldorin Shadowweaver',
                 level: '4',
                 nextSessionDate: 'Sabato, 21:00',
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 40),
               
               // Quick Actions
-              QuickActions(),
-              SizedBox(height: 32),
+              const QuickActions(),
+              const SizedBox(height: 40),
               
               // Sessioni Recenti
               const RecentSessions(),

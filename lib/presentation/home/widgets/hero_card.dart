@@ -100,7 +100,16 @@ class HeroCard extends StatelessWidget {
                         color: AppColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Pronto per tornare nella campagna',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
                     Row(
                       children: [
                         const Icon(
@@ -119,6 +128,17 @@ class HeroCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 24),
+                    Center(
+                      child: Text(
+                        'Torna alla sessione di sabato',
+                        style: TextStyle(
+                          color: AppColors.textSecondary.withOpacity(0.8),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -126,11 +146,12 @@ class HeroCard extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.highlight,
                           foregroundColor: AppColors.background,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 18),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          elevation: 0,
+                          elevation: 2,
+                          shadowColor: AppColors.highlight.withOpacity(0.4),
                         ),
                         child: const Text(
                           'Riprendi Avventura',

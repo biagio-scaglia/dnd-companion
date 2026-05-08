@@ -11,14 +11,28 @@ class RecentSessions extends StatelessWidget {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Sessioni Recenti',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Sessioni Recenti',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Ricapitola quello che è successo',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
             ),
             TextButton(
               onPressed: () {},
@@ -32,7 +46,7 @@ class RecentSessions extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
         _buildSessionTile(
           title: 'Il Lamento della Banshee',
           date: '14 Maggio 2026',
@@ -43,8 +57,19 @@ class RecentSessions extends StatelessWidget {
         _buildSessionTile(
           title: 'L\'Inganno alla Locanda',
           date: '7 Maggio 2026',
-          description: 'Trattative con la Gilda dei Ladri. Ottenuta la mappa del dungeon.',
+          description: 'Trattative con la Gilda dei Ladri per ottenere l\'accesso alle fogne. Ottenuta la mappa del dungeon, ma abbiamo perso un prezioso alleato durante la fuga.',
           isNew: false,
+        ),
+        const SizedBox(height: 16),
+        const Center(
+          child: Text(
+            'Niente si perde tra una sessione e l\'altra',
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
         ),
       ],
     );
@@ -94,17 +119,17 @@ class RecentSessions extends StatelessWidget {
                   if (isNew)
                     Container(
                       margin: const EdgeInsets.only(left: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppColors.magicAccent.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
+                        color: AppColors.magicAccent.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: const Text(
                         'Nuovo',
                         style: TextStyle(
                           color: AppColors.magicAccent,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -126,7 +151,7 @@ class RecentSessions extends StatelessWidget {
                   color: AppColors.textSecondary,
                   height: 1.4,
                 ),
-                maxLines: 2,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
             ],
