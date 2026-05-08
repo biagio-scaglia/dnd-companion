@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_typography.dart';
 import 'app_radius.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static ThemeData getTheme({required String accentColor}) {
@@ -34,13 +35,13 @@ class AppTheme {
         titleTextStyle: AppTypography.h2,
         iconTheme: IconThemeData(color: AppColors.textPrimary),
       ),
-      textTheme: const TextTheme(
-        headlineLarge: AppTypography.h1,
-        headlineMedium: AppTypography.h2,
-        titleMedium: AppTypography.h3,
-        bodyLarge: AppTypography.body,
-        bodyMedium: AppTypography.bodySmall,
-        labelLarge: AppTypography.label,
+      textTheme: TextTheme(
+        headlineLarge: GoogleFonts.cinzel(textStyle: AppTypography.h1),
+        headlineMedium: GoogleFonts.cinzel(textStyle: AppTypography.h2),
+        titleMedium: GoogleFonts.cinzel(textStyle: AppTypography.h3),
+        bodyLarge: GoogleFonts.almendra(textStyle: AppTypography.body),
+        bodyMedium: GoogleFonts.almendra(textStyle: AppTypography.bodySmall),
+        labelLarge: GoogleFonts.cinzel(textStyle: AppTypography.label),
       ),
       cardTheme: CardThemeData(
         color: AppColors.surface,
