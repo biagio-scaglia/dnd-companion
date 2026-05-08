@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_typography.dart';
+import '../../../../core/theme/app_radius.dart';
+import '../../../../presentation/widgets/dnd_card.dart';
 import '../../domain/models/compendium_item.dart';
 
 class CompendiumItemCard extends StatelessWidget {
@@ -21,7 +24,7 @@ class CompendiumItemCard extends StatelessWidget {
 
     switch (item.type) {
       case CompendiumItemType.monster:
-        typeIcon = Icons.pets_rounded;
+        typeIcon = Icons.pest_control_rounded;
         typeColor = AppColors.danger;
         break;
       case CompendiumItemType.spell:
@@ -34,81 +37,66 @@ class CompendiumItemCard extends StatelessWidget {
         break;
     }
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      color: AppColors.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AppColors.surfaceSecondary, width: 1),
-      ),
-      child: InkWell(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: DndCard(
+        padding: const EdgeInsets.all(16),
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: typeColor.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(typeIcon, color: typeColor, size: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: typeColor.withOpacity(0.12),
+                    borderRadius: AppRadius.mBorderRadius,
+                    border: Border.all(color: typeColor.withOpacity(0.2)),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                  child: Icon(typeIcon, color: typeColor, size: 22),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item.name, style: AppTypography.h3),
+                      if (item.metaInfo != null) ...[
+                        const SizedBox(height: 3),
                         Text(
-                          item.name,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
+                          item.metaInfo!,
+                          style: AppTypography.caption.copyWith(
+                            color: typeColor.withOpacity(0.9),
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        if (item.metaInfo != null) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            item.metaInfo!,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: typeColor.withOpacity(0.8),
-                            ),
-                          ),
-                        ]
                       ],
-                    ),
+                    ],
                   ),
-                  IconButton(
-                    onPressed: onFavoriteToggle,
-                    icon: Icon(
-                      item.isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                      color: item.isFavorite ? AppColors.danger : AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(
-                item.shortDescription,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
-                  height: 1.4,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
+                IconButton(
+                  onPressed: onFavoriteToggle,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  icon: Icon(
+                    item.isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                    color: item.isFavorite ? AppColors.danger : AppColors.textSecondary,
+                    size: 20,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              item.shortDescription,
+              style: AppTypography.bodySmall,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ),
       ),
     );

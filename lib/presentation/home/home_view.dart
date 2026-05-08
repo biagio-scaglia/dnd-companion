@@ -4,10 +4,12 @@ import 'dart:math';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/app_spacing.dart';
-import '../../core/theme/app_shadows.dart';
 import '../../features/notes/presentation/notes_controller.dart';
 import '../widgets/dnd_card.dart';
 import '../widgets/dnd_button.dart';
+import '../widgets/dnd_section_title.dart';
+import '../widgets/dnd_stat_card.dart';
+import '../widgets/dnd_empty_state.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -28,25 +30,12 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.0, 1.0, curve: Curves.easeOut),
-      ),
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.0, 1.0, curve: Curves.easeOutCubic),
-      ),
+    _slideAnimation = Tween<Offset>(begin: const Offset(0, 0.06), end: Offset.zero).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
-
-    // Fa partire l'animazione all'apertura della view
     _animationController.forward();
   }
 
@@ -58,7 +47,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   String _lastRollResult = 'Tocca un dado per lanciare';
   final Random _random = Random();
-  
+
   String _lastLootResult = 'Tocca "Genera" per un bottino';
   final List<String> _lootTable = [
     '10 Monete d\'Oro',
@@ -72,72 +61,34 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   ];
 
   void _rollDice(int sides) {
-    final result = _random.nextInt(sides) + 1;
     setState(() {
-      _lastRollResult = 'Hai lanciato un d$sides... Risultato: $result';
+      final result = _random.nextInt(sides) + 1;
+      _lastRollResult = 'd$sides → $result';
     });
   }
 
   void _generateLoot() {
-    final result = _lootTable[_random.nextInt(_lootTable.length)];
     setState(() {
-      _lastLootResult = result;
+      _lastLootResult = _lootTable[_random.nextInt(_lootTable.length)];
     });
   }
 
-  Widget _buildSeparateCard(String label, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.surface, AppColors.surfaceSecondary.withOpacity(0.5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.2)),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 28),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            style: const TextStyle(color: AppColors.textPrimary, fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildDiceButton(String label, int sides) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => _rollDice(sides),
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: AppColors.surfaceSecondary,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.surfaceSecondary.withOpacity(0.5)),
-          ),
-          child: Text(
-            label,
-            style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () => _rollDice(sides),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceSecondary,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.highlight.withOpacity(0.2)),
+        ),
+        child: Text(
+          label,
+          style: AppTypography.label.copyWith(
+            color: AppColors.textPrimary,
+            fontSize: 12,
           ),
         ),
       ),
@@ -154,71 +105,62 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             children: [
-              // Header
-              const Column(
+              // ── Header ──────────────────────────────────────────────
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'D&D COMPANION',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                      letterSpacing: 1.5,
-                      fontWeight: FontWeight.bold,
+                    style: AppTypography.label.copyWith(
+                      color: AppColors.highlight,
+                      letterSpacing: 2,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     'Bentornato, Viaggiatore',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: AppTypography.display,
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
-              
-              const Text(
-                'Lancio Dadi',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+              const SizedBox(height: AppSpacing.xl),
+
+              // ── Lancio Dadi ─────────────────────────────────────────
+              DndSectionTitle(
+                title: 'Lancio Dadi',
+                accentColor: AppColors.highlight,
               ),
-              const SizedBox(height: 12),
-              
-              // Lancio Dadi
+              const SizedBox(height: AppSpacing.m),
+
               DndCard(
-                padding: const EdgeInsets.all(24),
-                gradientColors: [
-                  AppColors.surface,
-                  AppColors.surfaceSecondary.withOpacity(0.5),
-                ],
-                shadow: AppShadows.glow(AppColors.highlight, opacity: 0.05),
-                borderColor: AppColors.highlight.withOpacity(0.2),
+                variant: DndCardVariant.featured,
+                accentColor: AppColors.highlight,
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Risultato
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withOpacity(0.25),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: AppColors.surfaceSecondary),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.casino_rounded, color: AppColors.magicAccent, size: 24),
+                          const Icon(Icons.casino_rounded, color: AppColors.highlight, size: 22),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               _lastRollResult,
-                              style: const TextStyle(
-                                color: AppColors.textPrimary, 
-                                fontSize: 16, 
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: AppTypography.h3,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -233,191 +175,171 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
-              
-              const Text(
-                'Dal Compendio',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+              const SizedBox(height: AppSpacing.xl),
+
+              // ── Dal Compendio ────────────────────────────────────────
+              DndSectionTitle(
+                title: 'Dal Compendio',
+                accentColor: AppColors.magicAccent,
               ),
-              const SizedBox(height: 12),
-              
-              // Compendio Highlight (Premium Card)
+              const SizedBox(height: AppSpacing.m),
+
               DndCard(
-                padding: const EdgeInsets.all(20),
-                gradientColors: [
-                  AppColors.surface,
-                  Colors.black.withOpacity(0.3),
-                ],
-                shadow: AppShadows.glow(AppColors.magicAccent, opacity: 0.05),
-                borderColor: AppColors.magicAccent.withOpacity(0.2),
+                variant: DndCardVariant.featured,
+                accentColor: AppColors.magicAccent,
+                padding: const EdgeInsets.all(18),
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      width: 52,
+                      height: 52,
                       decoration: BoxDecoration(
-                        color: AppColors.magicAccent.withOpacity(0.1),
+                        color: AppColors.magicAccent.withOpacity(0.12),
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.magicAccent.withOpacity(0.3)),
                       ),
-                      child: const Icon(Icons.auto_stories_rounded, color: AppColors.magicAccent, size: 32),
-                    ),
-                    const SizedBox(width: 20),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'MOSTRI DEL GIORNO',
-                            style: TextStyle(
-                              color: AppColors.magicAccent,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Beholder',
-                            style: TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 2),
-                          Text(
-                            'Grado Sfida 13 • Aberrazione',
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textSecondary.withOpacity(0.5), size: 16),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-              
-              const Text(
-                'Generatore Rapido',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-              ),
-              const SizedBox(height: 12),
-              
-              // Generatore di Bottino
-              DndCard(
-                padding: const EdgeInsets.all(20),
-                gradientColors: [
-                  AppColors.surface,
-                  AppColors.surfaceSecondary.withOpacity(0.3),
-                ],
-                shadow: AppShadows.glow(AppColors.naturalAccent, opacity: 0.05),
-                borderColor: AppColors.naturalAccent.withOpacity(0.2),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.naturalAccent.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(Icons.card_giftcard_rounded, color: AppColors.naturalAccent, size: 24),
+                      child: const Icon(Icons.auto_stories_rounded, color: AppColors.magicAccent, size: 26),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'BOTTINO CASUALE',
-                            style: TextStyle(
-                              color: AppColors.naturalAccent,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1,
-                            ),
+                          Text(
+                            'MOSTRO DEL GIORNO',
+                            style: AppTypography.sectionLabel(color: AppColors.magicAccent),
                           ),
                           const SizedBox(height: 4),
+                          Text('Beholder', style: AppTypography.h2),
+                          const SizedBox(height: 2),
                           Text(
-                            _lastLootResult,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            'GS 13 • Aberrazione',
+                            style: AppTypography.bodySmall,
                           ),
                         ],
                       ),
                     ),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      color: AppColors.textSecondary.withOpacity(0.5),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+
+              // ── Generatore Bottino ────────────────────────────────────
+              DndSectionTitle(
+                title: 'Generatore Rapido',
+                accentColor: AppColors.naturalAccent,
+              ),
+              const SizedBox(height: AppSpacing.m),
+
+              DndCard(
+                variant: DndCardVariant.featured,
+                accentColor: AppColors.naturalAccent,
+                padding: const EdgeInsets.all(18),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.naturalAccent.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(Icons.card_giftcard_rounded, color: AppColors.naturalAccent, size: 22),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'BOTTINO CASUALE',
+                            style: AppTypography.sectionLabel(color: AppColors.naturalAccent),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(_lastLootResult, style: AppTypography.h3),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
                     DndButton(
                       text: 'Genera',
                       onPressed: _generateLoot,
                       backgroundColor: AppColors.naturalAccent,
                       foregroundColor: AppColors.background,
+                      isSmall: true,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
-              
-              const Text(
-                'I Tuoi Contenuti',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+              const SizedBox(height: AppSpacing.xl),
+
+              // ── I Tuoi Contenuti ──────────────────────────────────────
+              DndSectionTitle(
+                title: 'I Tuoi Contenuti',
+                accentColor: AppColors.textSecondary,
               ),
-              const SizedBox(height: 12),
-              
-              // Riepilogo Dati con Card Separate
+              const SizedBox(height: AppSpacing.m),
+
               Consumer<NotesController>(
                 builder: (context, notesController, child) {
+                  final noteCount = notesController.notes.length;
+                  final sessionCount = notesController.sessions.length;
+                  final charCount = notesController.characters.length;
+
+                  if (noteCount == 0 && sessionCount == 0 && charCount == 0) {
+                    return DndEmptyState(
+                      icon: Icons.book_outlined,
+                      message: 'Nessun contenuto ancora',
+                      subMessage: 'Aggiungi note, sessioni o personaggi dalla tab Appunti',
+                      accentColor: AppColors.highlight,
+                    );
+                  }
+
                   return Row(
                     children: [
                       Expanded(
-                        child: _buildSeparateCard(
-                          'Note',
-                          notesController.notes.length.toString(),
-                          Icons.note_rounded,
-                          AppColors.highlight,
+                        child: DndStatCard(
+                          label: 'Note',
+                          value: noteCount.toString(),
+                          icon: Icons.note_rounded,
+                          accentColor: AppColors.highlight,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.m),
                       Expanded(
-                        child: _buildSeparateCard(
-                          'Sessioni',
-                          notesController.sessions.length.toString(),
-                          Icons.menu_book_rounded,
-                          AppColors.magicAccent,
+                        child: DndStatCard(
+                          label: 'Sessioni',
+                          value: sessionCount.toString(),
+                          icon: Icons.menu_book_rounded,
+                          accentColor: AppColors.magicAccent,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.m),
                       Expanded(
-                        child: _buildSeparateCard(
-                          'Allegati',
-                          notesController.attachments.length.toString(),
-                          Icons.attach_file_rounded,
-                          AppColors.naturalAccent,
+                        child: DndStatCard(
+                          label: 'Personaggi',
+                          value: charCount.toString(),
+                          icon: Icons.person_rounded,
+                          accentColor: AppColors.naturalAccent,
                         ),
                       ),
                     ],
                   );
                 },
               ),
-              const SizedBox(height: 40),
-              
-              // Info dell'App
-              const Center(
+              const SizedBox(height: AppSpacing.xxl),
+
+              // Footer
+              Center(
                 child: Text(
-                  'D&D Companion v1.0.0\nCreato per veri avventurieri',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
-                    height: 1.5,
-                  ),
+                  'D&D Companion v1.0.0',
+                  style: AppTypography.caption,
                 ),
               ),
+              const SizedBox(height: AppSpacing.m),
             ],
           ),
         ),

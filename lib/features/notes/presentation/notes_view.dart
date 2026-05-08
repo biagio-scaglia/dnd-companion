@@ -3,8 +3,12 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_radius.dart';
 import '../../../presentation/widgets/dnd_card.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
+import '../../../presentation/widgets/dnd_section_title.dart';
+import '../../../presentation/widgets/dnd_empty_state.dart';
+import '../../../presentation/widgets/dnd_text_field.dart';
 import 'notes_controller.dart';
 import 'calendar_controller.dart';
 import 'widgets/note_card.dart';
@@ -21,18 +25,14 @@ class NotesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Appunti e Sessioni', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        title: const Text('Appunti e Sessioni'),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const NoteEditView()),
-              );
-            },
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NoteEditView()),
+            ),
           ),
         ],
       ),
@@ -45,91 +45,53 @@ class NotesView extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             children: [
-              // Personaggi
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'I Tuoi Personaggi',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          final nameController = TextEditingController();
-                          final classController = TextEditingController();
-                          final levelController = TextEditingController();
-                          return AlertDialog(
-                            backgroundColor: AppColors.surface,
-                            title: const Text('Nuovo Personaggio', style: TextStyle(color: AppColors.textPrimary)),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextFormField(
-                                  controller: nameController,
-                                  decoration: const InputDecoration(labelText: 'Nome', labelStyle: TextStyle(color: AppColors.textSecondary)),
-                                  style: const TextStyle(color: AppColors.textPrimary),
-                                ),
-                                TextFormField(
-                                  controller: classController,
-                                  decoration: const InputDecoration(labelText: 'Classe', labelStyle: TextStyle(color: AppColors.textSecondary)),
-                                  style: const TextStyle(color: AppColors.textPrimary),
-                                ),
-                                TextFormField(
-                                  controller: levelController,
-                                  decoration: const InputDecoration(labelText: 'Livello', labelStyle: TextStyle(color: AppColors.textSecondary)),
-                                  style: const TextStyle(color: AppColors.textPrimary),
-                                  keyboardType: TextInputType.number,
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  if (nameController.text.isNotEmpty) {
-                                    notesController.createCharacter(
-                                      nameController.text,
-                                      classController.text,
-                                      int.tryParse(levelController.text) ?? 1,
-                                    );
-                                    Navigator.pop(context);
-                                  }
-                                },
-                                child: const Text('Crea', style: TextStyle(color: AppColors.magicAccent)),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
+              // ── Personaggi ───────────────────────────────────────────
+              DndSectionTitle(
+                title: 'I Tuoi Personaggi',
+                accentColor: AppColors.highlight,
+                trailing: IconButton(
+                  icon: const Icon(Icons.add_rounded, color: AppColors.highlight, size: 20),
+                  onPressed: () => _showCreateCharacterDialog(context, notesController),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.m),
+
               if (notesController.characters.isEmpty)
-                const Text('Nessun personaggio creato.', style: TextStyle(color: AppColors.textSecondary))
+                DndEmptyState(
+                  icon: Icons.person_outline_rounded,
+                  message: 'Nessun personaggio',
+                  subMessage: 'Aggiungi il tuo primo eroe',
+                  accentColor: AppColors.highlight,
+                )
               else
                 ...notesController.characters.map((c) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: DndCard(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     child: Row(
                       children: [
-                        const Icon(Icons.person_rounded, color: AppColors.highlight, size: 32),
-                        const SizedBox(width: 16),
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color: AppColors.highlight.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.person_rounded, color: AppColors.highlight, size: 22),
+                        ),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(c.name, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 16)),
-                              Text('${c.characterClass} • Livello ${c.level}', style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                              Text(c.name, style: AppTypography.h3),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${c.characterClass} • Liv. ${c.level}',
+                                style: AppTypography.bodySmall,
+                              ),
                             ],
                           ),
                         ),
@@ -141,46 +103,56 @@ class NotesView extends StatelessWidget {
                     ),
                   ),
                 )),
-                
-              const SizedBox(height: 32),
-              
-              // Sessioni
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Sessioni',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+
+              const SizedBox(height: AppSpacing.xl),
+
+              // ── Sessioni ─────────────────────────────────────────────
+              DndSectionTitle(
+                title: 'Sessioni',
+                accentColor: AppColors.magicAccent,
+                trailing: IconButton(
+                  icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent, size: 20),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SessionEditView()),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SessionEditView()),
-                      );
-                    },
-                  ),
-                ],
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.m),
+
               if (notesController.sessions.isEmpty)
-                const Text('Nessuna sessione registrata.', style: TextStyle(color: AppColors.textSecondary))
+                DndEmptyState(
+                  icon: Icons.menu_book_outlined,
+                  message: 'Nessuna sessione',
+                  subMessage: 'Inizia a documentare le tue avventure',
+                  accentColor: AppColors.magicAccent,
+                )
               else
                 ...notesController.sessions.map((s) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: DndCard(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     child: Row(
                       children: [
-                        const Icon(Icons.menu_book_rounded, color: AppColors.magicAccent, size: 32),
-                        const SizedBox(width: 16),
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color: AppColors.magicAccent.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.menu_book_rounded, color: AppColors.magicAccent, size: 22),
+                        ),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(s.title, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 16)),
-                              Text(s.summary, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                              Text(s.title, style: AppTypography.h3),
+                              const SizedBox(height: 2),
+                              Text(s.summary, style: AppTypography.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
                             ],
                           ),
                         ),
@@ -192,129 +164,175 @@ class NotesView extends StatelessWidget {
                     ),
                   ),
                 )),
-                
-              const SizedBox(height: 32),
-              
-              // Appunti
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Appunti Recenti',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text('Vedi tutti', style: TextStyle(color: AppColors.highlight)),
-                  ),
-                ],
+
+              const SizedBox(height: AppSpacing.xl),
+
+              // ── Appunti ──────────────────────────────────────────────
+              DndSectionTitle(
+                title: 'Appunti Recenti',
+                accentColor: AppColors.naturalAccent,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.m),
+
               if (notesController.notes.isEmpty)
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(32.0),
-                    child: Text('Nessun appunto creato.', style: TextStyle(color: AppColors.textSecondary)),
-                  ),
+                DndEmptyState(
+                  icon: Icons.note_outlined,
+                  message: 'Nessun appunto',
+                  subMessage: 'Tocca il + in alto per creare il primo appunto',
+                  accentColor: AppColors.naturalAccent,
                 )
               else
                 ...notesController.notes.map((n) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0),
+                  padding: const EdgeInsets.only(bottom: 12),
                   child: NoteCard(
-                    note: n, 
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => NoteEditView(note: n)),
-                      );
-                    }
+                    note: n,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => NoteEditView(note: n)),
+                    ),
                   ),
                 )),
-                
-              const SizedBox(height: 32),
-              
-              // Allegati
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Allegati Recenti',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.attach_file_rounded, color: AppColors.textPrimary),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          final nameController = TextEditingController();
-                          final pathController = TextEditingController();
-                          final typeController = TextEditingController();
-                          return AlertDialog(
-                            backgroundColor: AppColors.surface,
-                            title: const Text('Aggiungi Riferimento File', style: TextStyle(color: AppColors.textPrimary)),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextFormField(
-                                  controller: nameController,
-                                  decoration: const InputDecoration(labelText: 'Nome File', labelStyle: TextStyle(color: AppColors.textSecondary)),
-                                  style: const TextStyle(color: AppColors.textPrimary),
-                                ),
-                                TextFormField(
-                                  controller: pathController,
-                                  decoration: const InputDecoration(labelText: 'Percorso o URL', labelStyle: TextStyle(color: AppColors.textSecondary)),
-                                  style: const TextStyle(color: AppColors.textPrimary),
-                                ),
-                                TextFormField(
-                                  controller: typeController,
-                                  decoration: const InputDecoration(labelText: 'Tipo (es. pdf, png)', labelStyle: TextStyle(color: AppColors.textSecondary)),
-                                  style: const TextStyle(color: AppColors.textPrimary),
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  if (nameController.text.isNotEmpty && pathController.text.isNotEmpty) {
-                                    notesController.addAttachmentReference(
-                                      nameController.text,
-                                      pathController.text,
-                                      typeController.text.isEmpty ? 'file' : typeController.text,
-                                    );
-                                    Navigator.pop(context);
-                                  }
-                                },
-                                child: const Text('Aggiungi', style: TextStyle(color: AppColors.magicAccent)),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  )
-                ],
+
+              const SizedBox(height: AppSpacing.xl),
+
+              // ── Allegati ─────────────────────────────────────────────
+              DndSectionTitle(
+                title: 'Allegati',
+                accentColor: AppColors.textSecondary,
+                trailing: IconButton(
+                  icon: const Icon(Icons.attach_file_rounded, color: AppColors.textSecondary, size: 20),
+                  onPressed: () => _showAddAttachmentDialog(context, notesController),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.m),
+
               if (notesController.attachments.isEmpty)
-                const Text('Nessun allegato.', style: TextStyle(color: AppColors.textSecondary))
+                DndEmptyState(
+                  icon: Icons.attach_file_outlined,
+                  message: 'Nessun allegato',
+                  accentColor: AppColors.textSecondary,
+                )
               else
-                ...notesController.attachments.map((a) => ListTile(
-                  leading: const Icon(Icons.insert_drive_file_rounded, color: AppColors.naturalAccent),
-                  title: Text(a.fileName, style: const TextStyle(color: AppColors.textPrimary)),
-                  subtitle: Text(a.type.toUpperCase(), style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                  tileColor: AppColors.surface,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  onTap: () => openFile(a.filePath),
+                ...notesController.attachments.map((a) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: DndCard(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.insert_drive_file_rounded, color: AppColors.naturalAccent, size: 22),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(a.fileName, style: AppTypography.body.copyWith(fontWeight: FontWeight.bold)),
+                              Text(a.type.toUpperCase(), style: AppTypography.caption),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.open_in_new_rounded, color: AppColors.textSecondary, size: 18),
+                          onPressed: () => openFile(a.filePath),
+                        ),
+                      ],
+                    ),
+                  ),
                 )),
+
+              const SizedBox(height: AppSpacing.xxl),
             ],
           );
         },
+      ),
+    );
+  }
+
+  void _showCreateCharacterDialog(BuildContext context, NotesController controller) {
+    final nameCtrl = TextEditingController();
+    final classCtrl = TextEditingController();
+    final levelCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Nuovo Personaggio'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DndTextField(controller: nameCtrl, label: 'Nome'),
+            const SizedBox(height: 12),
+            DndTextField(controller: classCtrl, label: 'Classe'),
+            const SizedBox(height: 12),
+            DndTextField(
+              controller: levelCtrl,
+              label: 'Livello',
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annulla'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (nameCtrl.text.isNotEmpty) {
+                controller.createCharacter(
+                  nameCtrl.text,
+                  classCtrl.text,
+                  int.tryParse(levelCtrl.text) ?? 1,
+                );
+                Navigator.pop(context);
+              }
+            },
+            child: Text('Crea', style: TextStyle(color: AppColors.magicAccent)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddAttachmentDialog(BuildContext context, NotesController controller) {
+    final nameCtrl = TextEditingController();
+    final pathCtrl = TextEditingController();
+    final typeCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Aggiungi Riferimento File'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DndTextField(controller: nameCtrl, label: 'Nome File'),
+            const SizedBox(height: 12),
+            DndTextField(controller: pathCtrl, label: 'Percorso o URL'),
+            const SizedBox(height: 12),
+            DndTextField(controller: typeCtrl, label: 'Tipo (es. pdf, png)'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annulla'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (nameCtrl.text.isNotEmpty && pathCtrl.text.isNotEmpty) {
+                controller.addAttachmentReference(
+                  nameCtrl.text,
+                  pathCtrl.text,
+                  typeCtrl.text.isEmpty ? 'file' : typeCtrl.text,
+                );
+                Navigator.pop(context);
+              }
+            },
+            child: Text('Aggiungi', style: TextStyle(color: AppColors.magicAccent)),
+          ),
+        ],
       ),
     );
   }
