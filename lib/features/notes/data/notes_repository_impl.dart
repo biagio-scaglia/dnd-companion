@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/models/note.dart';
 import '../domain/models/session.dart';
 import '../domain/models/attachment.dart';
@@ -12,30 +13,38 @@ class NotesRepositoryImpl implements NotesRepository {
   Future<void> _init() async {
     if (_initialized) return;
     
-    // Inizializziamo con dati mock in formato JSON
-    _jsonData = jsonEncode({
-      'sessions': [
-        {
-          'id': 'session-1',
-          'title': 'Il Lamento della Banshee',
-          'date': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
-          'summary': 'Il party ha affrontato gli spiriti nelle cripte e trovato il medaglione antico.',
-        }
-      ],
-      'notes': [
-        {
-          'id': 'note-1',
-          'title': 'Medaglione Antico',
-          'content': 'Abbiamo trovato un medaglione nelle cripte. Emette una debole luce viola quando ci si avvicina a un non-morto.',
-          'date': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
-          'isImportant': true,
-          'sessionId': 'session-1',
-          'tags': ['Oggetti', 'Mistero'],
-        }
-      ],
-      'attachments': [],
-      'characters': []
-    });
+    final prefs = await SharedPreferences.getInstance();
+    final savedData = prefs.getString('dnd_data');
+    
+    if (savedData != null) {
+      _jsonData = savedData;
+    } else {
+      // Inizializziamo con dati mock in formato JSON
+      _jsonData = jsonEncode({
+        'sessions': [
+          {
+            'id': 'session-1',
+            'title': 'Il Lamento della Banshee',
+            'date': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+            'summary': 'Il party ha affrontato gli spiriti nelle cripte e trovato il medaglione antico.',
+          }
+        ],
+        'notes': [
+          {
+            'id': 'note-1',
+            'title': 'Medaglione Antico',
+            'content': 'Abbiamo trovato un medaglione nelle cripte. Emette una debole luce viola quando ci si avvicina a un non-morto.',
+            'date': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+            'isImportant': true,
+            'sessionId': 'session-1',
+            'tags': ['Oggetti', 'Mistero'],
+          }
+        ],
+        'attachments': [],
+        'characters': []
+      });
+      await prefs.setString('dnd_data', _jsonData);
+    }
     _initialized = true;
   }
 
@@ -43,8 +52,10 @@ class NotesRepositoryImpl implements NotesRepository {
     return jsonDecode(_jsonData);
   }
 
-  void _saveData(Map<String, dynamic> data) {
+  Future<void> _saveData(Map<String, dynamic> data) async {
     _jsonData = jsonEncode(data);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('dnd_data', _jsonData);
   }
 
   // --- Notes ---
@@ -62,7 +73,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final data = _getData();
     final list = data['notes'] as List;
     list.add(note.toJson());
-    _saveData(data);
+    await _saveData(data);
     return note;
   }
 
@@ -74,7 +85,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final index = list.indexWhere((e) => e['id'] == note.id);
     if (index != -1) {
       list[index] = note.toJson();
-      _saveData(data);
+      await _saveData(data);
     }
     return note;
   }
@@ -85,7 +96,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final data = _getData();
     final list = data['notes'] as List;
     list.removeWhere((e) => e['id'] == id);
-    _saveData(data);
+    await _saveData(data);
   }
 
   // --- Sessions ---
@@ -103,7 +114,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final data = _getData();
     final list = data['sessions'] as List;
     list.add(session.toJson());
-    _saveData(data);
+    await _saveData(data);
     return session;
   }
 
@@ -115,7 +126,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final index = list.indexWhere((e) => e['id'] == session.id);
     if (index != -1) {
       list[index] = session.toJson();
-      _saveData(data);
+      await _saveData(data);
     }
     return session;
   }
@@ -126,7 +137,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final data = _getData();
     final list = data['sessions'] as List;
     list.removeWhere((e) => e['id'] == id);
-    _saveData(data);
+    await _saveData(data);
   }
 
   // --- Attachments ---
@@ -144,7 +155,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final data = _getData();
     final list = data['attachments'] as List;
     list.add(attachment.toJson());
-    _saveData(data);
+    await _saveData(data);
     return attachment;
   }
 
@@ -154,7 +165,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final data = _getData();
     final list = data['attachments'] as List;
     list.removeWhere((e) => e['id'] == id);
-    _saveData(data);
+    await _saveData(data);
   }
 
   // --- Characters ---
@@ -173,7 +184,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final data = _getData();
     final list = data['characters'] as List;
     list.add(character.toJson());
-    _saveData(data);
+    await _saveData(data);
     return character;
   }
 
@@ -185,7 +196,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final index = list.indexWhere((e) => e['id'] == character.id);
     if (index != -1) {
       list[index] = character.toJson();
-      _saveData(data);
+      await _saveData(data);
     }
     return character;
   }
@@ -196,7 +207,7 @@ class NotesRepositoryImpl implements NotesRepository {
     final data = _getData();
     final list = data['characters'] as List;
     list.removeWhere((e) => e['id'] == id);
-    _saveData(data);
+    await _saveData(data);
   }
 
   @override
