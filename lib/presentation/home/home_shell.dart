@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import '../../features/compendium/presentation/compendium_view.dart';
+import 'home_view.dart';
 
 class HomeShell extends StatefulWidget {
-  final Widget child;
-
-  const HomeShell({super.key, required this.child});
+  const HomeShell({super.key});
 
   @override
   State<HomeShell> createState() => _HomeShellState();
@@ -12,6 +12,13 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   int _currentIndex = 0;
+
+  final List<Widget> _pages = const [
+    HomeView(),
+    CompendiumView(),
+    Center(child: Text('Personaggio - Presto in arrivo', style: TextStyle(color: Colors.white))),
+    Center(child: Text('Impostazioni - Presto in arrivo', style: TextStyle(color: Colors.white))),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +72,13 @@ class _HomeShellState extends State<HomeShell> {
               color: AppColors.surfaceSecondary,
             ),
             
-          Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              switchInCurve: Curves.easeOutCubic,
-              switchOutCurve: Curves.easeInCubic,
-              // In un'app reale qui useremmo un router (es. GoRouter) 
-              // o un IndexedStack. Per ora mostriamo il child passato.
-              child: widget.child,
+            Expanded(
+              // Usiamo IndexedStack per mantenere lo stato delle view quando cambiamo tab
+              child: IndexedStack(
+                index: _currentIndex,
+                children: _pages,
+              ),
             ),
-          ),
         ],
       ),
       bottomNavigationBar: isMobile

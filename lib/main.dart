@@ -16,10 +16,7 @@ class DndCompanionApp extends StatelessWidget {
       title: 'D&D Companion',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      home: const HomeShell(
-        // Passiamo la HomeView come primo figlio della shell
-        child: HomeView(),
-      ),
+      home: const HomeShell(),
     );
   }
 }
