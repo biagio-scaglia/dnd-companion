@@ -33,11 +33,15 @@ class DndCompanionApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'D&D Companion',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      home: const HomeShell(),
+    return Consumer<SettingsController>(
+      builder: (context, settingsController, child) {
+        return MaterialApp(
+          title: 'D&D Companion',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.getTheme(accentColor: settingsController.settings.accentColor),
+          home: const HomeShell(),
+        );
+      },
     );
   }
 }

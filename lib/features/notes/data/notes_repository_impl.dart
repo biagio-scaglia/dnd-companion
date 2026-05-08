@@ -198,4 +198,17 @@ class NotesRepositoryImpl implements NotesRepository {
     list.removeWhere((e) => e['id'] == id);
     _saveData(data);
   }
+
+  @override
+  Future<String> exportData() async {
+    await _init();
+    return _jsonData;
+  }
+
+  @override
+  Future<void> importData(String json) async {
+    await _init();
+    jsonDecode(json); // Valida che sia JSON valido
+    _jsonData = json;
+  }
 }

@@ -4,12 +4,25 @@ import 'app_typography.dart';
 import 'app_radius.dart';
 
 class AppTheme {
-  static ThemeData get darkTheme {
+  static ThemeData getTheme({required String accentColor}) {
+    Color primaryColor;
+    switch (accentColor) {
+      case 'nature':
+        primaryColor = AppColors.naturalAccent;
+        break;
+      case 'highlight':
+        primaryColor = AppColors.highlight;
+        break;
+      case 'magic':
+      default:
+        primaryColor = AppColors.magicAccent;
+    }
+
     return ThemeData(
       brightness: Brightness.dark,
       scaffoldBackgroundColor: AppColors.background,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.magicAccent,
+      colorScheme: ColorScheme.dark(
+        primary: primaryColor,
         secondary: AppColors.naturalAccent,
         surface: AppColors.surface,
         background: AppColors.background,
@@ -39,7 +52,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.highlight,
+          backgroundColor: primaryColor,
           foregroundColor: AppColors.background,
           textStyle: const TextStyle(fontWeight: FontWeight.bold),
           shape: RoundedRectangleBorder(

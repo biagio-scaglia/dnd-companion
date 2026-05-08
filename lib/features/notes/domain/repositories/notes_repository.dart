@@ -26,4 +26,8 @@ abstract class NotesRepository {
   Future<Character> addCharacter(Character character);
   Future<Character> updateCharacter(Character character);
   Future<void> deleteCharacter(String id);
+
+  // Data Management
+  Future<String> exportData();
+  Future<void> importData(String json);
 }

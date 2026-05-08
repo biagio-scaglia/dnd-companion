@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/compendium/presentation/compendium_view.dart';
 import '../../features/notes/presentation/notes_view.dart';
+import '../../features/settings/presentation/settings_view.dart';
 import '../../core/utils/app_navigation.dart';
 import 'home_view.dart';
 
@@ -37,7 +38,7 @@ class _HomeShellState extends State<HomeShell> {
     HomeView(),
     CompendiumView(),
     NotesView(),
-    Center(child: Text('Impostazioni - Presto in arrivo', style: TextStyle(color: Colors.white))),
+    SettingsView(),
   ];
 
   @override

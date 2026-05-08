@@ -127,6 +127,16 @@ class NotesController extends ChangeNotifier {
     debugPrint('File picker disabilitato per problemi di compilazione su Windows.');
   }
 
+  // --- Data Management ---
+  Future<String> exportData() async {
+    return await repository.exportData();
+  }
+
+  Future<void> importData(String json) async {
+    await repository.importData(json);
+    await loadData();
+  }
+
   // --- Getters for Home Summaries ---
   Note? get latestImportantNote {
     try {
