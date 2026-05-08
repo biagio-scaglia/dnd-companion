@@ -1,77 +1,95 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/app_navigation.dart';
+import '../../../features/notes/presentation/notes_controller.dart';
 
 class RecentSessions extends StatelessWidget {
   const RecentSessions({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Consumer<NotesController>(
+      builder: (context, notesController, child) {
+        final sessions = notesController.sessions;
+        
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Sessioni Recenti',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Sessioni Recenti',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Ricapitola quello che è successo',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                const Text(
-                  'Ricapitola quello che è successo',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
+                TextButton(
+                  onPressed: () {
+                    AppNavigation.instance.goToNotes();
+                  },
+                  child: const Text(
+                    'Vedi Tutte',
+                    style: TextStyle(
+                      color: AppColors.highlight,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
             ),
-            TextButton(
-              onPressed: () {},
-              child: const Text(
-                'Vedi Tutte',
+            const SizedBox(height: 16),
+            if (sessions.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24.0),
+                child: Center(
+                  child: Text(
+                    'Nessuna sessione registrata.',
+                    style: TextStyle(color: AppColors.textSecondary),
+                  ),
+                ),
+              )
+            else
+              ...sessions.take(2).map((session) => Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: _buildSessionTile(
+                  title: session.title,
+                  date: '${session.date.day}/${session.date.month}/${session.date.year}',
+                  description: session.summary,
+                  isNew: session == sessions.first,
+                ),
+              )),
+            const SizedBox(height: 16),
+            const Center(
+              child: Text(
+                'Niente si perde tra una sessione e l\'altra',
                 style: TextStyle(
-                  color: AppColors.highlight,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
             ),
           ],
-        ),
-        const SizedBox(height: 16),
-        _buildSessionTile(
-          title: 'Il Lamento della Banshee',
-          date: '14 Maggio 2026',
-          description: 'Il party ha affrontato gli spiriti nelle cripte e trovato il medaglione antico.',
-          isNew: true,
-        ),
-        const SizedBox(height: 12),
-        _buildSessionTile(
-          title: 'L\'Inganno alla Locanda',
-          date: '7 Maggio 2026',
-          description: 'Trattative con la Gilda dei Ladri per ottenere l\'accesso alle fogne. Ottenuta la mappa del dungeon, ma abbiamo perso un prezioso alleato durante la fuga.',
-          isNew: false,
-        ),
-        const SizedBox(height: 16),
-        const Center(
-          child: Text(
-            'Niente si perde tra una sessione e l\'altra',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -84,7 +102,9 @@ class RecentSessions extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          AppNavigation.instance.goToNotes();
+        },
         borderRadius: BorderRadius.circular(16),
         highlightColor: AppColors.surfaceSecondary.withOpacity(0.5),
         splashColor: AppColors.highlight.withOpacity(0.1),

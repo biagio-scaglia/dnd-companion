@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/home/home_shell.dart';
-import 'presentation/home/home_view.dart';
+import 'features/notes/data/notes_repository_impl.dart';
+import 'features/notes/data/calendar_repository_impl.dart';
+import 'features/notes/presentation/notes_controller.dart';
+import 'features/notes/presentation/calendar_controller.dart';
 
 void main() {
-  runApp(const DndCompanionApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => NotesController(repository: NotesRepositoryImpl()),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CalendarController(repository: CalendarRepositoryImpl()),
+        ),
+      ],
+      child: const DndCompanionApp(),
+    ),
+  );
 }
 
 class DndCompanionApp extends StatelessWidget {

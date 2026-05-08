@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/app_navigation.dart';
 
 class HeroCard extends StatelessWidget {
   final String campaignName;
@@ -142,7 +143,9 @@ class HeroCard extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          AppNavigation.instance.goToNotes();
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.highlight,
                           foregroundColor: AppColors.background,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/compendium/presentation/compendium_view.dart';
+import '../../features/notes/presentation/notes_view.dart';
 import '../../core/utils/app_navigation.dart';
 import 'home_view.dart';
 
@@ -35,7 +36,7 @@ class _HomeShellState extends State<HomeShell> {
   final List<Widget> _pages = const [
     HomeView(),
     CompendiumView(),
-    Center(child: Text('Personaggio - Presto in arrivo', style: TextStyle(color: Colors.white))),
+    NotesView(),
     Center(child: Text('Impostazioni - Presto in arrivo', style: TextStyle(color: Colors.white))),
   ];
 
@@ -69,9 +70,9 @@ class _HomeShellState extends State<HomeShell> {
                   label: Text('Compendio'),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person_rounded),
-                  label: Text('Personaggio'),
+                  icon: Icon(Icons.edit_note_outlined),
+                  selectedIcon: Icon(Icons.edit_note_rounded),
+                  label: Text('Appunti'),
                 ),
                 NavigationRailDestination(
                   icon: Icon(Icons.settings_outlined),
@@ -116,9 +117,9 @@ class _HomeShellState extends State<HomeShell> {
                   label: 'Compendio',
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person_rounded),
-                  label: 'Personaggio',
+                  icon: Icon(Icons.edit_note_outlined),
+                  selectedIcon: Icon(Icons.edit_note_rounded),
+                  label: 'Appunti',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.settings_outlined),

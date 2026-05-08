@@ -14,4 +14,8 @@ class AppNavigation {
     }
     currentTab.value = 1; // 1 is the Compendium index in the shell
   }
+
+  void goToNotes() {
+    currentTab.value = 2; // 2 is the Notes index in the shell
+  }
 }

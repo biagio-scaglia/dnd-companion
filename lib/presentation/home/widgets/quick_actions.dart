@@ -59,12 +59,7 @@ class QuickActions extends StatelessWidget {
               label: 'Appunti',
               color: AppColors.highlight,
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Appunti e Sessioni in arrivo nei prossimi aggiornamenti!'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
+                AppNavigation.instance.goToNotes();
               },
             ),
           ],
