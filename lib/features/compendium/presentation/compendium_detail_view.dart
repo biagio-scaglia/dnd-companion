@@ -1,18 +1,59 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/models/compendium_item.dart';
+import '../data/datasources/dnd_api_client.dart';
+import '../../../../core/database/database_helper.dart';
 
-class CompendiumDetailView extends StatelessWidget {
+class CompendiumDetailView extends StatefulWidget {
   final CompendiumItem item;
 
   const CompendiumDetailView({super.key, required this.item});
+
+  @override
+  State<CompendiumDetailView> createState() => _CompendiumDetailViewState();
+}
+
+class _CompendiumDetailViewState extends State<CompendiumDetailView> {
+  late CompendiumItem _item;
+  bool _isLoadingDesc = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _item = widget.item;
+    _fetchDetailsIfNeeded();
+  }
+
+  Future<void> _fetchDetailsIfNeeded() async {
+    // Controlla se la descrizione è quella generica e non è un item custom
+    if (!_item.isCustom && _item.description.contains('Dettagli non disponibili')) {
+      setState(() => _isLoadingDesc = true);
+      try {
+        final client = DndApiClient();
+        final desc = await client.fetchItemDescription(_item.type, _item.id);
+        
+        setState(() {
+          _item = _item.copyWith(description: desc);
+          _isLoadingDesc = false;
+        });
+
+        // Aggiorna il DB in locale così rimane salvato offline
+        DatabaseHelper.instance.updateItem(_item.toMap());
+      } catch (e) {
+        setState(() {
+          _isLoadingDesc = false;
+        });
+        print('Errore fetch dettaglio: $e');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     IconData typeIcon;
     Color typeColor;
 
-    switch (item.type) {
+    switch (_item.type) {
       case CompendiumItemType.monster:
         typeIcon = Icons.pets_rounded;
         typeColor = AppColors.danger;
@@ -31,7 +72,7 @@ class CompendiumDetailView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Dettaglio'),
         actions: [
-          if (item.isFavorite)
+          if (_item.isFavorite)
             const Padding(
               padding: EdgeInsets.only(right: 16.0),
               child: Icon(Icons.favorite_rounded, color: AppColors.danger),
@@ -60,14 +101,14 @@ class CompendiumDetailView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.name,
+                        _item.name,
                         style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      if (item.metaInfo != null) ...[
+                      if (_item.metaInfo != null) ...[
                         const SizedBox(height: 6),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -76,7 +117,7 @@ class CompendiumDetailView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            item.metaInfo!,
+                            _item.metaInfo!,
                             style: TextStyle(
                               color: typeColor,
                               fontWeight: FontWeight.bold,
@@ -100,14 +141,17 @@ class CompendiumDetailView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Text(
-              item.description,
-              style: const TextStyle(
-                fontSize: 16,
-                color: AppColors.textSecondary,
-                height: 1.6,
+            if (_isLoadingDesc)
+              const Center(child: CircularProgressIndicator(color: AppColors.highlight))
+            else
+              Text(
+                _item.description,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: AppColors.textSecondary,
+                  height: 1.6,
+                ),
               ),
-            ),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/compendium/presentation/compendium_view.dart';
+import '../../core/utils/app_navigation.dart';
 import 'home_view.dart';
 
 class HomeShell extends StatefulWidget {
@@ -12,6 +13,24 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    AppNavigation.instance.currentTab.addListener(_onTabChanged);
+  }
+
+  void _onTabChanged() {
+    setState(() {
+      _currentIndex = AppNavigation.instance.currentTab.value;
+    });
+  }
+
+  @override
+  void dispose() {
+    AppNavigation.instance.currentTab.removeListener(_onTabChanged);
+    super.dispose();
+  }
 
   final List<Widget> _pages = const [
     HomeView(),
@@ -35,9 +54,7 @@ class _HomeShellState extends State<HomeShell> {
             NavigationRail(
               selectedIndex: _currentIndex,
               onDestinationSelected: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
+                AppNavigation.instance.currentTab.value = index;
               },
               extended: screenWidth >= 1000,
               destinations: const [
@@ -85,9 +102,7 @@ class _HomeShellState extends State<HomeShell> {
           ? NavigationBar(
               selectedIndex: _currentIndex,
               onDestinationSelected: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
+                AppNavigation.instance.currentTab.value = index;
               },
               destinations: const [
                 NavigationDestination(

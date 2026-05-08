@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/app_navigation.dart';
+import '../../../features/compendium/domain/models/compendium_item.dart';
+import 'dice_roller_dialog.dart';
 
 class QuickActions extends StatelessWidget {
   const QuickActions({super.key});
@@ -34,21 +37,35 @@ class QuickActions extends StatelessWidget {
               icon: Icons.casino_rounded,
               label: 'Tira Dadi',
               color: AppColors.magicAccent,
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (ctx) => const DiceRollerDialog(),
+                );
+              },
             ),
             _buildActionCard(
               context,
               icon: Icons.menu_book_rounded,
               label: 'Incantesimi',
               color: AppColors.naturalAccent,
-              onTap: () {},
+              onTap: () {
+                AppNavigation.instance.goToCompendium(filter: CompendiumItemType.spell);
+              },
             ),
             _buildActionCard(
               context,
               icon: Icons.edit_note_rounded,
               label: 'Appunti',
               color: AppColors.highlight,
-              onTap: () {},
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Appunti e Sessioni in arrivo nei prossimi aggiornamenti!'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
             ),
           ],
         ),

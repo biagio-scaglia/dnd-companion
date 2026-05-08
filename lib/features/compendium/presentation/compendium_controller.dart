@@ -28,6 +28,12 @@ class CompendiumController extends ChangeNotifier {
     _fetchItems();
   }
 
+  void setCategory(CompendiumItemType category) {
+    if (_filter.selectedCategory == category) return;
+    _filter = _filter.copyWith(selectedCategory: category);
+    _fetchItems();
+  }
+
   void toggleCategory(CompendiumItemType category) {
     if (_filter.selectedCategory == category) {
       _filter = _filter.copyWith(clearCategory: true);
@@ -66,12 +72,31 @@ class CompendiumController extends ChangeNotifier {
     notifyListeners();
 
     try {
+      // Sincronizza in background, poi recupera dal DB
+      await repository.syncWithApi();
       _items = await repository.fetchItems(_filter);
     } catch (e) {
+      print('Errore fetch items da controller: $e');
       _items = [];
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
+
+  Future<void> addCustomItem(CompendiumItem item) async {
+    _isLoading = true;
+    notifyListeners();
+    
+    try {
+      await repository.addCustomItem(item);
+      await _fetchItems();
+    } catch (e) {
+      print('Errore aggiunta elemento custom: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
+

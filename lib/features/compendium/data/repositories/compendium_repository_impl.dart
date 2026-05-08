@@ -1,22 +1,36 @@
+import '../../../../core/database/database_helper.dart';
 import '../../domain/models/compendium_filter.dart';
 import '../../domain/models/compendium_item.dart';
 import '../../domain/repositories/compendium_repository.dart';
-import '../datasources/compendium_seed_data.dart';
+import '../datasources/dnd_api_client.dart';
 
 class CompendiumRepositoryImpl implements CompendiumRepository {
-  // Simulazione di un database locale in RAM
-  List<CompendiumItem> _localCache = [];
+  final DndApiClient _apiClient = DndApiClient();
+  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
 
-  CompendiumRepositoryImpl() {
-    _localCache = List.from(compendiumSeedData);
+  @override
+  Future<void> syncWithApi() async {
+    try {
+      final items = await _apiClient.fetchAllItems();
+      
+      // Salva gli elementi nel DB (rimpiazza quelli esistenti per aggiornare)
+      for (var item in items) {
+        // Preserva i favoriti se l'elemento è già nel DB
+        final existing = await getItemById(item.id);
+        final toInsert = existing != null ? item.copyWith(isFavorite: existing.isFavorite) : item;
+        
+        await _dbHelper.insertItem(toInsert.toMap());
+      }
+    } catch (e) {
+      print('Errore durante la sincronizzazione con l\'API: $e');
+      // In offline-first, l'errore di sync viene ignorato e usiamo la cache
+    }
   }
 
   @override
   Future<List<CompendiumItem>> fetchItems(CompendiumFilter filter) async {
-    // Simuliamo un minimo di latenza (database offline / file read)
-    await Future.delayed(const Duration(milliseconds: 250));
-
-    var results = _localCache;
+    final maps = await _dbHelper.queryAllItems();
+    var results = maps.map((map) => CompendiumItem.fromMap(map)).toList();
 
     // Filtro per categoria
     if (filter.selectedCategory != null) {
@@ -42,21 +56,33 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
 
   @override
   Future<CompendiumItem> toggleFavorite(String id) async {
-    final index = _localCache.indexWhere((item) => item.id == id);
-    if (index == -1) throw Exception('Item not found');
+    final item = await getItemById(id);
+    if (item == null) throw Exception('Item not found');
 
-    final updatedItem = _localCache[index].copyWith(isFavorite: !_localCache[index].isFavorite);
-    _localCache[index] = updatedItem;
+    final updatedItem = item.copyWith(isFavorite: !item.isFavorite);
+    await _dbHelper.updateItem(updatedItem.toMap());
 
     return updatedItem;
   }
 
   @override
   Future<CompendiumItem?> getItemById(String id) async {
+    final maps = await _dbHelper.queryAllItems();
     try {
-      return _localCache.firstWhere((item) => item.id == id);
+      final map = maps.firstWhere((element) => element['id'] == id);
+      return CompendiumItem.fromMap(map);
     } catch (_) {
       return null;
     }
+  }
+
+  @override
+  Future<void> addCustomItem(CompendiumItem item) async {
+    // Generiamo un ID univoco se non lo ha (usiamo uuid, oppure datetime)
+    final customItem = item.copyWith(
+      id: item.id.isEmpty ? DateTime.now().millisecondsSinceEpoch.toString() : item.id,
+      isCustom: true,
+    );
+    await _dbHelper.insertItem(customItem.toMap());
   }
 }

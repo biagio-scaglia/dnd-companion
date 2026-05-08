@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/app_navigation.dart';
 import '../data/repositories/compendium_repository_impl.dart';
 import 'compendium_controller.dart';
 import 'widgets/compendium_search_bar.dart';
@@ -7,6 +8,8 @@ import 'widgets/compendium_category_filters.dart';
 import 'widgets/compendium_item_card.dart';
 import 'widgets/compendium_empty_state.dart';
 import 'compendium_detail_view.dart';
+import 'widgets/add_custom_item_dialog.dart';
+import '../domain/models/compendium_item.dart';
 
 class CompendiumView extends StatefulWidget {
   const CompendiumView({super.key});
@@ -24,9 +27,17 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    // Instanziamo il controller
     _controller = CompendiumController(repository: CompendiumRepositoryImpl());
     _controller.addListener(_onStateChanged);
+    
+    // Check initial filter at startup
+    if (AppNavigation.instance.initialFilter.value != null) {
+      _controller.setCategory(AppNavigation.instance.initialFilter.value!);
+      AppNavigation.instance.initialFilter.value = null; // consume
+    }
+    
+    // Listen for future changes
+    AppNavigation.instance.initialFilter.addListener(_onInitialFilterChanged);
 
     _animationController = AnimationController(
       vsync: this,
@@ -44,12 +55,21 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
     _animationController.forward();
   }
 
+  void _onInitialFilterChanged() {
+    final filter = AppNavigation.instance.initialFilter.value;
+    if (filter != null) {
+      _controller.setCategory(filter);
+      AppNavigation.instance.initialFilter.value = null; // consume
+    }
+  }
+
   void _onStateChanged() {
     setState(() {});
   }
 
   @override
   void dispose() {
+    AppNavigation.instance.initialFilter.removeListener(_onInitialFilterChanged);
     _controller.removeListener(_onStateChanged);
     _controller.dispose();
     _animationController.dispose();
@@ -58,54 +78,70 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Compendio',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.highlight,
+        child: const Icon(Icons.add, color: Colors.white),
+        onPressed: () async {
+          final result = await showDialog<CompendiumItem>(
+            context: context,
+            builder: (ctx) => const AddCustomItemDialog(),
+          );
+          if (result != null) {
+            _controller.addCustomItem(result);
+          }
+        },
+      ),
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Compendio',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Cerca conoscenze e antichi segreti.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Cerca conoscenze e antichi segreti.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 24),
-                
-                CompendiumSearchBar(
-                  onChanged: (val) => _controller.setQuery(val),
-                ),
-                const SizedBox(height: 20),
-                
-                CompendiumCategoryFilters(
-                  selectedCategory: _controller.filter.selectedCategory,
-                  showOnlyFavorites: _controller.filter.showOnlyFavorites,
-                  onCategoryTapped: _controller.toggleCategory,
-                  onFavoritesTapped: _controller.toggleFavoritesOnly,
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
+                  
+                  CompendiumSearchBar(
+                    onChanged: (val) => _controller.setQuery(val),
+                  ),
+                  const SizedBox(height: 20),
+                  
+                  CompendiumCategoryFilters(
+                    selectedCategory: _controller.filter.selectedCategory,
+                    showOnlyFavorites: _controller.filter.showOnlyFavorites,
+                    onCategoryTapped: _controller.toggleCategory,
+                    onFavoritesTapped: _controller.toggleFavoritesOnly,
+                  ),
+                  const SizedBox(height: 24),
 
-                Expanded(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: _buildBody(),
+                  Expanded(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: _buildBody(),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
