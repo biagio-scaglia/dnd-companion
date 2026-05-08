@@ -41,7 +41,7 @@ class SettingsModel {
       'hapticFeedback': hapticFeedback,
       'confirmDestructiveActions': confirmDestructiveActions,
       'compactMode': compactMode,
-    );
+    };
   }
 
   factory SettingsModel.fromJson(Map<String, dynamic> json) {
