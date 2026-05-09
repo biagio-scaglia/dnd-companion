@@ -52,7 +52,8 @@ class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: GoogleFonts.cinzel(
+        titleTextStyle: const TextStyle(
+          fontFamily: 'Cinzel',
           color: AppColors.textPrimary,
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -101,7 +102,7 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
           foregroundColor: AppColors.background,
-          textStyle: GoogleFonts.cinzel(fontWeight: FontWeight.bold, fontSize: 13),
+          textStyle: const TextStyle(fontFamily: 'Cinzel', fontWeight: FontWeight.bold, fontSize: 13),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.mBorderRadius),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           elevation: 0,
@@ -112,7 +113,7 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: primaryColor,
-          textStyle: GoogleFonts.cinzel(fontWeight: FontWeight.bold, fontSize: 13),
+          textStyle: const TextStyle(fontFamily: 'Cinzel', fontWeight: FontWeight.bold, fontSize: 13),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.mBorderRadius),
         ),
       ),
@@ -136,14 +137,16 @@ class AppTheme {
         }),
         labelTextStyle: MaterialStateProperty.resolveWith((states) {
           if (states.contains(MaterialState.selected)) {
-            return GoogleFonts.cinzel(
+            return TextStyle(
+              fontFamily: 'Cinzel',
               color: primaryColor,
               fontSize: 10,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.5,
             );
           }
-          return GoogleFonts.cinzel(
+          return const TextStyle(
+            fontFamily: 'Cinzel',
             color: AppColors.textSecondary,
             fontSize: 10,
             fontWeight: FontWeight.w500,
@@ -160,12 +163,14 @@ class AppTheme {
         indicatorColor: primaryColor.withOpacity(0.15),
         selectedIconTheme: IconThemeData(color: primaryColor, size: 24),
         unselectedIconTheme: const IconThemeData(color: AppColors.textSecondary, size: 22),
-        selectedLabelTextStyle: GoogleFonts.cinzel(
+        selectedLabelTextStyle: TextStyle(
+          fontFamily: 'Cinzel',
           color: primaryColor,
           fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
-        unselectedLabelTextStyle: GoogleFonts.cinzel(
+        unselectedLabelTextStyle: const TextStyle(
+          fontFamily: 'Cinzel',
           color: AppColors.textSecondary,
           fontSize: 12,
         ),
@@ -203,7 +208,8 @@ class AppTheme {
           borderRadius: AppRadius.lBorderRadius,
           side: const BorderSide(color: AppColors.surfaceSecondary),
         ),
-        titleTextStyle: GoogleFonts.cinzel(
+        titleTextStyle: const TextStyle(
+          fontFamily: 'Cinzel',
           color: AppColors.textPrimary,
           fontSize: 18,
           fontWeight: FontWeight.bold,

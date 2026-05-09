@@ -61,7 +61,8 @@ class DndButton extends StatelessWidget {
         side = null;
     }
 
-    final textStyle = GoogleFonts.cinzel(
+    final textStyle = TextStyle(
+      fontFamily: 'Cinzel',
       fontWeight: FontWeight.bold,
       fontSize: isSmall ? 11 : 13,
       letterSpacing: 0.5,

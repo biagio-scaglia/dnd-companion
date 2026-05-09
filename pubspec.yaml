@@ -40,7 +40,6 @@ dependencies:
   uuid: ^4.5.3
   file_picker: ^11.0.2
   provider: ^6.1.5+1
-  google_fonts: ^6.2.1
   shared_preferences: ^2.2.2
   flame: ^1.17.0
   permission_handler: ^12.0.1
@@ -68,7 +67,19 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
+  fonts:
+    - family: Cinzel
+      fonts:
+        - asset: lib/assets/font/Cinzel-Regular.otf
+        - asset: lib/assets/font/Cinzel-Bold.otf
+          weight: 700
+    - family: Almendra
+      fonts:
+        - asset: lib/assets/font/Almendra-Regular.otf
+        - asset: lib/assets/font/Almendra-Bold.otf
+          weight: 700
+        - asset: lib/assets/font/Almendra-Italic.otf
+          style: italic
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
