@@ -7,7 +7,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_radius.dart';
 import '../../../presentation/widgets/dnd_card.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
-import '../../../presentation/widgets/dnd_section_title.dart';
+import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_empty_state.dart';
 import '../../../presentation/widgets/dnd_text_field.dart';
 import 'notes_controller.dart';
@@ -51,7 +51,7 @@ class NotesView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             children: [
               // ── Personaggi ───────────────────────────────────────────
-              DndSectionTitle(
+              DndSectionHeader(
                 title: 'I Tuoi Personaggi',
                 accentColor: AppColors.highlight,
                 trailing: IconButton(
@@ -82,7 +82,7 @@ class NotesView extends StatelessWidget {
               const SizedBox(height: AppSpacing.xl),
 
               // ── Sessioni ─────────────────────────────────────────────
-              DndSectionTitle(
+              DndSectionHeader(
                 title: 'Sessioni',
                 accentColor: AppColors.magicAccent,
                 trailing: IconButton(
@@ -116,7 +116,7 @@ class NotesView extends StatelessWidget {
               const SizedBox(height: AppSpacing.xl),
 
               // ── Appunti ──────────────────────────────────────────────
-              DndSectionTitle(
+              DndSectionHeader(
                 title: 'Appunti Recenti',
                 accentColor: AppColors.naturalAccent,
               ),
@@ -143,20 +143,15 @@ class NotesView extends StatelessWidget {
               const SizedBox(height: AppSpacing.xl),
 
               // ── Allegati ─────────────────────────────────────────────
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'ALLEGATI',
-                    style: AppTypography.sectionLabel(color: AppColors.textSecondary),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.attach_file_rounded, color: AppColors.textSecondary, size: 20),
-                    onPressed: () => notesController.pickAttachment(),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-                ],
+              DndSectionHeader(
+                title: 'Allegati',
+                accentColor: AppColors.textSecondary,
+                trailing: IconButton(
+                  icon: const Icon(Icons.attach_file_rounded, color: AppColors.textSecondary, size: 20),
+                  onPressed: () => notesController.pickAttachment(),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
               ),
               const SizedBox(height: AppSpacing.m),
 
