@@ -19,8 +19,18 @@ class MapEditorController extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   // Stato Editor
-  GameMap? _currentMap;
-  GameMap? get currentMap => _currentMap;
+  final List<GameMap> _openMaps = [];
+  List<GameMap> get openMaps => _openMaps;
+
+  String? _activeMapId;
+  String? get activeMapId => _activeMapId;
+
+  GameMap? get currentMap {
+    if (_activeMapId == null || _openMaps.isEmpty) return null;
+    final index = _openMaps.indexWhere((m) => m.id == _activeMapId);
+    if (index != -1) return _openMaps[index];
+    return _openMaps.first;
+  }
 
   MapEditorTool _selectedTool = MapEditorTool.pan;
   MapEditorTool get selectedTool => _selectedTool;
@@ -36,10 +46,23 @@ class MapEditorController extends ChangeNotifier {
 
   // Caricamento mappe
   Future<void> loadMap(String mapId) async {
+    // Se è già aperta, la rendiamo solo attiva
+    final index = _openMaps.indexWhere((m) => m.id == mapId);
+    if (index != -1) {
+      _activeMapId = mapId;
+      _activeLayerId = _openMaps[index].layers.isNotEmpty ? _openMaps[index].layers.first.id : null;
+      notifyListeners();
+      return;
+    }
+
     _setLoading(true);
-    _currentMap = await _repository.getMapById(mapId);
-    if (_currentMap != null && _currentMap!.layers.isNotEmpty) {
-      _activeLayerId = _currentMap!.layers.first.id;
+    final map = await _repository.getMapById(mapId);
+    if (map != null) {
+      _openMaps.add(map);
+      _activeMapId = map.id;
+      if (map.layers.isNotEmpty) {
+        _activeLayerId = map.layers.first.id;
+      }
     }
     _setLoading(false);
   }
@@ -57,16 +80,42 @@ class MapEditorController extends ChangeNotifier {
       layers: [baseLayer],
     );
     
-    _currentMap = await _repository.saveMap(newMap);
+    final savedMap = await _repository.saveMap(newMap);
+    _openMaps.add(savedMap);
+    _activeMapId = savedMap.id;
     _activeLayerId = baseLayer.id;
     
     _setLoading(false);
   }
 
+  void setActiveMap(String mapId) {
+    _activeMapId = mapId;
+    final map = currentMap;
+    if (map != null && map.layers.isNotEmpty) {
+      _activeLayerId = map.layers.first.id;
+    }
+    notifyListeners();
+  }
+
+  void closeMap(String mapId) {
+    _openMaps.removeWhere((m) => m.id == mapId);
+    if (_activeMapId == mapId) {
+      _activeMapId = _openMaps.isNotEmpty ? _openMaps.first.id : null;
+      final map = currentMap;
+      _activeLayerId = (map != null && map.layers.isNotEmpty) ? map.layers.first.id : null;
+    }
+    notifyListeners();
+  }
+
   Future<void> saveCurrentMap() async {
-    if (_currentMap == null) return;
+    final map = currentMap;
+    if (map == null) return;
     _setLoading(true);
-    _currentMap = await _repository.saveMap(_currentMap!);
+    final savedMap = await _repository.saveMap(map);
+    final index = _openMaps.indexWhere((m) => m.id == map.id);
+    if (index != -1) {
+      _openMaps[index] = savedMap;
+    }
     _setLoading(false);
   }
 
@@ -94,13 +143,14 @@ class MapEditorController extends ChangeNotifier {
 
   // Interazioni dal Canvas (Flame)
   void handleTileInteraction(int x, int y) {
-    if (_currentMap == null || _activeLayerId == null) return;
+    final map = currentMap;
+    if (map == null || _activeLayerId == null) return;
     if (_selectedTool == MapEditorTool.pan) return; // Pan gestito dalla camera Flame
 
-    final layerIndex = _currentMap!.layers.indexWhere((l) => l.id == _activeLayerId);
+    final layerIndex = map.layers.indexWhere((l) => l.id == _activeLayerId);
     if (layerIndex == -1) return;
 
-    final layer = _currentMap!.layers[layerIndex];
+    final layer = map.layers[layerIndex];
     if (!layer.isVisible) return; // Non modifichiamo layer invisibili
 
     // Troviamo se c'è già un elemento in questa cella nel layer corrente
@@ -141,40 +191,44 @@ class MapEditorController extends ChangeNotifier {
   }
 
   void renameLayer(String layerId, String newName) {
-    if (_currentMap == null) return;
-    final index = _currentMap!.layers.indexWhere((l) => l.id == layerId);
+    final map = currentMap;
+    if (map == null) return;
+    final index = map.layers.indexWhere((l) => l.id == layerId);
     if (index != -1) {
-      _currentMap!.layers[index] = _currentMap!.layers[index].copyWith(name: newName);
+      map.layers[index] = map.layers[index].copyWith(name: newName);
       notifyListeners();
     }
   }
 
   void addLayer(String name) {
-    if (_currentMap == null) return;
+    final map = currentMap;
+    if (map == null) return;
     final newLayer = MapLayer(id: _uuid.v4(), name: name);
-    _currentMap!.layers.add(newLayer);
+    map.layers.add(newLayer);
     notifyListeners();
   }
 
   void deleteLayer(String layerId) {
-    if (_currentMap == null) return;
-    if (_currentMap!.layers.length <= 1) return; // Non eliminare l'ultimo
+    final map = currentMap;
+    if (map == null) return;
+    if (map.layers.length <= 1) return; // Non eliminare l'ultimo
     
-    _currentMap!.layers.removeWhere((l) => l.id == layerId);
+    map.layers.removeWhere((l) => l.id == layerId);
     
     // Se il livello attivo era quello eliminato, imposta il primo come attivo
     if (_activeLayerId == layerId) {
-      _activeLayerId = _currentMap!.layers.first.id;
+      _activeLayerId = map.layers.first.id;
     }
     notifyListeners();
   }
 
   void toggleLayerVisibility(String layerId) {
-    if (_currentMap == null) return;
-    final index = _currentMap!.layers.indexWhere((l) => l.id == layerId);
+    final map = currentMap;
+    if (map == null) return;
+    final index = map.layers.indexWhere((l) => l.id == layerId);
     if (index != -1) {
-      final layer = _currentMap!.layers[index];
-      _currentMap!.layers[index] = layer.copyWith(isVisible: !layer.isVisible);
+      final layer = map.layers[index];
+      map.layers[index] = layer.copyWith(isVisible: !layer.isVisible);
       notifyListeners();
     }
   }

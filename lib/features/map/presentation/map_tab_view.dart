@@ -108,6 +108,13 @@ class _MapTabViewState extends State<MapTabView> {
         title: const Text('Editor Mappa'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent),
+            onPressed: () {
+              context.read<MapEditorController>().createNewMap('Nuova Mappa', 30, 30);
+            },
+            tooltip: 'Nuova Mappa',
+          ),
+          IconButton(
             icon: const Icon(Icons.photo_camera_rounded, color: AppColors.magicAccent),
             onPressed: _captureAndSaveImage,
             tooltip: 'Esporta come immagine',
@@ -122,11 +129,94 @@ class _MapTabViewState extends State<MapTabView> {
             },
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(40),
+          child: Consumer<MapEditorController>(
+            builder: (context, controller, child) {
+              return Container(
+                height: 40,
+                color: AppColors.surface,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: controller.openMaps.length,
+                  itemBuilder: (context, index) {
+                    final map = controller.openMaps[index];
+                    final isSelected = map.id == controller.activeMapId;
+                    return InkWell(
+                      onTap: () => controller.setActiveMap(map.id),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: isSelected ? AppColors.surfaceSecondary : Colors.transparent,
+                          border: Border(
+                            bottom: BorderSide(
+                              color: isSelected ? AppColors.magicAccent : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              map.name,
+                              style: TextStyle(
+                                color: isSelected ? AppColors.textPrimary : AppColors.textSecondary,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                fontSize: 13,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: () => controller.closeMap(map.id),
+                              child: Icon(
+                                Icons.close_rounded,
+                                size: 14,
+                                color: isSelected ? AppColors.textPrimary : AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ),
       ),
       body: Consumer<MapEditorController>(
         builder: (context, controller, child) {
           if (controller.isLoading) {
             return const DndLoadingIndicator(message: 'Caricamento editor...');
+          }
+
+          if (controller.openMaps.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.map_outlined, size: 64, color: AppColors.textSecondary),
+                  const SizedBox(height: 16),
+                  const Text('Nessuna mappa aperta', style: TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  const Text('Tocca il + in alto o il pulsante qui sotto per crearne una.', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () => controller.createNewMap('Nuova Mappa', 30, 30),
+                    icon: const Icon(Icons.add_rounded),
+                    label: const Text('Crea Nuova Mappa'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.magicAccent,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
 
           if (controller.currentMap != null) {
