@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/models/compendium_item.dart';
+import '../../../../presentation/widgets/dnd_accent_pill.dart';
 
 class CompendiumCategoryFilters extends StatelessWidget {
   final CompendiumItemType? selectedCategory;
@@ -23,81 +24,43 @@ class CompendiumCategoryFilters extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       child: Row(
         children: [
-          _buildChip(
+          DndAccentPill(
             label: 'Preferiti',
             icon: showOnlyFavorites ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
-            isSelected: showOnlyFavorites,
+            isFilled: showOnlyFavorites,
             onTap: onFavoritesTapped,
-            activeColor: AppColors.danger,
+            accentColor: AppColors.danger,
           ),
           const SizedBox(width: 8),
           Container(width: 1, height: 24, color: AppColors.surfaceSecondary),
           const SizedBox(width: 8),
-          _buildChip(
+          DndAccentPill(
             label: 'Mostri',
             icon: Icons.pets_rounded,
-            isSelected: selectedCategory == CompendiumItemType.monster,
+            isFilled: selectedCategory == CompendiumItemType.monster,
             onTap: () => onCategoryTapped(CompendiumItemType.monster),
+            accentColor: selectedCategory == CompendiumItemType.monster ? AppColors.magicAccent : AppColors.highlight,
           ),
           const SizedBox(width: 8),
-          _buildChip(
+          DndAccentPill(
             label: 'Incantesimi',
             icon: Icons.auto_awesome_rounded,
-            isSelected: selectedCategory == CompendiumItemType.spell,
+            isFilled: selectedCategory == CompendiumItemType.spell,
             onTap: () => onCategoryTapped(CompendiumItemType.spell),
+            accentColor: selectedCategory == CompendiumItemType.spell ? AppColors.magicAccent : AppColors.highlight,
           ),
           const SizedBox(width: 8),
-          _buildChip(
+          DndAccentPill(
             label: 'Oggetti',
             icon: Icons.shield_rounded,
-            isSelected: selectedCategory == CompendiumItemType.item,
+            isFilled: selectedCategory == CompendiumItemType.item,
             onTap: () => onCategoryTapped(CompendiumItemType.item),
+            accentColor: selectedCategory == CompendiumItemType.item ? AppColors.naturalAccent : AppColors.highlight,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildChip({
-    required String label,
-    required IconData icon,
-    required bool isSelected,
-    required VoidCallback onTap,
-    Color activeColor = AppColors.highlight,
-  }) {
-    final bgColor = isSelected ? activeColor.withOpacity(0.15) : AppColors.surface;
-    final textColor = isSelected ? activeColor : AppColors.textSecondary;
-    final borderColor = isSelected ? activeColor.withOpacity(0.5) : AppColors.surfaceSecondary;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Ink(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: borderColor),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 16, color: textColor),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: TextStyle(
-                  color: textColor,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                  fontSize: 13,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

@@ -9,6 +9,7 @@ class DndAccentPill extends StatelessWidget {
   final IconData? icon;
   final Color accentColor;
   final bool isFilled;
+  final VoidCallback? onTap;
 
   const DndAccentPill({
     super.key,
@@ -16,11 +17,12 @@ class DndAccentPill extends StatelessWidget {
     this.icon,
     this.accentColor = AppColors.highlight,
     this.isFilled = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final Widget pill = Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: isFilled ? accentColor.withValues(alpha: 0.15) : Colors.transparent,
@@ -55,5 +57,14 @@ class DndAccentPill extends StatelessWidget {
         ],
       ),
     );
+
+    if (onTap != null) {
+      return GestureDetector(
+        onTap: onTap,
+        child: pill,
+      );
+    }
+
+    return pill;
   }
 }

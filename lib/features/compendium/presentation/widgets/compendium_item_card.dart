@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/theme/app_radius.dart';
-import '../../../../presentation/widgets/dnd_card.dart';
+import '../../../../presentation/widgets/dnd_fantasy_card.dart';
+import '../../../../presentation/widgets/dnd_mystic_icon_circle.dart';
+import '../../../../presentation/widgets/dnd_accent_pill.dart';
 import '../../domain/models/compendium_item.dart';
 
 class CompendiumItemCard extends StatelessWidget {
@@ -39,7 +41,9 @@ class CompendiumItemCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: DndCard(
+      child: DndFantasyCard(
+        showGlow: item.isFavorite,
+        glowColor: AppColors.danger,
         padding: const EdgeInsets.all(16),
         onTap: onTap,
         child: Column(
@@ -48,15 +52,11 @@ class CompendiumItemCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: typeColor.withOpacity(0.12),
-                    borderRadius: AppRadius.mBorderRadius,
-                    border: Border.all(color: typeColor.withOpacity(0.2)),
-                  ),
-                  child: Icon(typeIcon, color: typeColor, size: 22),
+                DndMysticIconCircle(
+                  icon: typeIcon,
+                  accentColor: typeColor,
+                  size: 44,
+                  showGlow: false,
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -65,13 +65,11 @@ class CompendiumItemCard extends StatelessWidget {
                     children: [
                       Text(item.name, style: AppTypography.h3),
                       if (item.metaInfo != null) ...[
-                        const SizedBox(height: 3),
-                        Text(
-                          item.metaInfo!,
-                          style: AppTypography.caption.copyWith(
-                            color: typeColor.withOpacity(0.9),
-                            fontWeight: FontWeight.w600,
-                          ),
+                        const SizedBox(height: 6),
+                        DndAccentPill(
+                          label: item.metaInfo!,
+                          accentColor: typeColor,
+                          isFilled: true,
                         ),
                       ],
                     ],

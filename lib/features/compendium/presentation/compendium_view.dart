@@ -11,6 +11,7 @@ import 'compendium_detail_view.dart';
 import 'widgets/add_custom_item_dialog.dart';
 import '../domain/models/compendium_item.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
+import '../../../presentation/widgets/dnd_section_header.dart';
 
 class CompendiumView extends StatefulWidget {
   const CompendiumView({super.key});
@@ -104,23 +105,12 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Compendio',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
+                  const DndSectionHeader(
+                    title: 'Compendio',
+                    subtitle: 'Cerca conoscenze e antichi segreti',
+                    accentColor: AppColors.magicAccent,
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Cerca conoscenze e antichi segreti.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                   
                   CompendiumSearchBar(
                     onChanged: (val) => _controller.setQuery(val),
