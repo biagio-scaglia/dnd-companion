@@ -49,12 +49,18 @@ class _MapTabViewState extends State<MapTabView> {
     try {
       // 1. Richiedi permessi (su mobile)
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-        final status = await Permission.storage.request();
-        if (!status.isGranted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Permesso di archiviazione negato!')),
-          );
-          return;
+        final storageStatus = await Permission.storage.status;
+        final photosStatus = await Permission.photos.status;
+        
+        if (!storageStatus.isGranted && !photosStatus.isGranted) {
+          final result = await [Permission.storage, Permission.photos].request();
+          if (result[Permission.storage] != PermissionStatus.granted && 
+              result[Permission.photos] != PermissionStatus.granted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Permesso di archiviazione negato!')),
+            );
+            return;
+          }
         }
       }
 

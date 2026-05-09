@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:permission_handler/permission_handler.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/compendium/presentation/compendium_view.dart';
 import '../../features/notes/presentation/notes_view.dart';
@@ -21,6 +24,16 @@ class _HomeShellState extends State<HomeShell> {
   void initState() {
     super.initState();
     AppNavigation.instance.currentTab.addListener(_onTabChanged);
+    _requestPermissions();
+  }
+
+  Future<void> _requestPermissions() async {
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+      await [
+        Permission.storage,
+        Permission.photos,
+      ].request();
+    }
   }
 
   void _onTabChanged() {
