@@ -24,41 +24,48 @@ class TilePalette extends StatelessWidget {
             style: AppTypography.label.copyWith(color: AppColors.highlight),
           ),
           const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: MapTileType.values.map((type) {
-              final isSelected = controller.selectedTileType == type;
-              return GestureDetector(
-                onTap: () {
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceSecondary,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.surfaceSecondary),
+            ),
+            child: DropdownButton<MapTileType>(
+              value: controller.selectedTileType == MapTileType.emoji ? null : controller.selectedTileType,
+              dropdownColor: AppColors.surface,
+              isExpanded: true,
+              underline: const SizedBox(),
+              hint: Text('Seleziona Tile', style: AppTypography.bodySmall),
+              items: MapTileType.values.where((e) => e != MapTileType.emoji).map((type) {
+                return DropdownMenuItem<MapTileType>(
+                  value: type,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: _getColorForType(type),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: type.isSolid 
+                          ? Center(child: Container(width: 4, height: 4, color: Colors.black45))
+                          : null,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(type.name.toUpperCase(), style: AppTypography.bodySmall),
+                    ],
+                  ),
+                );
+              }).toList(),
+              onChanged: (type) {
+                if (type != null) {
                   controller.selectTool(MapEditorTool.brush);
                   controller.selectTileType(type);
-                },
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: _getColorForType(type),
-                    border: Border.all(
-                      color: isSelected ? AppColors.highlight : AppColors.surfaceSecondary,
-                      width: isSelected ? 3 : 1,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: AppColors.highlight.withValues(alpha: 0.3),
-                              blurRadius: 8,
-                            )
-                          ]
-                        : null,
-                  ),
-                  child: type.isSolid 
-                    ? Center(child: Container(width: 8, height: 8, color: Colors.black45))
-                    : null,
-                ),
-              );
-            }).toList(),
+                }
+              },
+            ),
           ),
           const SizedBox(height: 12),
           const Divider(color: AppColors.surfaceSecondary),
@@ -68,37 +75,39 @@ class TilePalette extends StatelessWidget {
             style: AppTypography.label.copyWith(color: AppColors.magicAccent),
           ),
           const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              '🧱', '🪵', '💧', '🔥', '🚪', '📦', '🌲', '🪨', '🏰', '👹', '🧙', '🐉', '💀', '💰'
-            ].map((emoji) {
-              final isSelected = controller.selectedTileType == MapTileType.emoji && controller.selectedEmoji == emoji;
-              return GestureDetector(
-                onTap: () {
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceSecondary,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.surfaceSecondary),
+            ),
+            child: DropdownButton<String>(
+              value: controller.selectedTileType == MapTileType.emoji ? controller.selectedEmoji : null,
+              dropdownColor: AppColors.surface,
+              isExpanded: true,
+              underline: const SizedBox(),
+              hint: Text('Seleziona Emoji', style: AppTypography.bodySmall),
+              items: [
+                '🧱', '🪵', '💧', '🔥', '🚪', '📦', '🌲', '🪨', '🏰', '👹', '🧙', '🐉', '💀', '💰'
+              ].map((emoji) {
+                return DropdownMenuItem<String>(
+                  value: emoji,
+                  child: Row(
+                    children: [
+                      Text(emoji, style: const TextStyle(fontSize: 20)),
+                      const SizedBox(width: 12),
+                      Text('Emoji', style: AppTypography.bodySmall),
+                    ],
+                  ),
+                );
+              }).toList(),
+              onChanged: (emoji) {
+                if (emoji != null) {
                   controller.selectEmoji(emoji);
-                },
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.magicAccent.withValues(alpha: 0.15) : AppColors.surfaceSecondary,
-                    border: Border.all(
-                      color: isSelected ? AppColors.magicAccent : Colors.transparent,
-                      width: isSelected ? 2 : 1,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      emoji,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
+                }
+              },
+            ),
           ),
         ],
       ),

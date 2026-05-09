@@ -192,55 +192,6 @@ class NotesView extends StatelessWidget {
                     ),
                   ),
                 )),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // ── Allegati ─────────────────────────────────────────────
-              DndSectionTitle(
-                title: 'Allegati',
-                accentColor: AppColors.textSecondary,
-                trailing: IconButton(
-                  icon: const Icon(Icons.attach_file_rounded, color: AppColors.textSecondary, size: 20),
-                  onPressed: () => _showAddAttachmentDialog(context, notesController),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.m),
-
-              if (notesController.attachments.isEmpty)
-                DndEmptyState(
-                  icon: Icons.attach_file_outlined,
-                  message: 'Nessun allegato',
-                  accentColor: AppColors.textSecondary,
-                )
-              else
-                ...notesController.attachments.map((a) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: DndCard(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.insert_drive_file_rounded, color: AppColors.naturalAccent, size: 22),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(a.fileName, style: AppTypography.body.copyWith(fontWeight: FontWeight.bold)),
-                              Text(a.type.toUpperCase(), style: AppTypography.caption),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.open_in_new_rounded, color: AppColors.textSecondary, size: 18),
-                          onPressed: () => openFile(a.filePath),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-
               const SizedBox(height: AppSpacing.xxl),
             ],
           );
