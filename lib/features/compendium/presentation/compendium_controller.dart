@@ -7,6 +7,11 @@ class CompendiumController extends ChangeNotifier {
   final CompendiumRepository repository;
 
   CompendiumController({required this.repository}) {
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await repository.syncWithApi();
     _fetchItems();
   }
 
@@ -72,8 +77,7 @@ class CompendiumController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Sincronizza in background, poi recupera dal DB
-      await repository.syncWithApi();
+      // Recupera dal DB (la sincronizzazione avviene solo all'avvio)
       _items = await repository.fetchItems(_filter);
     } catch (e) {
       print('Errore fetch items da controller: $e');

@@ -248,22 +248,25 @@ class NotesView extends StatelessWidget {
                         ),
                         if (a.type == 'image') ...[
                           const SizedBox(height: 12),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              File(a.filePath),
-                              height: 150,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  height: 150,
-                                  color: AppColors.surfaceSecondary,
-                                  child: const Center(
-                                    child: Icon(Icons.broken_image_rounded, color: AppColors.textSecondary),
-                                  ),
-                                );
-                              },
+                          GestureDetector(
+                            onTap: () => _showFullscreenImage(context, a.filePath),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.file(
+                                File(a.filePath),
+                                height: 150,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    height: 150,
+                                    color: AppColors.surfaceSecondary,
+                                    child: const Center(
+                                      child: Icon(Icons.broken_image_rounded, color: AppColors.textSecondary),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -364,6 +367,30 @@ class NotesView extends StatelessWidget {
             child: Text('Aggiungi', style: TextStyle(color: AppColors.magicAccent)),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showFullscreenImage(BuildContext context, String path) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog.fullscreen(
+        backgroundColor: Colors.black,
+        child: Stack(
+          children: [
+            Center(
+              child: Image.file(File(path)),
+            ),
+            Positioned(
+              top: 16,
+              right: 16,
+              child: IconButton(
+                icon: const Icon(Icons.close_rounded, color: Colors.white, size: 30),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
