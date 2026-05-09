@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/compendium/presentation/compendium_view.dart';
 import '../../features/notes/presentation/notes_view.dart';
+import '../../features/map/presentation/map_tab_view.dart';
 import '../../features/settings/presentation/settings_view.dart';
 import '../../core/utils/app_navigation.dart';
 import 'home_view.dart';
@@ -38,6 +39,7 @@ class _HomeShellState extends State<HomeShell> {
     HomeView(),
     CompendiumView(),
     NotesView(),
+    MapTabView(),
     SettingsView(),
   ];
 
@@ -79,6 +81,11 @@ class _HomeShellState extends State<HomeShell> {
                   icon: Icon(Icons.settings_outlined),
                   selectedIcon: Icon(Icons.settings_rounded),
                   label: Text('Impostazioni'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.map_outlined),
+                  selectedIcon: Icon(Icons.map_rounded),
+                  label: Text('Mappa'),
                 ),
               ],
             ),
@@ -126,6 +133,11 @@ class _HomeShellState extends State<HomeShell> {
                   icon: Icon(Icons.settings_outlined),
                   selectedIcon: Icon(Icons.settings_rounded),
                   label: 'Impostazioni',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.map_outlined),
+                  selectedIcon: Icon(Icons.map_rounded),
+                  label: 'Mappa',
                 ),
               ],
             )

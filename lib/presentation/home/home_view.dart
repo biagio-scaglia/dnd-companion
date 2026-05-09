@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../features/notes/presentation/notes_controller.dart';
+import '../../features/map/presentation/controllers/map_editor_controller.dart';
 import '../widgets/dnd_card.dart';
 import '../widgets/dnd_button.dart';
 import '../widgets/dnd_section_title.dart';
@@ -175,6 +176,54 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   ],
                 ),
               ),
+              const SizedBox(height: AppSpacing.xl),
+              
+              // ── Mappe ────────────────────────────────────────
+              Consumer<MapEditorController>(
+                builder: (context, mapController, child) {
+                  final mapName = mapController.currentMap?.name ?? 'Nessuna mappa';
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DndSectionTitle(
+                        title: 'Mappe',
+                        accentColor: AppColors.magicAccent,
+                      ),
+                      const SizedBox(height: AppSpacing.m),
+                      DndCard(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: AppColors.magicAccent.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(Icons.map_rounded, color: AppColors.magicAccent, size: 24),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'ULTIMA MAPPA ATTIVA',
+                                    style: AppTypography.sectionLabel(color: AppColors.magicAccent),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(mapName, style: AppTypography.h3),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+
               const SizedBox(height: AppSpacing.xl),
 
               // ── Dal Compendio ────────────────────────────────────────
