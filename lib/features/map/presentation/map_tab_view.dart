@@ -7,7 +7,7 @@ import 'dart:ui' as ui;
 import 'dart:io' show Platform;
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
 import 'controllers/map_editor_controller.dart';
@@ -69,8 +69,8 @@ class _MapTabViewState extends State<MapTabView> {
           const SnackBar(content: Text('Salvataggio su Web non implementato direttamente. Usa screenshot!')),
         );
       } else {
-        // Su mobile salviamo nella galleria usando image_gallery_saver
-        final result = await ImageGallerySaver.saveImage(
+        // Su mobile salviamo nella galleria usando image_gallery_saver_plus
+        final result = await ImageGallerySaverPlus.saveImage(
           pngBytes,
           quality: 100,
           name: "mappa_${DateTime.now().millisecondsSinceEpoch}",
