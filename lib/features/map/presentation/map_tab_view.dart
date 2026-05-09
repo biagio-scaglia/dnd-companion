@@ -212,16 +212,16 @@ class _MapTabViewState extends State<MapTabView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: const [
             ToolBar(),
             SizedBox(height: 16),
-            LayerPanel(),
+            SizedBox(width: 250, child: LayerPanel()),
           ],
         ),
-        TilePalette(),
+        const SizedBox(width: 250, child: TilePalette()),
       ],
     );
   }
