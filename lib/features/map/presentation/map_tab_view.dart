@@ -26,6 +26,7 @@ class MapTabView extends StatefulWidget {
 class _MapTabViewState extends State<MapTabView> {
   late MapEditorGame _game;
   final GlobalKey _screenshotKey = GlobalKey();
+  double _baseScale = 1.0;
 
   @override
   void initState() {
@@ -141,17 +142,24 @@ class _MapTabViewState extends State<MapTabView> {
                             d.localPosition.dx,
                             d.localPosition.dy,
                           ),
-                  onPanUpdate: (d) {
+                  onScaleStart: (details) {
+                    _baseScale = _game.mapCamera.viewfinder.zoom;
+                  },
+                  onScaleUpdate: (details) {
                     if (isPanTool) {
-                      final zoom = _game.mapCamera.viewfinder.zoom;
+                      // Gestione Zoom
+                      if (details.scale != 1.0) {
+                        _game.mapCamera.viewfinder.zoom = (_baseScale * details.scale).clamp(0.5, 3.0);
+                      }
+                      // Gestione Pan
                       _game.mapCamera.viewfinder.position -= Vector2(
-                        d.delta.dx / zoom,
-                        d.delta.dy / zoom,
+                        details.focalPointDelta.dx / _game.mapCamera.viewfinder.zoom,
+                        details.focalPointDelta.dy / _game.mapCamera.viewfinder.zoom,
                       );
                     } else {
                       _handlePointerAt(
-                        d.localPosition.dx,
-                        d.localPosition.dy,
+                        details.localFocalPoint.dx,
+                        details.localFocalPoint.dy,
                       );
                     }
                   },
