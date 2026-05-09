@@ -15,6 +15,7 @@ import '../game/map_editor_game.dart';
 import 'widgets/layer_panel.dart';
 import 'widgets/tile_palette.dart';
 import 'widgets/tool_bar.dart';
+import '../domain/models/map_tile_type.dart';
 
 class MapTabView extends StatefulWidget {
   const MapTabView({super.key});
@@ -27,6 +28,7 @@ class _MapTabViewState extends State<MapTabView> {
   late MapEditorGame _game;
   final GlobalKey _screenshotKey = GlobalKey();
   double _baseScale = 1.0;
+  bool _isUIVisible = true;
 
   @override
   void initState() {
@@ -107,6 +109,15 @@ class _MapTabViewState extends State<MapTabView> {
       appBar: AppBar(
         title: const Text('Editor Mappa'),
         actions: [
+          IconButton(
+            icon: Icon(_isUIVisible ? Icons.visibility_off_rounded : Icons.visibility_rounded, color: AppColors.magicAccent),
+            onPressed: () {
+              setState(() {
+                _isUIVisible = !_isUIVisible;
+              });
+            },
+            tooltip: _isUIVisible ? 'Nascondi UI' : 'Mostra UI',
+          ),
           IconButton(
             icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent),
             onPressed: () {
@@ -267,7 +278,9 @@ class _MapTabViewState extends State<MapTabView> {
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: isMobile ? _buildMobileUI() : _buildDesktopUI(),
+                  child: _isUIVisible 
+                      ? (isMobile ? _buildMobileUI() : _buildDesktopUI())
+                      : _buildMiniFloatingBar(),
                 ),
               ),
             ],
@@ -316,5 +329,103 @@ class _MapTabViewState extends State<MapTabView> {
         const SizedBox(width: 250, child: TilePalette()),
       ],
     );
+  }
+
+  Widget _buildMiniFloatingBar() {
+    final controller = context.watch<MapEditorController>();
+    
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.surfaceSecondary, width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Strumenti rapidi: Pennello e Gomma
+            IconButton(
+              icon: const Icon(Icons.brush_rounded, size: 20),
+              color: controller.selectedTool == MapEditorTool.brush ? AppColors.magicAccent : AppColors.textSecondary,
+              onPressed: () => controller.selectTool(MapEditorTool.brush),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              tooltip: 'Pennello',
+            ),
+            const SizedBox(width: 12),
+            IconButton(
+              icon: const Icon(Icons.backspace_rounded, size: 20),
+              color: controller.selectedTool == MapEditorTool.eraser ? AppColors.magicAccent : AppColors.textSecondary,
+              onPressed: () => controller.selectTool(MapEditorTool.eraser),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              tooltip: 'Gomma',
+            ),
+            const SizedBox(width: 12),
+            // Preview Tile corrente
+            if (controller.selectedTileType == MapTileType.emoji)
+              Text(
+                controller.selectedEmoji,
+                style: const TextStyle(fontSize: 18),
+              )
+            else
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: _getColorForType(controller.selectedTileType),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            const SizedBox(width: 12),
+            const SizedBox(height: 20, child: VerticalDivider(color: AppColors.surfaceSecondary, width: 16)),
+            // Pulsante per ripristinare la UI
+            IconButton(
+              icon: const Icon(Icons.fullscreen_rounded, color: AppColors.textSecondary, size: 20),
+              onPressed: () {
+                setState(() {
+                  _isUIVisible = true;
+                });
+              },
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              tooltip: 'Mostra Strumenti',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _getColorForType(MapTileType type) {
+    switch (type) {
+      case MapTileType.floorStone: return const Color(0xFF424242);
+      case MapTileType.floorWood: return const Color(0xFF5D4037);
+      case MapTileType.floorDirt: return const Color(0xFF3E2723);
+      case MapTileType.floorGrass: return const Color(0xFF4CAF50);
+      case MapTileType.swamp: return const Color(0xFF2E7D32);
+      case MapTileType.wallStone: return const Color(0xFF757575);
+      case MapTileType.wallWood: return const Color(0xFF795548);
+      case MapTileType.water: return const Color(0xFF1976D2);
+      case MapTileType.lava: return const Color(0xFFE64A19);
+      case MapTileType.doorClosed: return const Color(0xFFFFB300);
+      case MapTileType.doorOpen: return const Color(0xFFFFE082);
+      case MapTileType.stairsUp:
+      case MapTileType.stairsDown: return const Color(0xFFBDBDBD);
+      case MapTileType.chest: return AppColors.highlight;
+      case MapTileType.table: return const Color(0xFF8D6E63);
+      case MapTileType.barrel: return const Color(0xFFA1887F);
+      case MapTileType.emoji: return Colors.transparent;
+    }
   }
 }
