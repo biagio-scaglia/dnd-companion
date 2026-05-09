@@ -20,6 +20,7 @@ import 'widgets/attachment_card.dart';
 import 'widgets/note_dialogs.dart';
 import 'note_edit_view.dart';
 import 'session_edit_view.dart';
+import 'character_edit_view.dart';
 import '../domain/models/character.dart';
 import '../../../core/utils/file_opener/file_opener.dart';
 
@@ -56,7 +57,10 @@ class NotesView extends StatelessWidget {
                 accentColor: AppColors.highlight,
                 trailing: IconButton(
                   icon: const Icon(Icons.add_rounded, color: AppColors.highlight, size: 20),
-                  onPressed: () => showCreateCharacterDialog(context, notesController),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CharacterEditView()),
+                  ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),

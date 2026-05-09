@@ -71,8 +71,8 @@ class RecentSessions extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 12.0),
                 child: _buildSessionTile(
                   title: session.title,
-                  date: '${session.date.day}/${session.date.month}/${session.date.year}',
-                  description: session.summary,
+                  date: '${session.realDate.day}/${session.realDate.month}/${session.realDate.year}',
+                  description: session.shortRecap,
                   isNew: session == sessions.first,
                 ),
               )),

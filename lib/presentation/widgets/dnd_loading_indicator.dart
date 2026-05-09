@@ -49,9 +49,9 @@ class _DndLoadingIndicatorState extends State<DndLoadingIndicator>
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.magicAccent.withOpacity(0.1),
+                color: AppColors.magicAccent.withValues(alpha: 0.1),
                 border: Border.all(
-                  color: AppColors.magicAccent.withOpacity(0.3),
+                  color: AppColors.magicAccent.withValues(alpha: 0.3),
                   width: 1.5,
                 ),
               ),

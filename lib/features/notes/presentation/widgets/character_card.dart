@@ -36,10 +36,18 @@ class CharacterCard extends StatelessWidget {
                 Text(character.name, style: AppTypography.h3),
                 const SizedBox(height: 4),
                 DndAccentPill(
-                  label: '${character.characterClass} • Liv. ${character.level}',
+                  label: '${character.race} • ${character.characterClass} • Liv. ${character.level}',
                   accentColor: AppColors.highlight,
                   isFilled: true,
                 ),
+                if (character.status != CharacterStatus.attivo) ...[
+                  const SizedBox(height: 4),
+                  DndAccentPill(
+                    label: character.status == CharacterStatus.npcAlly ? 'Alleato' : (character.status == CharacterStatus.morto ? 'Morto' : 'Ritirato'),
+                    accentColor: character.status == CharacterStatus.morto ? AppColors.danger : AppColors.textSecondary,
+                    isFilled: false,
+                  ),
+                ],
               ],
             ),
           ),

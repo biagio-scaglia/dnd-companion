@@ -33,11 +33,11 @@ class DndChip extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? accentColor.withOpacity(0.15)
+              ? accentColor.withValues(alpha: 0.15)
               : AppColors.surfaceSecondary,
           borderRadius: AppRadius.pillBorderRadius,
           border: Border.all(
-            color: isSelected ? accentColor.withOpacity(0.5) : AppColors.surfaceSecondary,
+            color: isSelected ? accentColor.withValues(alpha: 0.5) : AppColors.surfaceSecondary,
             width: 1.5,
           ),
         ),

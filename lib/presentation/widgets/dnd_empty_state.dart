@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
-import '../../core/theme/app_radius.dart';
 import '../../core/theme/app_spacing.dart';
 import 'dnd_button.dart';
 
@@ -37,11 +36,11 @@ class DndEmptyState extends StatelessWidget {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: accentColor.withOpacity(0.08),
+                color: accentColor.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
-                border: Border.all(color: accentColor.withOpacity(0.15), width: 1.5),
+                border: Border.all(color: accentColor.withValues(alpha: 0.15), width: 1.5),
               ),
-              child: Icon(icon, color: accentColor.withOpacity(0.6), size: 32),
+              child: Icon(icon, color: accentColor.withValues(alpha: 0.6), size: 32),
             ),
             const SizedBox(height: AppSpacing.m),
             Text(

@@ -3,6 +3,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../presentation/widgets/dnd_dialog.dart';
 import '../../../../presentation/widgets/dnd_text_field.dart';
 import '../notes_controller.dart';
+import '../../domain/models/character.dart';
+import 'package:uuid/uuid.dart';
 
 void showCreateCharacterDialog(BuildContext context, NotesController controller) {
   final nameCtrl = TextEditingController();
@@ -36,9 +38,16 @@ void showCreateCharacterDialog(BuildContext context, NotesController controller)
           onPressed: () {
             if (nameCtrl.text.isNotEmpty) {
               controller.createCharacter(
-                nameCtrl.text,
-                classCtrl.text,
-                int.tryParse(levelCtrl.text) ?? 1,
+                Character(
+                  id: const Uuid().v4(),
+                  name: nameCtrl.text,
+                  characterClass: classCtrl.text,
+                  level: int.tryParse(levelCtrl.text) ?? 1,
+                  race: 'Sconosciuta',
+                  status: CharacterStatus.attivo,
+                  createdAt: DateTime.now(),
+                  updatedAt: DateTime.now(),
+                ),
               );
               Navigator.pop(context);
             }

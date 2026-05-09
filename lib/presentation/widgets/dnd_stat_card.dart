@@ -27,16 +27,16 @@ class DndStatCard extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             AppColors.surface,
-            AppColors.surfaceSecondary.withOpacity(0.5),
+            AppColors.surfaceSecondary.withValues(alpha: 0.5),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: AppRadius.lBorderRadius,
-        border: Border.all(color: accentColor.withOpacity(0.2), width: 1),
+        border: Border.all(color: accentColor.withValues(alpha: 0.2), width: 1),
         boxShadow: [
           BoxShadow(
-            color: accentColor.withOpacity(0.06),
+            color: accentColor.withValues(alpha: 0.06),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -48,7 +48,7 @@ class DndStatCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: accentColor.withOpacity(0.1),
+              color: accentColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: accentColor, size: 20),

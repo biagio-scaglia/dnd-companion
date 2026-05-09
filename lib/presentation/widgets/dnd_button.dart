@@ -50,7 +50,7 @@ class DndButton extends StatelessWidget {
         side = BorderSide(color: foregroundColor ?? AppColors.surfaceSecondary);
         break;
       case DndButtonVariant.danger:
-        bg = AppColors.danger.withOpacity(0.15);
+        bg = AppColors.danger.withValues(alpha: 0.15);
         fg = AppColors.danger;
         side = const BorderSide(color: AppColors.danger, width: 1);
         break;

@@ -34,7 +34,7 @@ class SessionCard extends StatelessWidget {
               children: [
                 Text(session.title, style: AppTypography.h3),
                 const SizedBox(height: 2),
-                Text(session.summary, style: AppTypography.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
+                Text(session.shortRecap, style: AppTypography.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
               ],
             ),
           ),

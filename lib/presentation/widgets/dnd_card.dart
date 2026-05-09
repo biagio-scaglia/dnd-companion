@@ -44,12 +44,12 @@ class DndCard extends StatelessWidget {
       case DndCardVariant.featured:
         bgColor = null;
         gradient = gradientColors ??
-            [AppColors.surface, AppColors.surfaceSecondary.withOpacity(0.6)];
-        border = borderColor ?? accent.withOpacity(0.25);
+            [AppColors.surface, AppColors.surfaceSecondary.withValues(alpha: 0.6)];
+        border = borderColor ?? accent.withValues(alpha: 0.25);
         shadows = [
           shadow ??
               BoxShadow(
-                color: accent.withOpacity(0.08),
+                color: accent.withValues(alpha: 0.08),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               )
@@ -62,7 +62,6 @@ class DndCard extends StatelessWidget {
         shadows = [];
         break;
       case DndCardVariant.standard:
-      default:
         bgColor = gradientColors == null ? AppColors.surface : null;
         gradient = gradientColors != null
             ? LinearGradient(
@@ -76,7 +75,7 @@ class DndCard extends StatelessWidget {
             ? [shadow!]
             : [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withValues(alpha: 0.08),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 )

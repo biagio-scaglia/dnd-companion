@@ -76,13 +76,7 @@ class NotesController extends ChangeNotifier {
   }
 
   // --- Sessions Actions ---
-  Future<void> createSession(String title, String summary, DateTime date) async {
-    final session = CampaignSession(
-      id: _uuid.v4(),
-      title: title,
-      summary: summary,
-      date: date,
-    );
+  Future<void> createSession(CampaignSession session) async {
     await repository.addSession(session);
     await loadData();
   }
@@ -93,14 +87,7 @@ class NotesController extends ChangeNotifier {
   }
 
   // --- Characters Actions ---
-  Future<void> createCharacter(String name, String characterClass, int level, {String? notes}) async {
-    final character = Character(
-      id: _uuid.v4(),
-      name: name,
-      characterClass: characterClass,
-      level: level,
-      notes: notes,
-    );
+  Future<void> createCharacter(Character character) async {
     await repository.addCharacter(character);
     await loadData();
   }
@@ -185,7 +172,7 @@ class NotesController extends ChangeNotifier {
 
   CampaignSession? get latestSession {
     try {
-      return _sessions.reduce((a, b) => a.date.isAfter(b.date) ? a : b);
+      return _sessions.reduce((a, b) => a.realDate.isAfter(b.realDate) ? a : b);
     } catch (_) {
       return null;
     }
