@@ -6,6 +6,8 @@ import '../domain/models/character.dart';
 import '../domain/repositories/notes_repository.dart';
 import 'package:uuid/uuid.dart';
 import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class NotesController extends ChangeNotifier {
   final NotesRepository repository;
@@ -122,9 +124,44 @@ class NotesController extends ChangeNotifier {
   }
 
   Future<void> pickAttachment() async {
-    // Lasciamo il metodo vuoto o non usato per ora, dato che il plugin file_picker
-    // non compila su Windows senza Developer Mode.
-    debugPrint('File picker disabilitato per problemi di compilazione su Windows.');
+    try {
+      final result = await FilePicker.pickFiles();
+      
+      if (result != null && result.files.single.path != null) {
+        final pickedFile = File(result.files.single.path!);
+        final fileName = result.files.single.name;
+        
+        // Copia il file nella cartella dell'app per persistenza
+        final appDir = await getApplicationDocumentsDirectory();
+        final savedFile = await pickedFile.copy('${appDir.path}/$fileName');
+        
+        String type = 'file';
+        if (fileName.endsWith('.jpg') || fileName.endsWith('.png') || fileName.endsWith('.jpeg')) {
+          type = 'image';
+        } else if (fileName.endsWith('.pdf')) {
+          type = 'pdf';
+        }
+        
+        await addAttachmentReference(fileName, savedFile.path, type);
+      }
+    } catch (e) {
+      debugPrint('Errore nel picking del file: $e');
+    }
+  }
+
+  Future<void> deleteAttachment(String id) async {
+    try {
+      final attachment = _attachments.firstWhere((a) => a.id == id);
+      final file = File(attachment.filePath);
+      if (await file.exists()) {
+        await file.delete();
+      }
+    } catch (e) {
+      debugPrint('Errore nell\'eliminazione del file fisico: $e');
+    }
+    
+    await repository.deleteAttachment(id);
+    await loadData();
   }
 
   // --- Data Management ---

@@ -192,6 +192,59 @@ class NotesView extends StatelessWidget {
                     ),
                   ),
                 )),
+              const SizedBox(height: AppSpacing.xl),
+
+              // ── Allegati ─────────────────────────────────────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'ALLEGATI',
+                    style: AppTypography.sectionLabel(color: AppColors.textSecondary),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.attach_file_rounded, color: AppColors.textSecondary, size: 20),
+                    onPressed: () => notesController.pickAttachment(),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.m),
+
+              if (notesController.attachments.isEmpty)
+                const DndEmptyState(
+                  icon: Icons.attach_file_outlined,
+                  message: 'Nessun allegato',
+                  accentColor: AppColors.textSecondary,
+                )
+              else
+                ...notesController.attachments.map((a) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: DndCard(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.insert_drive_file_rounded, color: AppColors.naturalAccent, size: 22),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(a.fileName, style: AppTypography.body.copyWith(fontWeight: FontWeight.bold)),
+                              Text(a.type.toUpperCase(), style: AppTypography.caption),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger, size: 18),
+                          onPressed: () => notesController.deleteAttachment(a.id),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+
               const SizedBox(height: AppSpacing.xxl),
             ],
           );
