@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/material.dart';
 import 'package:flame/components.dart';
 import '../../domain/models/map_element.dart';
 import '../../domain/models/map_tile_type.dart';
@@ -14,6 +15,22 @@ class TileComponent extends PositionComponent {
   }) {
     size = Vector2(tileSize, tileSize);
     position = Vector2(element.gridX * tileSize, element.gridY * tileSize);
+  }
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    if (element.emoji != null) {
+      // Usiamo TextComponent di Flame per renderizzare l'emoji
+      add(TextComponent(
+        text: element.emoji!,
+        position: Vector2(tileSize / 2, tileSize / 2),
+        anchor: Anchor.center,
+        textRenderer: TextPaint(
+          style: TextStyle(fontSize: tileSize * 0.8),
+        ),
+      ));
+    }
   }
 
   @override
@@ -70,6 +87,9 @@ class TileComponent extends PositionComponent {
         break;
       case MapTileType.barrel:
         paint.color = const Color(0xFFA1887F);
+        break;
+      case MapTileType.emoji:
+        paint.color = Colors.transparent;
         break;
     }
     

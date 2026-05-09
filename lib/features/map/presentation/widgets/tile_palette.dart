@@ -60,6 +60,46 @@ class TilePalette extends StatelessWidget {
               );
             }).toList(),
           ),
+          const SizedBox(height: 12),
+          const Divider(color: AppColors.surfaceSecondary),
+          const SizedBox(height: 8),
+          Text(
+            'EMOJI',
+            style: AppTypography.label.copyWith(color: AppColors.magicAccent),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              '🧱', '🪵', '💧', '🔥', '🚪', '📦', '🌲', '🪨', '🏰', '👹', '🧙', '🐉', '💀', '💰'
+            ].map((emoji) {
+              final isSelected = controller.selectedTileType == MapTileType.emoji && controller.selectedEmoji == emoji;
+              return GestureDetector(
+                onTap: () {
+                  controller.selectEmoji(emoji);
+                },
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: isSelected ? AppColors.magicAccent.withValues(alpha: 0.15) : AppColors.surfaceSecondary,
+                    border: Border.all(
+                      color: isSelected ? AppColors.magicAccent : Colors.transparent,
+                      width: isSelected ? 2 : 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      emoji,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
         ],
       ),
     );
@@ -83,6 +123,7 @@ class TilePalette extends StatelessWidget {
       case MapTileType.chest: return AppColors.highlight;
       case MapTileType.table: return const Color(0xFF8D6E63);
       case MapTileType.barrel: return const Color(0xFFA1887F);
+      case MapTileType.emoji: return Colors.transparent;
     }
   }
 }

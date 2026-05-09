@@ -5,12 +5,14 @@ class MapElement {
   int gridX;
   int gridY;
   MapTileType type;
+  String? emoji; // New field for placeable emojis
 
   MapElement({
     required this.id,
     required this.gridX,
     required this.gridY,
     required this.type,
+    this.emoji,
   });
 
   Map<String, dynamic> toJson() {
@@ -19,6 +21,7 @@ class MapElement {
       'gridX': gridX,
       'gridY': gridY,
       'type': type.name,
+      'emoji': emoji,
     };
   }
 
@@ -31,6 +34,7 @@ class MapElement {
         (e) => e.name == json['type'],
         orElse: () => MapTileType.floorStone, // fallback
       ),
+      emoji: json['emoji'],
     );
   }
 
@@ -39,12 +43,14 @@ class MapElement {
     int? gridX,
     int? gridY,
     MapTileType? type,
+    String? emoji,
   }) {
     return MapElement(
       id: id ?? this.id,
       gridX: gridX ?? this.gridX,
       gridY: gridY ?? this.gridY,
       type: type ?? this.type,
+      emoji: emoji ?? this.emoji,
     );
   }
 }

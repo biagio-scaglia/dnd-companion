@@ -28,6 +28,9 @@ class MapEditorController extends ChangeNotifier {
   MapTileType _selectedTileType = MapTileType.wallStone;
   MapTileType get selectedTileType => _selectedTileType;
 
+  String _selectedEmoji = '🧱';
+  String get selectedEmoji => _selectedEmoji;
+
   String? _activeLayerId;
   String? get activeLayerId => _activeLayerId;
 
@@ -77,6 +80,12 @@ class MapEditorController extends ChangeNotifier {
     _selectedTileType = type;
     notifyListeners();
   }
+
+  void selectEmoji(String emoji) {
+    _selectedEmoji = emoji;
+    _selectedTileType = MapTileType.emoji; // Automatizza la selezione del tipo
+    notifyListeners();
+  }
   
   void setActiveLayer(String layerId) {
     _activeLayerId = layerId;
@@ -113,6 +122,7 @@ class MapEditorController extends ChangeNotifier {
           gridX: x,
           gridY: y,
           type: _selectedTileType,
+          emoji: _selectedTileType == MapTileType.emoji ? _selectedEmoji : null,
         ));
         changed = true;
       }

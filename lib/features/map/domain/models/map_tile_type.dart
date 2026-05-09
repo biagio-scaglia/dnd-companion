@@ -21,7 +21,10 @@ enum MapTileType {
   // Oggetti base
   chest,
   table,
-  barrel;
+  barrel,
+  
+  // Custom
+  emoji;
 
   // Una piccola utility per sapere se è solido (non attraversabile di default)
   bool get isSolid {
