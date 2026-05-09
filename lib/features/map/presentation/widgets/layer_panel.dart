@@ -57,12 +57,32 @@ class LayerPanel extends StatelessWidget {
                   color: isActive ? AppColors.magicAccent : AppColors.textPrimary,
                 ),
               ),
-              trailing: isActive 
-                  ? IconButton(
-                      icon: const Icon(Icons.edit_rounded, size: 16, color: AppColors.magicAccent),
-                      onPressed: () => _showRenameDialog(context, controller, layer.id, layer.name),
-                    )
-                  : null,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit_rounded, size: 16, color: AppColors.textSecondary),
+                    onPressed: () => _showRenameDialog(context, controller, layer.id, layer.name),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline_rounded, size: 16, color: AppColors.danger),
+                    onPressed: () {
+                      if (map.layers.length > 1) {
+                        _showDeleteConfirmDialog(context, controller, layer.id, layer.name);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Non puoi eliminare l\'ultimo livello!')),
+                        );
+                      }
+                    },
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
+              ),
               onTap: () {
                 controller.setActiveLayer(layer.id);
               },
@@ -135,6 +155,30 @@ class LayerPanel extends StatelessWidget {
               Navigator.pop(context);
             },
             child: const Text('Aggiungi', style: TextStyle(color: AppColors.magicAccent)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteConfirmDialog(BuildContext context, MapEditorController controller, String layerId, String layerName) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text('Elimina Livello', style: AppTypography.h3),
+        content: Text('Sei sicuro di voler eliminare il livello "$layerName"? Questa azione non può essere annullata.', style: AppTypography.body),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () {
+              controller.deleteLayer(layerId);
+              Navigator.pop(context);
+            },
+            child: const Text('Elimina', style: TextStyle(color: AppColors.danger)),
           ),
         ],
       ),

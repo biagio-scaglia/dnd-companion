@@ -13,7 +13,7 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Impostazioni')),
+      appBar: AppBar(title: const Text('Info')),
       body: Consumer<SettingsController>(
         builder: (context, controller, child) {
           if (controller.isLoading) {

@@ -156,6 +156,19 @@ class MapEditorController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteLayer(String layerId) {
+    if (_currentMap == null) return;
+    if (_currentMap!.layers.length <= 1) return; // Non eliminare l'ultimo
+    
+    _currentMap!.layers.removeWhere((l) => l.id == layerId);
+    
+    // Se il livello attivo era quello eliminato, imposta il primo come attivo
+    if (_activeLayerId == layerId) {
+      _activeLayerId = _currentMap!.layers.first.id;
+    }
+    notifyListeners();
+  }
+
   void toggleLayerVisibility(String layerId) {
     if (_currentMap == null) return;
     final index = _currentMap!.layers.indexWhere((l) => l.id == layerId);

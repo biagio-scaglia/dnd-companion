@@ -93,7 +93,7 @@ class _HomeShellState extends State<HomeShell> {
                 NavigationRailDestination(
                   icon: Icon(Icons.settings_outlined),
                   selectedIcon: Icon(Icons.settings_rounded),
-                  label: Text('Impostazioni'),
+                  label: Text('Info'),
                 ),
                 NavigationRailDestination(
                   icon: Icon(Icons.map_outlined),
@@ -145,7 +145,7 @@ class _HomeShellState extends State<HomeShell> {
                 NavigationDestination(
                   icon: Icon(Icons.settings_outlined),
                   selectedIcon: Icon(Icons.settings_rounded),
-                  label: 'Impostazioni',
+                  label: 'Info',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.map_outlined),
