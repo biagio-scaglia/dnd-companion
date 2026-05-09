@@ -10,11 +10,15 @@ import 'features/settings/data/settings_repository_impl.dart';
 import 'features/settings/presentation/settings_controller.dart';
 import 'features/map/data/map_repository_impl.dart';
 import 'features/map/presentation/controllers/map_editor_controller.dart';
+import 'presentation/home/home_controller.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (_) => HomeController(),
+        ),
         ChangeNotifierProvider(
           create: (_) => NotesController(repository: NotesRepositoryImpl()),
         ),

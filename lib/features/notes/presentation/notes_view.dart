@@ -14,6 +14,10 @@ import 'notes_controller.dart';
 import 'calendar_controller.dart';
 import 'widgets/note_card.dart';
 import 'widgets/calendar_event_card.dart';
+import 'widgets/character_card.dart';
+import 'widgets/session_card.dart';
+import 'widgets/attachment_card.dart';
+import 'widgets/note_dialogs.dart';
 import 'note_edit_view.dart';
 import 'session_edit_view.dart';
 import '../domain/models/character.dart';
@@ -37,9 +41,9 @@ class NotesView extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer2<NotesController, CalendarController>(
-        builder: (context, notesController, calendarController, child) {
-          if (notesController.isLoading || calendarController.isLoading) {
+      body: Consumer<NotesController>(
+        builder: (context, notesController, child) {
+          if (notesController.isLoading) {
             return const DndLoadingIndicator(message: 'Caricamento appunti...');
           }
 
@@ -52,7 +56,7 @@ class NotesView extends StatelessWidget {
                 accentColor: AppColors.highlight,
                 trailing: IconButton(
                   icon: const Icon(Icons.add_rounded, color: AppColors.highlight, size: 20),
-                  onPressed: () => _showCreateCharacterDialog(context, notesController),
+                  onPressed: () => showCreateCharacterDialog(context, notesController),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),
@@ -60,7 +64,7 @@ class NotesView extends StatelessWidget {
               const SizedBox(height: AppSpacing.m),
 
               if (notesController.characters.isEmpty)
-                DndEmptyState(
+                const DndEmptyState(
                   icon: Icons.person_outline_rounded,
                   message: 'Nessun personaggio',
                   subMessage: 'Aggiungi il tuo primo eroe',
@@ -69,39 +73,9 @@ class NotesView extends StatelessWidget {
               else
                 ...notesController.characters.map((c) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: DndCard(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            color: AppColors.highlight.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.person_rounded, color: AppColors.highlight, size: 22),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(c.name, style: AppTypography.h3),
-                              const SizedBox(height: 2),
-                              Text(
-                                '${c.characterClass} • Liv. ${c.level}',
-                                style: AppTypography.bodySmall,
-                              ),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger, size: 20),
-                          onPressed: () => notesController.deleteCharacter(c.id),
-                        ),
-                      ],
-                    ),
+                  child: CharacterCard(
+                    character: c,
+                    onDelete: () => notesController.deleteCharacter(c.id),
                   ),
                 )),
 
@@ -124,7 +98,7 @@ class NotesView extends StatelessWidget {
               const SizedBox(height: AppSpacing.m),
 
               if (notesController.sessions.isEmpty)
-                DndEmptyState(
+                const DndEmptyState(
                   icon: Icons.menu_book_outlined,
                   message: 'Nessuna sessione',
                   subMessage: 'Inizia a documentare le tue avventure',
@@ -133,36 +107,9 @@ class NotesView extends StatelessWidget {
               else
                 ...notesController.sessions.map((s) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: DndCard(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            color: AppColors.magicAccent.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.menu_book_rounded, color: AppColors.magicAccent, size: 22),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(s.title, style: AppTypography.h3),
-                              const SizedBox(height: 2),
-                              Text(s.summary, style: AppTypography.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger, size: 20),
-                          onPressed: () => notesController.deleteSession(s.id),
-                        ),
-                      ],
-                    ),
+                  child: SessionCard(
+                    session: s,
+                    onDelete: () => notesController.deleteSession(s.id),
                   ),
                 )),
 
@@ -176,7 +123,7 @@ class NotesView extends StatelessWidget {
               const SizedBox(height: AppSpacing.m),
 
               if (notesController.notes.isEmpty)
-                DndEmptyState(
+                const DndEmptyState(
                   icon: Icons.note_outlined,
                   message: 'Nessun appunto',
                   subMessage: 'Tocca il + in alto per creare il primo appunto',
@@ -222,56 +169,9 @@ class NotesView extends StatelessWidget {
               else
                 ...notesController.attachments.map((a) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: DndCard(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.insert_drive_file_rounded, color: AppColors.naturalAccent, size: 22),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(a.fileName, style: AppTypography.body.copyWith(fontWeight: FontWeight.bold)),
-                                  Text(a.type.toUpperCase(), style: AppTypography.caption),
-                                ],
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger, size: 18),
-                              onPressed: () => notesController.deleteAttachment(a.id),
-                            ),
-                          ],
-                        ),
-                        if (a.type == 'image') ...[
-                          const SizedBox(height: 12),
-                          GestureDetector(
-                            onTap: () => _showFullscreenImage(context, a.filePath),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.file(
-                                File(a.filePath),
-                                height: 150,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    height: 150,
-                                    color: AppColors.surfaceSecondary,
-                                    child: const Center(
-                                      child: Icon(Icons.broken_image_rounded, color: AppColors.textSecondary),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
+                  child: AttachmentCard(
+                    attachment: a,
+                    onDelete: () => notesController.deleteAttachment(a.id),
                   ),
                 )),
 
@@ -282,116 +182,5 @@ class NotesView extends StatelessWidget {
       ),
     );
   }
-
-  void _showCreateCharacterDialog(BuildContext context, NotesController controller) {
-    final nameCtrl = TextEditingController();
-    final classCtrl = TextEditingController();
-    final levelCtrl = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Nuovo Personaggio'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DndTextField(controller: nameCtrl, label: 'Nome'),
-            const SizedBox(height: 12),
-            DndTextField(controller: classCtrl, label: 'Classe'),
-            const SizedBox(height: 12),
-            DndTextField(
-              controller: levelCtrl,
-              label: 'Livello',
-              keyboardType: TextInputType.number,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annulla'),
-          ),
-          TextButton(
-            onPressed: () {
-              if (nameCtrl.text.isNotEmpty) {
-                controller.createCharacter(
-                  nameCtrl.text,
-                  classCtrl.text,
-                  int.tryParse(levelCtrl.text) ?? 1,
-                );
-                Navigator.pop(context);
-              }
-            },
-            child: Text('Crea', style: TextStyle(color: AppColors.magicAccent)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showAddAttachmentDialog(BuildContext context, NotesController controller) {
-    final nameCtrl = TextEditingController();
-    final pathCtrl = TextEditingController();
-    final typeCtrl = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Aggiungi Riferimento File'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DndTextField(controller: nameCtrl, label: 'Nome File'),
-            const SizedBox(height: 12),
-            DndTextField(controller: pathCtrl, label: 'Percorso o URL'),
-            const SizedBox(height: 12),
-            DndTextField(controller: typeCtrl, label: 'Tipo (es. pdf, png)'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annulla'),
-          ),
-          TextButton(
-            onPressed: () {
-              if (nameCtrl.text.isNotEmpty && pathCtrl.text.isNotEmpty) {
-                controller.addAttachmentReference(
-                  nameCtrl.text,
-                  pathCtrl.text,
-                  typeCtrl.text.isEmpty ? 'file' : typeCtrl.text,
-                );
-                Navigator.pop(context);
-              }
-            },
-            child: Text('Aggiungi', style: TextStyle(color: AppColors.magicAccent)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showFullscreenImage(BuildContext context, String path) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog.fullscreen(
-        backgroundColor: Colors.black,
-        child: Stack(
-          children: [
-            Center(
-              child: Image.file(File(path)),
-            ),
-            Positioned(
-              top: 16,
-              right: 16,
-              child: IconButton(
-                icon: const Icon(Icons.close_rounded, color: Colors.white, size: 30),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
+

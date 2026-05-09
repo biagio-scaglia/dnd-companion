@@ -94,9 +94,7 @@ class DndCard extends StatelessWidget {
                 end: Alignment.bottomRight,
               )
             : null,
-        borderRadius: variant == DndCardVariant.featured
-            ? AppRadius.xlBorderRadius
-            : AppRadius.lBorderRadius,
+        borderRadius: AppRadius.lBorderRadius,
         border: Border.all(color: border, width: 1),
         boxShadow: shadows,
       ),

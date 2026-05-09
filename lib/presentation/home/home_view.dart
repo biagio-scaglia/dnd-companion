@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:math';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../features/notes/presentation/notes_controller.dart';
-import '../../features/compendium/domain/models/compendium_item.dart';
-import '../../features/compendium/presentation/compendium_detail_view.dart';
 import '../../features/map/presentation/controllers/map_editor_controller.dart';
+import 'home_controller.dart';
+import 'widgets/dice_roller_widget.dart';
+import 'widgets/compendium_preview_widget.dart';
 import '../widgets/dnd_card.dart';
 import '../widgets/dnd_button.dart';
 import '../widgets/dnd_section_title.dart';
@@ -48,56 +48,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
-  String _lastRollResult = 'Tocca un dado per lanciare';
-  final Random _random = Random();
-
-  String _lastLootResult = 'Tocca "Genera" per un bottino';
-  final List<String> _lootTable = [
-    '10 Monete d\'Oro',
-    'Pozione di Guarigione',
-    'Gemma Preziosa (50 mo)',
-    'Spada Corta +1',
-    'Anello d\'Argento antico',
-    'Mappa del Tesoro sgualcita',
-    'Pergamena di "Dardo Incantato"',
-    'Chiave di Ferro arrugginita',
-  ];
-
-  void _rollDice(int sides) {
-    setState(() {
-      final result = _random.nextInt(sides) + 1;
-      _lastRollResult = 'd$sides → $result';
-    });
-  }
-
-  void _generateLoot() {
-    setState(() {
-      _lastLootResult = _lootTable[_random.nextInt(_lootTable.length)];
-    });
-  }
-
-  Widget _buildDiceButton(String label, int sides) {
-    return GestureDetector(
-      onTap: () => _rollDice(sides),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        decoration: BoxDecoration(
-          color: AppColors.surfaceSecondary,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.highlight.withOpacity(0.2)),
-        ),
-        child: Text(
-          label,
-          style: AppTypography.label.copyWith(
-            color: AppColors.textPrimary,
-            fontSize: 12,
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
@@ -135,49 +85,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               ),
               const SizedBox(height: AppSpacing.m),
 
-              DndCard(
-                variant: DndCardVariant.featured,
-                accentColor: AppColors.highlight,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Risultato
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.25),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.surfaceSecondary),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.casino_rounded, color: AppColors.highlight, size: 22),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              _lastRollResult,
-                              style: AppTypography.h3,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildDiceButton('d20', 20),
-                        _buildDiceButton('d12', 12),
-                        _buildDiceButton('d10', 10),
-                        _buildDiceButton('d8', 8),
-                        _buildDiceButton('d6', 6),
-                        _buildDiceButton('d4', 4),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              const DiceRollerWidget(),
               const SizedBox(height: AppSpacing.xl),
               
               // ── Mappe ────────────────────────────────────────
@@ -235,64 +143,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               ),
               const SizedBox(height: AppSpacing.m),
 
-              GestureDetector(
-                onTap: () {
-                  final beholder = CompendiumItem(
-                    id: 'beholder',
-                    name: 'Beholder',
-                    type: CompendiumItemType.monster,
-                    shortDescription: 'GS 13 • Aberrazione',
-                    description: 'Un grande occhio fluttuante con molti occhi minori su steli. È uno dei mostri più iconici di D&D.',
-                    metaInfo: 'GS 13',
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => CompendiumDetailView(item: beholder)),
-                  );
-                },
-                child: DndCard(
-                  variant: DndCardVariant.featured,
-                  accentColor: AppColors.magicAccent,
-                  padding: const EdgeInsets.all(18),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 52,
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: AppColors.magicAccent.withOpacity(0.12),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.magicAccent.withOpacity(0.3)),
-                        ),
-                        child: const Icon(Icons.auto_stories_rounded, color: AppColors.magicAccent, size: 26),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'MOSTRO DEL GIORNO',
-                              style: AppTypography.sectionLabel(color: AppColors.magicAccent),
-                            ),
-                            const SizedBox(height: 4),
-                            Text('Beholder', style: AppTypography.h2),
-                            const SizedBox(height: 2),
-                            Text(
-                              'GS 13 • Aberrazione',
-                              style: AppTypography.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        color: AppColors.textSecondary.withOpacity(0.5),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              const CompendiumPreviewWidget(),
               const SizedBox(height: AppSpacing.xl),
 
               // ── Generatore Bottino ────────────────────────────────────
@@ -326,14 +177,14 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                             style: AppTypography.sectionLabel(color: AppColors.naturalAccent),
                           ),
                           const SizedBox(height: 4),
-                          Text(_lastLootResult, style: AppTypography.h3),
+                          Text(context.watch<HomeController>().lastLootResult, style: AppTypography.h3),
                         ],
                       ),
                     ),
                     const SizedBox(width: 12),
                     DndButton(
                       text: 'Genera',
-                      onPressed: _generateLoot,
+                      onPressed: () => context.read<HomeController>().generateLoot(),
                       backgroundColor: AppColors.naturalAccent,
                       foregroundColor: AppColors.background,
                       isSmall: true,
@@ -357,7 +208,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   final charCount = notesController.characters.length;
 
                   if (noteCount == 0 && sessionCount == 0 && charCount == 0) {
-                    return DndEmptyState(
+                    return const DndEmptyState(
                       icon: Icons.book_outlined,
                       message: 'Nessun contenuto ancora',
                       subMessage: 'Aggiungi note, sessioni o personaggi dalla tab Appunti',
