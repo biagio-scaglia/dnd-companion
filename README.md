@@ -1,17 +1,28 @@
-# dnd
+# LoreKeeper
 
-A new Flutter project.
+Una companion app offline-first per giochi di ruolo (GDR), progettata per essere un compagno affidabile durante le tue sessioni di gioco.
 
-## Getting Started
+## 🌟 Caratteristiche
 
-This project is a starting point for a Flutter application.
+- **Design System Evocativo**: Interfaccia dark fantasy con palette colori curata (verde scuro, viola magico, oro) e tipografia dedicata (Cinzel, Almendra).
+- **Dashboard del Giocatore**: Accesso rapido alle azioni più comuni, dadi e sessioni recenti.
+- **Compendio Archivistico**: Sistema di ricerca e filtraggio per elementi di gioco (mostri, oggetti, magie), strutturato per essere offline-first.
+- **Architettura Feature-First**: Codice organizzato per feature per massimizzare la manutenibilità e la pulizia del progetto.
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠️ Tecnologie Utilizzate
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- **Flutter** & **Dart**
+- **Sqflite** (per la persistenza futura)
+- **Flame** (per componenti di gioco/animazioni)
+- **Provider** (per la gestione dello stato)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🚀 Come Iniziare
+
+1. Clona il repository.
+2. Assicurati di avere Flutter installato sul tuo sistema.
+3. Esegui `flutter pub get` nella cartella del progetto.
+4. Avvia l'applicazione con `flutter run`.
+
+## 📌 Stato del Progetto
+
+Per una panoramica dettagliata dell'architettura e dello stato attuale dello sviluppo, consulta il file `riassunto.md`.

@@ -71,6 +71,8 @@ class SettingsView extends StatelessWidget {
                     _infoRow(Icons.storage_rounded, 'Dati', 'Salvati localmente'),
                     const Divider(height: 24),
                     _infoRow(Icons.wifi_off_rounded, 'Modalità', 'Offline-first'),
+                    const Divider(height: 24),
+                    _infoRow(Icons.public_rounded, 'API', 'D&D 5e API'),
                   ],
                 ),
               ),
