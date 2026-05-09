@@ -74,6 +74,26 @@ class SettingsView extends StatelessWidget {
                   ],
                 ),
               ),
+              DndCard(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'LEGALE',
+                      style: AppTypography.sectionLabel(color: AppColors.highlight),
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    _actionRow(context, Icons.privacy_tip_outlined, 'Privacy Policy', () {
+                      _showPolicyDialog(context, 'Privacy Policy', 'Informativa sulla Privacy...\n\nQuesta app non raccoglie dati personali. Tutti i tuoi dati sono salvati localmente sul tuo dispositivo.');
+                    }),
+                    const Divider(height: 24),
+                    _actionRow(context, Icons.cookie_outlined, 'Cookie Policy', () {
+                      _showPolicyDialog(context, 'Cookie Policy', 'Informativa sui Cookie...\n\nQuesta app non utilizza cookie di tracciamento o di terze parti.');
+                    }),
+                  ],
+                ),
+              ),
               const SizedBox(height: AppSpacing.xxl),
 
               Center(
@@ -85,6 +105,43 @@ class SettingsView extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _actionRow(BuildContext context, IconData icon, String label, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          children: [
+            Icon(icon, color: AppColors.textSecondary, size: 18),
+            const SizedBox(width: 12),
+            Text(label, style: AppTypography.bodySmall),
+            const Spacer(),
+            const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary, size: 18),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showPolicyDialog(BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text(title, style: AppTypography.h3),
+        content: SingleChildScrollView(
+          child: Text(content, style: AppTypography.body),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Chiudi', style: TextStyle(color: AppColors.magicAccent)),
+          ),
+        ],
       ),
     );
   }
