@@ -26,7 +26,7 @@ class DndOrnamentalDivider extends StatelessWidget {
           Expanded(
             child: Container(
               height: thickness,
-              color: effectiveColor.withOpacity(0.5),
+              color: effectiveColor.withValues(alpha: 0.5),
             ),
           ),
           const SizedBox(width: 12),
@@ -46,7 +46,7 @@ class DndOrnamentalDivider extends StatelessWidget {
           Expanded(
             child: Container(
               height: thickness,
-              color: effectiveColor.withOpacity(0.5),
+              color: effectiveColor.withValues(alpha: 0.5),
             ),
           ),
         ],

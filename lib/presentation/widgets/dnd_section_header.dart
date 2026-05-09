@@ -34,7 +34,7 @@ class DndSectionHeader extends StatelessWidget {
                 height: subtitle != null ? 36 : 24,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [accentColor, accentColor.withOpacity(0.2)],
+                    colors: [accentColor, accentColor.withValues(alpha: 0.2)],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),

@@ -8,11 +8,13 @@ import '../../features/map/presentation/controllers/map_editor_controller.dart';
 import 'home_controller.dart';
 import 'widgets/dice_roller_widget.dart';
 import 'widgets/compendium_preview_widget.dart';
-import '../widgets/dnd_card.dart';
 import '../widgets/dnd_button.dart';
-import '../widgets/dnd_section_title.dart';
 import '../widgets/dnd_stat_card.dart';
 import '../widgets/dnd_empty_state.dart';
+import '../widgets/dnd_fantasy_card.dart';
+import '../widgets/dnd_section_header.dart';
+import '../widgets/dnd_mystic_icon_circle.dart';
+import '../widgets/dnd_ornamental_divider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -66,21 +68,25 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     'D&D COMPANION',
                     style: AppTypography.label.copyWith(
                       color: AppColors.highlight,
-                      letterSpacing: 2,
+                      letterSpacing: 3,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4),
                   Text(
                     'Bentornato, Viaggiatore',
-                    style: AppTypography.display,
+                    style: AppTypography.display.copyWith(
+                      letterSpacing: -0.5,
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacing.xl),
+              const DndOrnamentalDivider(space: 32),
 
               // ── Lancio Dadi ─────────────────────────────────────────
-              DndSectionTitle(
+              const DndSectionHeader(
                 title: 'Lancio Dadi',
+                subtitle: 'Tira i dadi per le tue prove',
                 accentColor: AppColors.highlight,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -95,22 +101,22 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      DndSectionTitle(
+                      const DndSectionHeader(
                         title: 'Mappe',
+                        subtitle: 'Esplora e modifica i tuoi mondi',
                         accentColor: AppColors.magicAccent,
                       ),
                       const SizedBox(height: AppSpacing.m),
-                      DndCard(
+                      DndFantasyCard(
+                        showGlow: true,
+                        glowColor: AppColors.magicAccent,
                         padding: const EdgeInsets.all(16),
                         child: Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: AppColors.magicAccent.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(Icons.map_rounded, color: AppColors.magicAccent, size: 24),
+                            const DndMysticIconCircle(
+                              icon: Icons.map_rounded,
+                              accentColor: AppColors.magicAccent,
+                              size: 48,
                             ),
                             const SizedBox(width: 16),
                             Expanded(
@@ -137,8 +143,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               const SizedBox(height: AppSpacing.xl),
 
               // ── Dal Compendio ────────────────────────────────────────
-              DndSectionTitle(
+              const DndSectionHeader(
                 title: 'Dal Compendio',
+                subtitle: 'Ultimi segreti scoperti',
                 accentColor: AppColors.magicAccent,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -147,25 +154,23 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               const SizedBox(height: AppSpacing.xl),
 
               // ── Generatore Bottino ────────────────────────────────────
-              DndSectionTitle(
+              const DndSectionHeader(
                 title: 'Generatore Rapido',
+                subtitle: 'Strumenti per il Dungeon Master',
                 accentColor: AppColors.naturalAccent,
               ),
               const SizedBox(height: AppSpacing.m),
 
-              DndCard(
-                variant: DndCardVariant.featured,
-                accentColor: AppColors.naturalAccent,
+              DndFantasyCard(
+                showGlow: true,
+                glowColor: AppColors.naturalAccent,
                 padding: const EdgeInsets.all(18),
                 child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.naturalAccent.withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(Icons.card_giftcard_rounded, color: AppColors.naturalAccent, size: 22),
+                    const DndMysticIconCircle(
+                      icon: Icons.card_giftcard_rounded,
+                      accentColor: AppColors.naturalAccent,
+                      size: 44,
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -195,8 +200,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               const SizedBox(height: AppSpacing.xl),
 
               // ── I Tuoi Contenuti ──────────────────────────────────────
-              DndSectionTitle(
+              const DndSectionHeader(
                 title: 'I Tuoi Contenuti',
+                subtitle: 'Riepilogo delle tue risorse',
                 accentColor: AppColors.textSecondary,
               ),
               const SizedBox(height: AppSpacing.m),

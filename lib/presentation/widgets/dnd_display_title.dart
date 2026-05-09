@@ -35,7 +35,7 @@ class DndDisplayTitle extends StatelessWidget {
         Container(
           width: 20,
           height: 1,
-          color: effectiveColor.withOpacity(0.5),
+          color: effectiveColor.withValues(alpha: 0.5),
         ),
         const SizedBox(width: 4),
         Container(
@@ -64,7 +64,7 @@ class DndDisplayTitle extends StatelessWidget {
         Container(
           width: 20,
           height: 1,
-          color: effectiveColor.withOpacity(0.5),
+          color: effectiveColor.withValues(alpha: 0.5),
         ),
       ],
     );
@@ -89,7 +89,7 @@ class DndDisplayTitle extends StatelessWidget {
         Expanded(
           child: Container(
             height: 1,
-            color: effectiveColor.withOpacity(0.3),
+            color: effectiveColor.withValues(alpha: 0.3),
           ),
         ),
       ],

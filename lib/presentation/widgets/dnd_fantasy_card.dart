@@ -40,7 +40,7 @@ class DndFantasyCard extends StatelessWidget {
     if (showGlow) {
       shadows.add(
         BoxShadow(
-          color: effectiveGlowColor.withOpacity(0.15),
+          color: effectiveGlowColor.withValues(alpha: 0.15),
           blurRadius: 20,
           spreadRadius: 2,
           offset: const Offset(0, 0),
@@ -49,7 +49,7 @@ class DndFantasyCard extends StatelessWidget {
     }
     shadows.add(
       BoxShadow(
-        color: Colors.black.withOpacity(0.2),
+        color: Colors.black.withValues(alpha: 0.2),
         blurRadius: 8,
         offset: const Offset(0, 4),
       ),
@@ -73,7 +73,7 @@ class DndFantasyCard extends StatelessWidget {
 
     final Widget card = Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? (isGlass ? AppColors.surface.withOpacity(0.7) : AppColors.surface),
+        color: backgroundColor ?? (isGlass ? AppColors.surface.withValues(alpha: 0.7) : AppColors.surface),
         borderRadius: AppRadius.lBorderRadius,
         boxShadow: shadows,
       ),

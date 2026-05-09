@@ -23,15 +23,15 @@ class DndMysticIconCircle extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: accentColor.withOpacity(0.12),
+        color: accentColor.withValues(alpha: 0.12),
         shape: BoxShape.circle,
         border: Border.all(
-          color: accentColor.withOpacity(0.3),
+          color: accentColor.withValues(alpha: 0.3),
           width: 1,
         ),
         boxShadow: showGlow ? [
           BoxShadow(
-            color: accentColor.withOpacity(0.15),
+            color: accentColor.withValues(alpha: 0.15),
             blurRadius: 10,
             spreadRadius: 1,
           )

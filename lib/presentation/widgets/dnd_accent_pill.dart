@@ -23,15 +23,15 @@ class DndAccentPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: isFilled ? accentColor.withOpacity(0.15) : Colors.transparent,
+        color: isFilled ? accentColor.withValues(alpha: 0.15) : Colors.transparent,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: accentColor.withOpacity(0.5),
+          color: accentColor.withValues(alpha: 0.5),
           width: 1,
         ),
         boxShadow: isFilled ? [
           BoxShadow(
-            color: accentColor.withOpacity(0.1),
+            color: accentColor.withValues(alpha: 0.1),
             blurRadius: 4,
             spreadRadius: 1,
           )

@@ -24,10 +24,10 @@ class DndSurfacePanel extends StatelessWidget {
     return Container(
       padding: padding ?? AppSpacing.paddingAllM,
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.surfaceSecondary.withOpacity(0.3),
+        color: backgroundColor ?? AppColors.surfaceSecondary.withValues(alpha: 0.3),
         borderRadius: AppRadius.mBorderRadius,
         border: showBorder ? Border.all(
-          color: AppColors.surfaceSecondary.withOpacity(0.5),
+          color: AppColors.surfaceSecondary.withValues(alpha: 0.5),
           width: 1,
         ) : null,
       ),
