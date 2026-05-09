@@ -278,23 +278,25 @@ class _MapTabViewState extends State<MapTabView> {
   }
 
   Widget _buildMobileUI() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Align(
-          alignment: Alignment.topCenter,
-          child: ToolBar(),
-        ),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: const [
-            LayerPanel(),
-            SizedBox(height: 8),
-            TilePalette(),
-          ],
-        ),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const Align(
+            alignment: Alignment.topCenter,
+            child: ToolBar(),
+          ),
+          const SizedBox(height: 16),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: const [
+              LayerPanel(),
+              SizedBox(height: 8),
+              TilePalette(),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
