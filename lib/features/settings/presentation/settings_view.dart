@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../presentation/widgets/dnd_fantasy_card.dart';
+import '../../../presentation/widgets/dnd_mystic_icon_circle.dart';
+import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
-import '../../../presentation/widgets/dnd_card.dart';
 import 'settings_controller.dart';
 
 class SettingsView extends StatelessWidget {
@@ -27,22 +29,11 @@ class SettingsView extends StatelessWidget {
               Center(
                 child: Column(
                   children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: AppColors.magicAccent.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.magicAccent.withOpacity(0.25),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.auto_awesome_rounded,
-                        color: AppColors.magicAccent,
-                        size: 36,
-                      ),
+                    const DndMysticIconCircle(
+                      icon: Icons.auto_awesome_rounded,
+                      accentColor: AppColors.magicAccent,
+                      size: 80,
+                      showGlow: true,
                     ),
                     const SizedBox(height: AppSpacing.m),
                     Text('D&D Companion', style: AppTypography.h1),
@@ -54,16 +45,16 @@ class SettingsView extends StatelessWidget {
               const SizedBox(height: AppSpacing.xl),
 
               // Informazioni
-              DndCard(
+              const DndSectionHeader(
+                title: 'Informazioni',
+                accentColor: AppColors.highlight,
+              ),
+              const SizedBox(height: AppSpacing.s),
+              DndFantasyCard(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'INFORMAZIONI',
-                      style: AppTypography.sectionLabel(color: AppColors.highlight),
-                    ),
-                    const SizedBox(height: AppSpacing.m),
                     _infoRow(Icons.info_outline_rounded, 'App', 'D&D Companion'),
                     const Divider(height: 24),
                     _infoRow(Icons.tag_rounded, 'Build', '1'),
@@ -77,16 +68,16 @@ class SettingsView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.m),
-              DndCard(
+              const DndSectionHeader(
+                title: 'Legale',
+                accentColor: AppColors.highlight,
+              ),
+              const SizedBox(height: AppSpacing.s),
+              DndFantasyCard(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'LEGALE',
-                      style: AppTypography.sectionLabel(color: AppColors.highlight),
-                    ),
-                    const SizedBox(height: AppSpacing.m),
                     _actionRow(context, Icons.privacy_tip_outlined, 'Privacy Policy', () {
                       _showPolicyDialog(context, 'Privacy Policy', 'Questa applicazione rispetta la tua privacy. Tutti i dati inseriti (note, mappe, personaggi) vengono salvati esclusivamente in locale sul tuo dispositivo e non vengono inviati a nessun server esterno.\n\nL\'app non raccoglie dati personali, non richiede registrazione e non traccia le tue attività.\n\nI permessi richiesti (come l\'accesso alla memoria) servono solo per consentirti di salvare le mappe come immagini o allegare file alle tue note.');
                     }),
