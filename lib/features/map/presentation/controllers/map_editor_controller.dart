@@ -149,6 +149,13 @@ class MapEditorController extends ChangeNotifier {
     }
   }
 
+  void addLayer(String name) {
+    if (_currentMap == null) return;
+    final newLayer = MapLayer(id: _uuid.v4(), name: name);
+    _currentMap!.layers.add(newLayer);
+    notifyListeners();
+  }
+
   void toggleLayerVisibility(String layerId) {
     if (_currentMap == null) return;
     final index = _currentMap!.layers.indexWhere((l) => l.id == layerId);

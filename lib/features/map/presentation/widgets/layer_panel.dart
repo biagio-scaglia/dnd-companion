@@ -21,9 +21,20 @@ class LayerPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'LIVELLI',
-            style: AppTypography.label.copyWith(color: AppColors.magicAccent),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'LIVELLI',
+                style: AppTypography.label.copyWith(color: AppColors.magicAccent),
+              ),
+              IconButton(
+                icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent, size: 20),
+                onPressed: () => _showAddLayerDialog(context, controller),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+            ],
           ),
           const SizedBox(height: 8),
           ...map.layers.map((layer) {
@@ -90,6 +101,40 @@ class LayerPanel extends StatelessWidget {
               Navigator.pop(context);
             },
             child: const Text('Salva', style: TextStyle(color: AppColors.magicAccent)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddLayerDialog(BuildContext context, MapEditorController controller) {
+    final textController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text('Aggiungi Livello', style: AppTypography.h3),
+        content: TextField(
+          controller: textController,
+          style: AppTypography.body,
+          decoration: const InputDecoration(
+            hintText: 'Nome livello (es. Trappole)',
+            hintStyle: TextStyle(color: AppColors.textSecondary),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () {
+              if (textController.text.isNotEmpty) {
+                controller.addLayer(textController.text);
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('Aggiungi', style: TextStyle(color: AppColors.magicAccent)),
           ),
         ],
       ),
