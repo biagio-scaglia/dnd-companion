@@ -39,8 +39,8 @@ class _HomeShellState extends State<HomeShell> {
     HomeView(),
     CompendiumView(),
     NotesView(),
-    MapTabView(),
     SettingsView(),
+    MapTabView(),
   ];
 
   @override

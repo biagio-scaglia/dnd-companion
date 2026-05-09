@@ -3,6 +3,8 @@ enum MapTileType {
   floorStone,
   floorWood,
   floorDirt,
+  floorGrass,
+  swamp,
   
   // Muri
   wallStone,

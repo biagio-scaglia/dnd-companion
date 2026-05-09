@@ -130,6 +130,25 @@ class MapEditorController extends ChangeNotifier {
     }
   }
 
+  void renameLayer(String layerId, String newName) {
+    if (_currentMap == null) return;
+    final index = _currentMap!.layers.indexWhere((l) => l.id == layerId);
+    if (index != -1) {
+      _currentMap!.layers[index] = _currentMap!.layers[index].copyWith(name: newName);
+      notifyListeners();
+    }
+  }
+
+  void toggleLayerVisibility(String layerId) {
+    if (_currentMap == null) return;
+    final index = _currentMap!.layers.indexWhere((l) => l.id == layerId);
+    if (index != -1) {
+      final layer = _currentMap!.layers[index];
+      _currentMap!.layers[index] = layer.copyWith(isVisible: !layer.isVisible);
+      notifyListeners();
+    }
+  }
+
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();

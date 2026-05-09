@@ -31,10 +31,13 @@ class LayerPanel extends StatelessWidget {
             return ListTile(
               contentPadding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
-              leading: Icon(
-                layer.isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                color: layer.isVisible ? AppColors.textPrimary : AppColors.textSecondary,
-                size: 20,
+              leading: IconButton(
+                icon: Icon(
+                  layer.isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                  color: layer.isVisible ? AppColors.textPrimary : AppColors.textSecondary,
+                  size: 20,
+                ),
+                onPressed: () => controller.toggleLayerVisibility(layer.id),
               ),
               title: Text(
                 layer.name,
@@ -44,15 +47,50 @@ class LayerPanel extends StatelessWidget {
                 ),
               ),
               trailing: isActive 
-                  ? const Icon(Icons.edit_rounded, size: 16, color: AppColors.magicAccent)
+                  ? IconButton(
+                      icon: const Icon(Icons.edit_rounded, size: 16, color: AppColors.magicAccent),
+                      onPressed: () => _showRenameDialog(context, controller, layer.id, layer.name),
+                    )
                   : null,
               onTap: () {
-                // In un editor completo si potrebbe nascondere cliccando sull'occhio, 
-                // ma per semplicità ora cambiamo solo il layer attivo
                 controller.setActiveLayer(layer.id);
               },
             );
           }),
+        ],
+      ),
+    );
+  }
+
+  void _showRenameDialog(BuildContext context, MapEditorController controller, String layerId, String currentName) {
+    final textController = TextEditingController(text: currentName);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text('Rinomina Livello', style: AppTypography.h3),
+        content: TextField(
+          controller: textController,
+          style: AppTypography.body,
+          decoration: const InputDecoration(
+            hintText: 'Nome livello',
+            hintStyle: TextStyle(color: AppColors.textSecondary),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () {
+              if (textController.text.isNotEmpty) {
+                controller.renameLayer(layerId, textController.text);
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('Salva', style: TextStyle(color: AppColors.magicAccent)),
+          ),
         ],
       ),
     );

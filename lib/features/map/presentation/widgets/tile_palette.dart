@@ -70,6 +70,8 @@ class TilePalette extends StatelessWidget {
       case MapTileType.floorStone: return const Color(0xFF424242);
       case MapTileType.floorWood: return const Color(0xFF5D4037);
       case MapTileType.floorDirt: return const Color(0xFF3E2723);
+      case MapTileType.floorGrass: return const Color(0xFF4CAF50);
+      case MapTileType.swamp: return const Color(0xFF2E7D32);
       case MapTileType.wallStone: return const Color(0xFF757575);
       case MapTileType.wallWood: return const Color(0xFF795548);
       case MapTileType.water: return const Color(0xFF1976D2);

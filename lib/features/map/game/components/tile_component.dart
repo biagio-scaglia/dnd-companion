@@ -34,6 +34,12 @@ class TileComponent extends PositionComponent {
       case MapTileType.floorDirt:
         paint.color = const Color(0xFF3E2723);
         break;
+      case MapTileType.floorGrass:
+        paint.color = const Color(0xFF4CAF50);
+        break;
+      case MapTileType.swamp:
+        paint.color = const Color(0xFF2E7D32);
+        break;
       case MapTileType.wallStone:
         paint.color = const Color(0xFF757575);
         break;
