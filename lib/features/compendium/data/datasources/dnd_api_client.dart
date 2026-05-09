@@ -38,6 +38,62 @@ class DndApiClient {
       }
     } catch (e) {
       print('Errore fetch GraphQL: $e');
+      
+      // Fallback su REST API standard se GraphQL fallisce
+      try {
+        // 1. Spells
+        final spellsResp = await http.get(Uri.parse('https://www.dnd5eapi.co/api/spells'));
+        if (spellsResp.statusCode == 200) {
+          final data = json.decode(spellsResp.body);
+          final results = data['results'] as List<dynamic>? ?? [];
+          for (var r in results) {
+            allItems.add(CompendiumItem(
+              id: r['index'],
+              name: r['name'],
+              type: CompendiumItemType.spell,
+              shortDescription: 'Tocca per caricare i dettagli.',
+              description: 'Tocca per caricare i dettagli.',
+              metaInfo: 'Incantesimo',
+            ));
+          }
+        }
+
+        // 2. Monsters
+        final monstersResp = await http.get(Uri.parse('https://www.dnd5eapi.co/api/monsters'));
+        if (monstersResp.statusCode == 200) {
+          final data = json.decode(monstersResp.body);
+          final results = data['results'] as List<dynamic>? ?? [];
+          for (var r in results) {
+            allItems.add(CompendiumItem(
+              id: r['index'],
+              name: r['name'],
+              type: CompendiumItemType.monster,
+              shortDescription: 'Tocca per caricare i dettagli.',
+              description: 'Tocca per caricare i dettagli.',
+              metaInfo: 'Mostro',
+            ));
+          }
+        }
+
+        // 3. Magic Items
+        final itemsResp = await http.get(Uri.parse('https://www.dnd5eapi.co/api/magic-items'));
+        if (itemsResp.statusCode == 200) {
+          final data = json.decode(itemsResp.body);
+          final results = data['results'] as List<dynamic>? ?? [];
+          for (var r in results) {
+            allItems.add(CompendiumItem(
+              id: r['index'],
+              name: r['name'],
+              type: CompendiumItemType.item,
+              shortDescription: 'Tocca per caricare i dettagli.',
+              description: 'Tocca per caricare i dettagli.',
+              metaInfo: 'Oggetto',
+            ));
+          }
+        }
+      } catch (e2) {
+        print('Errore fallback REST: $e2');
+      }
     }
 
     return allItems;

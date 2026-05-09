@@ -74,6 +74,7 @@ class SettingsView extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: AppSpacing.m),
               DndCard(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -85,11 +86,11 @@ class SettingsView extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.m),
                     _actionRow(context, Icons.privacy_tip_outlined, 'Privacy Policy', () {
-                      _showPolicyDialog(context, 'Privacy Policy', 'Informativa sulla Privacy...\n\nQuesta app non raccoglie dati personali. Tutti i tuoi dati sono salvati localmente sul tuo dispositivo.');
+                      _showPolicyDialog(context, 'Privacy Policy', 'Questa applicazione rispetta la tua privacy. Tutti i dati inseriti (note, mappe, personaggi) vengono salvati esclusivamente in locale sul tuo dispositivo e non vengono inviati a nessun server esterno.\n\nL\'app non raccoglie dati personali, non richiede registrazione e non traccia le tue attività.\n\nI permessi richiesti (come l\'accesso alla memoria) servono solo per consentirti di salvare le mappe come immagini o allegare file alle tue note.');
                     }),
                     const Divider(height: 24),
                     _actionRow(context, Icons.cookie_outlined, 'Cookie Policy', () {
-                      _showPolicyDialog(context, 'Cookie Policy', 'Informativa sui Cookie...\n\nQuesta app non utilizza cookie di tracciamento o di terze parti.');
+                      _showPolicyDialog(context, 'Cookie Policy', 'Questa applicazione è sviluppata in Flutter ed è pensata principalmente come app mobile.\n\nNon utilizza cookie di tracciamento, cookie di terze parti o cookie di profilazione.\n\nSe utilizzata su piattaforma Web, potrebbero essere utilizzati solo cookie tecnici strettamente necessari per il funzionamento dell\'interfaccia (come il mantenimento dello stato o delle preferenze locali tramite LocalStorage), che non profilano l\'utente in alcun modo.');
                     }),
                   ],
                 ),

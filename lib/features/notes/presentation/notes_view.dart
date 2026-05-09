@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
@@ -220,26 +221,52 @@ class NotesView extends StatelessWidget {
                 )
               else
                 ...notesController.attachments.map((a) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.only(bottom: 12),
                   child: DndCard(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: Row(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.insert_drive_file_rounded, color: AppColors.naturalAccent, size: 22),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(a.fileName, style: AppTypography.body.copyWith(fontWeight: FontWeight.bold)),
-                              Text(a.type.toUpperCase(), style: AppTypography.caption),
-                            ],
+                        Row(
+                          children: [
+                            const Icon(Icons.insert_drive_file_rounded, color: AppColors.naturalAccent, size: 22),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(a.fileName, style: AppTypography.body.copyWith(fontWeight: FontWeight.bold)),
+                                  Text(a.type.toUpperCase(), style: AppTypography.caption),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger, size: 18),
+                              onPressed: () => notesController.deleteAttachment(a.id),
+                            ),
+                          ],
+                        ),
+                        if (a.type == 'image') ...[
+                          const SizedBox(height: 12),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              File(a.filePath),
+                              height: 150,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  height: 150,
+                                  color: AppColors.surfaceSecondary,
+                                  child: const Center(
+                                    child: Icon(Icons.broken_image_rounded, color: AppColors.textSecondary),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger, size: 18),
-                          onPressed: () => notesController.deleteAttachment(a.id),
-                        ),
+                        ],
                       ],
                     ),
                   ),
