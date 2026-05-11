@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -84,6 +85,23 @@ class SettingsView extends StatelessWidget {
                     const Divider(height: 24),
                     _actionRow(context, Icons.cookie_outlined, 'Cookie Policy', () {
                       _showPolicyDialog(context, 'Cookie Policy', 'Questa applicazione è sviluppata in Flutter ed è pensata principalmente come app mobile.\n\nNon utilizza cookie di tracciamento, cookie di terze parti o cookie di profilazione.\n\nSe utilizzata su piattaforma Web, potrebbero essere utilizzati solo cookie tecnici strettamente necessari per il funzionamento dell\'interfaccia (come il mantenimento dello stato o delle preferenze locali tramite LocalStorage), che non profilano l\'utente in alcun modo.');
+                    }),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.m),
+              const DndSectionHeader(
+                title: 'Permessi',
+                accentColor: AppColors.highlight,
+              ),
+              const SizedBox(height: AppSpacing.s),
+              DndCard(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _actionRow(context, Icons.settings_applications_rounded, 'Gestisci Permessi App', () async {
+                      await openAppSettings();
                     }),
                   ],
                 ),
