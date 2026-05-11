@@ -84,7 +84,7 @@ class AttachmentCard extends StatelessWidget {
               top: 16,
               right: 16,
               child: IconButton(
-                icon: const Icon(Icons.close_rounded, color: Colors.white, size: 30),
+                icon: const Icon(Icons.close_rounded, color: AppColors.danger, size: 30),
                 onPressed: () => Navigator.pop(context),
               ),
             ),
