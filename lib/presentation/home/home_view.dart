@@ -11,7 +11,7 @@ import 'widgets/compendium_preview_widget.dart';
 import '../widgets/dnd_button.dart';
 import '../widgets/dnd_stat_card.dart';
 import '../widgets/dnd_empty_state.dart';
-import '../widgets/dnd_fantasy_card.dart';
+import '../widgets/dnd_card.dart';
 import '../widgets/dnd_section_header.dart';
 import '../widgets/dnd_mystic_icon_circle.dart';
 import '../widgets/dnd_ornamental_divider.dart';
@@ -107,9 +107,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         accentColor: AppColors.magicAccent,
                       ),
                       const SizedBox(height: AppSpacing.m),
-                      DndFantasyCard(
+                      DndCard(
                         showGlow: true,
-                        glowColor: AppColors.magicAccent,
+                        accentColor: AppColors.magicAccent,
                         padding: const EdgeInsets.all(16),
                         child: Row(
                           children: [
@@ -161,9 +161,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               ),
               const SizedBox(height: AppSpacing.m),
 
-              DndFantasyCard(
+              DndCard(
                 showGlow: true,
-                glowColor: AppColors.naturalAccent,
+                accentColor: AppColors.naturalAccent,
                 padding: const EdgeInsets.all(18),
                 child: Row(
                   children: [

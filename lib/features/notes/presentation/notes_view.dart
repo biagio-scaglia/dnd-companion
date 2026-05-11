@@ -22,7 +22,7 @@ import 'note_edit_view.dart';
 import 'session_edit_view.dart';
 import 'character_edit_view.dart';
 import '../domain/models/character.dart';
-import '../../../core/utils/file_opener/file_opener.dart';
+
 
 class NotesView extends StatelessWidget {
   const NotesView({super.key});

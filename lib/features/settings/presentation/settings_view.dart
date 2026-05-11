@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../presentation/widgets/dnd_fantasy_card.dart';
+import '../../../presentation/widgets/dnd_card.dart';
 import '../../../presentation/widgets/dnd_mystic_icon_circle.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
@@ -50,7 +50,7 @@ class SettingsView extends StatelessWidget {
                 accentColor: AppColors.highlight,
               ),
               const SizedBox(height: AppSpacing.s),
-              DndFantasyCard(
+              DndCard(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +73,7 @@ class SettingsView extends StatelessWidget {
                 accentColor: AppColors.highlight,
               ),
               const SizedBox(height: AppSpacing.s),
-              DndFantasyCard(
+              DndCard(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

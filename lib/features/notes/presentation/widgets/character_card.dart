@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../presentation/widgets/dnd_fantasy_card.dart';
+import '../../../../presentation/widgets/dnd_card.dart';
 import '../../../../presentation/widgets/dnd_mystic_icon_circle.dart';
-import '../../../../presentation/widgets/dnd_accent_pill.dart';
+import '../../../../presentation/widgets/dnd_chip.dart';
 import '../../domain/models/character.dart';
 
 class CharacterCard extends StatelessWidget {
@@ -18,7 +18,7 @@ class CharacterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DndFantasyCard(
+    return DndCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
@@ -35,17 +35,17 @@ class CharacterCard extends StatelessWidget {
               children: [
                 Text(character.name, style: AppTypography.h3),
                 const SizedBox(height: 4),
-                DndAccentPill(
+                DndChip(
                   label: '${character.race} • ${character.characterClass} • Liv. ${character.level}',
                   accentColor: AppColors.highlight,
-                  isFilled: true,
+                  isSelected: true,
                 ),
                 if (character.status != CharacterStatus.attivo) ...[
                   const SizedBox(height: 4),
-                  DndAccentPill(
+                  DndChip(
                     label: character.status == CharacterStatus.npcAlly ? 'Alleato' : (character.status == CharacterStatus.morto ? 'Morto' : 'Ritirato'),
                     accentColor: character.status == CharacterStatus.morto ? AppColors.danger : AppColors.textSecondary,
-                    isFilled: false,
+                    isSelected: false,
                   ),
                 ],
               ],

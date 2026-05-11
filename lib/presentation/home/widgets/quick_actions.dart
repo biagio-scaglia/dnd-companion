@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../widgets/dnd_card.dart';
 import '../../../core/utils/app_navigation.dart';
 import '../../../features/compendium/domain/models/compendium_item.dart';
 import 'dice_roller_dialog.dart';
@@ -84,25 +85,18 @@ class QuickActions extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             borderRadius: BorderRadius.circular(16),
-            highlightColor: color.withOpacity(0.1),
-            splashColor: color.withOpacity(0.2),
-            child: Ink(
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.surfaceSecondary,
-                  width: 1,
-                ),
-              ),
+            highlightColor: color.withValues(alpha: 0.1),
+            splashColor: color.withValues(alpha: 0.2),
+            child: DndCard(
               padding: const EdgeInsets.symmetric(vertical: 16),
+              borderColor: AppColors.surfaceSecondary,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: color.withOpacity(0.15),
+                      color: color.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(

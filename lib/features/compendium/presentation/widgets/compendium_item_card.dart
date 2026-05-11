@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/theme/app_radius.dart';
-import '../../../../presentation/widgets/dnd_fantasy_card.dart';
+import '../../../../presentation/widgets/dnd_card.dart';
 import '../../../../presentation/widgets/dnd_mystic_icon_circle.dart';
-import '../../../../presentation/widgets/dnd_accent_pill.dart';
+import '../../../../presentation/widgets/dnd_chip.dart';
 import '../../domain/models/compendium_item.dart';
 
 class CompendiumItemCard extends StatelessWidget {
@@ -41,9 +41,9 @@ class CompendiumItemCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: DndFantasyCard(
+      child: DndCard(
         showGlow: item.isFavorite,
-        glowColor: AppColors.danger,
+        accentColor: AppColors.danger,
         padding: const EdgeInsets.all(16),
         onTap: onTap,
         child: Column(
@@ -66,10 +66,10 @@ class CompendiumItemCard extends StatelessWidget {
                       Text(item.name, style: AppTypography.h3),
                       if (item.metaInfo != null) ...[
                         const SizedBox(height: 6),
-                        DndAccentPill(
+                        DndChip(
                           label: item.metaInfo!,
                           accentColor: typeColor,
-                          isFilled: true,
+                          isSelected: true,
                         ),
                       ],
                     ],

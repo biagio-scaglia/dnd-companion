@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
-import '../../../presentation/widgets/dnd_accent_pill.dart';
+import '../../../presentation/widgets/dnd_chip.dart';
 import '../domain/models/session.dart';
 import 'notes_controller.dart';
 
@@ -369,10 +369,10 @@ class _SessionEditViewState extends State<SessionEditView> {
           children: list.asMap().entries.map((entry) {
             final index = entry.key;
             final value = entry.value;
-            return DndAccentPill(
+            return DndChip(
               label: value,
               accentColor: AppColors.highlight,
-              isFilled: false,
+              isSelected: false,
               onTap: () => _removeFromList(list, index), // Clicca per rimuovere
             );
           }).toList(),

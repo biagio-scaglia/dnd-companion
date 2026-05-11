@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/app_navigation.dart';
+import '../../widgets/dnd_card.dart';
 
 class HeroCard extends StatelessWidget {
   final String campaignName;
@@ -22,26 +23,11 @@ class HeroCard extends StatelessWidget {
       tag: 'hero_campaign_card',
       child: Material(
         color: Colors.transparent,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
-              ),
-            ],
-            // Aggiungiamo un leggero gradiente per dare profondità e "magia"
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.surface,
-                AppColors.surfaceSecondary,
-              ],
-            ),
-          ),
+        child: DndCard(
+          showGlow: true,
+          accentColor: AppColors.magicAccent,
+          isGlass: true,
+          padding: EdgeInsets.zero,
           child: Stack(
             children: [
               // Effetto luminoso nell'angolo
@@ -53,7 +39,7 @@ class HeroCard extends StatelessWidget {
                   height: 120,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.magicAccent.withOpacity(0.15),
+                    color: AppColors.magicAccent.withValues(alpha: 0.15),
                   ),
                 ),
               ),
@@ -78,7 +64,7 @@ class HeroCard extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.naturalAccent.withOpacity(0.2),
+                            color: AppColors.naturalAccent.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -133,7 +119,7 @@ class HeroCard extends StatelessWidget {
                       child: Text(
                         'Torna alla sessione di sabato',
                         style: TextStyle(
-                          color: AppColors.textSecondary.withOpacity(0.8),
+                          color: AppColors.textSecondary.withValues(alpha: 0.8),
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
@@ -154,7 +140,7 @@ class HeroCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           elevation: 2,
-                          shadowColor: AppColors.highlight.withOpacity(0.4),
+                          shadowColor: AppColors.highlight.withValues(alpha: 0.4),
                         ),
                         child: const Text(
                           'Riprendi Avventura',

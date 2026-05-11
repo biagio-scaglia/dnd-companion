@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_radius.dart';
@@ -18,6 +19,9 @@ class DndCard extends StatelessWidget {
   final DndCardVariant variant;
   final Color? accentColor;
   final VoidCallback? onTap;
+  final bool showGlow;
+  final bool isGlass;
+  final List<Color>? gradientBorderColors;
 
   const DndCard({
     super.key,
@@ -29,6 +33,9 @@ class DndCard extends StatelessWidget {
     this.variant = DndCardVariant.standard,
     this.accentColor,
     this.onTap,
+    this.showGlow = false,
+    this.isGlass = false,
+    this.gradientBorderColors,
   });
 
   @override
@@ -38,7 +45,19 @@ class DndCard extends StatelessWidget {
     Color? bgColor;
     List<Color>? gradient;
     Color border;
-    List<BoxShadow> shadows;
+    List<BoxShadow> shadows = [];
+
+    // Gestione Glow (da DndFantasyCard)
+    if (showGlow) {
+      shadows.add(
+        BoxShadow(
+          color: accent.withValues(alpha: 0.15),
+          blurRadius: 20,
+          spreadRadius: 2,
+          offset: const Offset(0, 0),
+        ),
+      );
+    }
 
     switch (variant) {
       case DndCardVariant.featured:
@@ -46,20 +65,19 @@ class DndCard extends StatelessWidget {
         gradient = gradientColors ??
             [AppColors.surface, AppColors.surfaceSecondary.withValues(alpha: 0.6)];
         border = borderColor ?? accent.withValues(alpha: 0.25);
-        shadows = [
+        shadows.add(
           shadow ??
               BoxShadow(
                 color: accent.withValues(alpha: 0.08),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               )
-        ];
+        );
         break;
       case DndCardVariant.ghost:
         bgColor = Colors.transparent;
         gradient = null;
         border = borderColor ?? AppColors.surfaceSecondary;
-        shadows = [];
         break;
       case DndCardVariant.standard:
         bgColor = gradientColors == null ? AppColors.surface : null;
@@ -71,21 +89,37 @@ class DndCard extends StatelessWidget {
               ).colors
             : null;
         border = borderColor ?? AppColors.surfaceSecondary;
-        shadows = shadow != null
-            ? [shadow!]
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                )
-              ];
+        shadows.add(
+          shadow ??
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              )
+        );
     }
 
-    final container = Container(
+    Widget content = Container(
       padding: padding ?? AppSpacing.paddingAllM,
+      child: child,
+    );
+
+    // Gestione Glass (da DndFantasyCard)
+    if (isGlass) {
+      content = ClipRRect(
+        borderRadius: AppRadius.lBorderRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          child: content,
+        ),
+      );
+    }
+
+    final cardBgColor = bgColor ?? (isGlass ? AppColors.surface.withValues(alpha: 0.7) : AppColors.surface);
+
+    final Widget card = Container(
       decoration: BoxDecoration(
-        color: gradient == null ? bgColor : null,
+        color: gradient == null ? cardBgColor : null,
         gradient: gradient != null
             ? LinearGradient(
                 colors: gradient,
@@ -94,18 +128,38 @@ class DndCard extends StatelessWidget {
               )
             : null,
         borderRadius: AppRadius.lBorderRadius,
-        border: Border.all(color: border, width: 1),
+        border: gradientBorderColors == null ? Border.all(color: border, width: 1) : null,
         boxShadow: shadows,
       ),
-      child: child,
+      child: content,
     );
+
+    // Gestione Bordo Gradiente (da DndFantasyCard)
+    Widget result;
+    if (gradientBorderColors != null) {
+      result = Container(
+        padding: const EdgeInsets.all(1.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: gradientBorderColors!,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: AppRadius.lBorderRadius,
+          boxShadow: shadows,
+        ),
+        child: card,
+      );
+    } else {
+      result = card;
+    }
 
     if (onTap != null) {
       return GestureDetector(
         onTap: onTap,
-        child: container,
+        child: result,
       );
     }
-    return container;
+    return result;
   }
 }

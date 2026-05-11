@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../presentation/widgets/dnd_fantasy_card.dart';
+import '../../../../presentation/widgets/dnd_card.dart';
 import '../../../../presentation/widgets/dnd_mystic_icon_circle.dart';
 import '../../domain/models/session.dart';
 
@@ -17,7 +17,7 @@ class SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DndFantasyCard(
+    return DndCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [

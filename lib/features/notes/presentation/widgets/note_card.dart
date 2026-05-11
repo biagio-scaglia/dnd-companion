@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../presentation/widgets/dnd_fantasy_card.dart';
-import '../../../../presentation/widgets/dnd_accent_pill.dart';
+import '../../../../presentation/widgets/dnd_card.dart';
+import '../../../../presentation/widgets/dnd_chip.dart';
 import '../../domain/models/note.dart';
 
 class NoteCard extends StatelessWidget {
@@ -19,9 +19,9 @@ class NoteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: DndFantasyCard(
+      child: DndCard(
         showGlow: note.isImportant,
-        glowColor: AppColors.magicAccent,
+        accentColor: AppColors.magicAccent,
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,12 +61,12 @@ class NoteCard extends StatelessWidget {
                 spacing: 6,
                 runSpacing: 4,
                 children: note.tags
-                    .map((tag) => DndAccentPill(
+                    .map((tag) => DndChip(
                           label: tag,
                           accentColor: note.isImportant
                               ? AppColors.magicAccent
                               : AppColors.naturalAccent,
-                          isFilled: true,
+                          isSelected: true,
                         ))
                     .toList(),
               ),
