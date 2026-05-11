@@ -9,7 +9,7 @@ enum DndButtonVariant { primary, secondary, ghost, danger }
 /// - secondary: sfondo surface, per azioni secondarie
 /// - ghost: solo bordo trasparente, per azioni terziarie
 /// - danger: rosso, per azioni distruttive
-class DndButton extends StatelessWidget {
+class DndButton extends StatefulWidget {
   final String text;
   final VoidCallback onPressed;
   final DndButtonVariant variant;
@@ -27,10 +27,14 @@ class DndButton extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.isSmall = false,
-
-    // Legacy compatibility
-    bool isPrimary = true,
   });
+
+  @override
+  State<DndButton> createState() => _DndButtonState();
+}
+
+class _DndButtonState extends State<DndButton> {
+  bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +42,16 @@ class DndButton extends StatelessWidget {
     Color fg;
     BorderSide? side;
 
-    switch (variant) {
+    switch (widget.variant) {
       case DndButtonVariant.secondary:
-        bg = backgroundColor ?? AppColors.surfaceSecondary;
-        fg = foregroundColor ?? AppColors.textPrimary;
+        bg = widget.backgroundColor ?? AppColors.surfaceSecondary;
+        fg = widget.foregroundColor ?? AppColors.textPrimary;
         side = null;
         break;
       case DndButtonVariant.ghost:
         bg = Colors.transparent;
-        fg = foregroundColor ?? AppColors.textPrimary;
-        side = BorderSide(color: foregroundColor ?? AppColors.surfaceSecondary);
+        fg = widget.foregroundColor ?? AppColors.textPrimary;
+        side = BorderSide(color: widget.foregroundColor ?? AppColors.surfaceSecondary);
         break;
       case DndButtonVariant.danger:
         bg = AppColors.danger.withValues(alpha: 0.15);
@@ -55,49 +59,58 @@ class DndButton extends StatelessWidget {
         side = const BorderSide(color: AppColors.danger, width: 1);
         break;
       case DndButtonVariant.primary:
-        bg = backgroundColor ?? AppColors.highlight;
-        fg = foregroundColor ?? AppColors.background;
+        bg = widget.backgroundColor ?? AppColors.highlight;
+        fg = widget.foregroundColor ?? AppColors.background;
         side = null;
     }
 
     final textStyle = TextStyle(
       fontFamily: 'Cinzel',
       fontWeight: FontWeight.bold,
-      fontSize: isSmall ? 11 : 13,
+      fontSize: widget.isSmall ? 11 : 13,
       letterSpacing: 0.5,
+      color: fg,
     );
 
-    final shape = RoundedRectangleBorder(
-      borderRadius: AppRadius.mBorderRadius,
-      side: side ?? BorderSide.none,
-    );
-
-    final padding = isSmall
+    final padding = widget.isSmall
         ? const EdgeInsets.symmetric(horizontal: 12, vertical: 8)
         : const EdgeInsets.symmetric(horizontal: 20, vertical: 12);
 
-    final style = ElevatedButton.styleFrom(
-      backgroundColor: bg,
-      foregroundColor: fg,
-      textStyle: textStyle,
-      shape: shape,
-      padding: padding,
-      elevation: 0,
-    );
-
-    if (icon != null) {
-      return ElevatedButton.icon(
-        onPressed: onPressed,
-        style: style,
-        icon: Icon(icon, size: isSmall ? 14 : 18),
-        label: Text(text, style: textStyle),
-      );
-    }
-
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: style,
-      child: Text(text, style: textStyle),
+    return AnimatedScale(
+      scale: _isPressed ? 0.96 : 1.0,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeOutCubic,
+      child: Material(
+        color: bg,
+        borderRadius: AppRadius.mBorderRadius,
+        child: InkWell(
+          onTap: widget.onPressed,
+          onTapDown: (_) => setState(() => _isPressed = true),
+          onTapUp: (_) => setState(() => _isPressed = false),
+          onTapCancel: () => setState(() => _isPressed = false),
+          borderRadius: AppRadius.mBorderRadius,
+          highlightColor: fg.withValues(alpha: 0.1),
+          splashColor: fg.withValues(alpha: 0.2),
+          child: Container(
+            padding: padding,
+            decoration: BoxDecoration(
+              borderRadius: AppRadius.mBorderRadius,
+              border: side != null ? Border.fromBorderSide(side) : null,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (widget.icon != null) ...[
+                  Icon(widget.icon, color: fg, size: widget.isSmall ? 14 : 18),
+                  const SizedBox(width: 8),
+                ],
+                Text(widget.text, style: textStyle),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

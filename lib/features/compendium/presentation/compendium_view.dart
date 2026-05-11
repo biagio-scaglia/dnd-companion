@@ -20,7 +20,9 @@ class CompendiumView extends StatefulWidget {
   State<CompendiumView> createState() => _CompendiumViewState();
 }
 
-class _CompendiumViewState extends State<CompendiumView> with SingleTickerProviderStateMixin {
+class _CompendiumViewState extends State<CompendiumView> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late CompendiumController _controller;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -80,6 +82,7 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton(

@@ -19,10 +19,12 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   int _currentIndex = 0;
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: _currentIndex);
     AppNavigation.instance.currentTab.addListener(_onTabChanged);
     _requestPermissions();
   }
@@ -37,13 +39,25 @@ class _HomeShellState extends State<HomeShell> {
   }
 
   void _onTabChanged() {
-    setState(() {
-      _currentIndex = AppNavigation.instance.currentTab.value;
-    });
+    final newIndex = AppNavigation.instance.currentTab.value;
+    if (newIndex != _currentIndex) {
+      setState(() {
+        _currentIndex = newIndex;
+      });
+      // Muovi la pagina se l'indice cambia da fuori (es. tap sulla barra)
+      if (_pageController.hasClients && _pageController.page?.round() != newIndex) {
+        _pageController.animateToPage(
+          newIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
   }
 
   @override
   void dispose() {
+    _pageController.dispose();
     AppNavigation.instance.currentTab.removeListener(_onTabChanged);
     super.dispose();
   }
@@ -112,9 +126,17 @@ class _HomeShellState extends State<HomeShell> {
             ),
             
             Expanded(
-              // Usiamo IndexedStack per mantenere lo stato delle view quando cambiamo tab
-              child: IndexedStack(
-                index: _currentIndex,
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  // Aggiorna l'indice globale quando l'utente fa swipe
+                  if (index != _currentIndex) {
+                    AppNavigation.instance.currentTab.value = index;
+                  }
+                },
+                physics: _currentIndex == 4 // 4 è l'indice di MapTabView
+                    ? const NeverScrollableScrollPhysics()
+                    : const BouncingScrollPhysics(),
                 children: _pages,
               ),
             ),

@@ -13,6 +13,7 @@ import '../widgets/dnd_stat_card.dart';
 import '../widgets/dnd_empty_state.dart';
 import '../widgets/dnd_card.dart';
 import '../widgets/dnd_section_header.dart';
+import '../widgets/dnd_motion.dart';
 import '../widgets/dnd_mystic_icon_circle.dart';
 import '../widgets/dnd_ornamental_divider.dart';
 
@@ -23,7 +24,9 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin {
+class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -52,6 +55,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
@@ -80,7 +84,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     ),
                   ),
                 ],
-              ),
+              ).slideIn(delay: const Duration(milliseconds: 100)),
               const DndOrnamentalDivider(space: 32),
 
               // ── Lancio Dadi ─────────────────────────────────────────
@@ -88,10 +92,10 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                 title: 'Lancio Dadi',
                 subtitle: 'Tira i dadi per le tue prove',
                 accentColor: AppColors.highlight,
-              ),
+              ).slideIn(delay: const Duration(milliseconds: 200)),
               const SizedBox(height: AppSpacing.m),
 
-              const DiceRollerWidget(),
+              const DiceRollerWidget().slideIn(delay: const Duration(milliseconds: 250)),
               const SizedBox(height: AppSpacing.xl),
               
               // ── Mappe ────────────────────────────────────────
@@ -138,7 +142,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     ],
                   );
                 },
-              ),
+              ).slideIn(delay: const Duration(milliseconds: 300)),
 
               const SizedBox(height: AppSpacing.xl),
 

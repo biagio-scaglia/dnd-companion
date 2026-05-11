@@ -11,9 +11,7 @@ import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_empty_state.dart';
 import '../../../presentation/widgets/dnd_text_field.dart';
 import 'notes_controller.dart';
-import 'calendar_controller.dart';
 import 'widgets/note_card.dart';
-import 'widgets/calendar_event_card.dart';
 import 'widgets/character_card.dart';
 import 'widgets/session_card.dart';
 import 'widgets/attachment_card.dart';
@@ -49,6 +47,7 @@ class NotesView extends StatelessWidget {
           }
 
           return ListView(
+            key: const PageStorageKey('notes_list'),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             children: [
               // ── Personaggi ───────────────────────────────────────────
