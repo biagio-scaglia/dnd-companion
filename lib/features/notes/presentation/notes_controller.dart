@@ -5,9 +5,10 @@ import '../domain/models/attachment.dart';
 import '../domain/models/character.dart';
 import '../domain/repositories/notes_repository.dart';
 import 'package:uuid/uuid.dart';
-import 'package:file_picker/file_picker.dart';
+import '../../../core/services/file_picker_service.dart';
+import '../../../core/services/storage_service.dart';
+import 'package:path/path.dart' as path;
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 
 class NotesController extends ChangeNotifier {
   final NotesRepository repository;
@@ -98,41 +99,44 @@ class NotesController extends ChangeNotifier {
   }
 
   // --- Attachments Actions ---
-  Future<void> addAttachmentReference(String fileName, String filePath, String type) async {
-    final attachment = Attachment(
-      id: _uuid.v4(),
-      fileName: fileName,
-      filePath: filePath,
-      type: type,
-      dateAdded: DateTime.now(),
-    );
-    await repository.addAttachment(attachment);
-    await loadData();
-  }
-
-  Future<void> pickAttachment() async {
+  Future<void> pickAndAddAttachment({
+    required String linkedEntityId,
+    required String linkedEntityType,
+  }) async {
     try {
-      final result = await FilePicker.pickFiles();
-      
-      if (result != null && result.files.single.path != null) {
-        final pickedFile = File(result.files.single.path!);
-        final fileName = result.files.single.name;
+      final filePicker = FilePickerService();
+      final storageService = StorageService();
+
+      final file = await filePicker.pickFile();
+      if (file != null) {
+        final storedFile = await storageService.storeFile(file);
+        final fileName = path.basename(file.path);
+        final ext = path.extension(file.path).replaceAll('.', '');
         
-        // Copia il file nella cartella dell'app per persistenza
-        final appDir = await getApplicationDocumentsDirectory();
-        final savedFile = await pickedFile.copy('${appDir.path}/$fileName');
-        
-        String type = 'file';
-        if (fileName.endsWith('.jpg') || fileName.endsWith('.png') || fileName.endsWith('.jpeg')) {
-          type = 'image';
-        } else if (fileName.endsWith('.pdf')) {
-          type = 'pdf';
+        String sourceType = 'file';
+        if (['jpg', 'jpeg', 'png', 'gif'].contains(ext.toLowerCase())) {
+          sourceType = 'image';
+        } else if (ext.toLowerCase() == 'pdf') {
+          sourceType = 'pdf';
         }
-        
-        await addAttachmentReference(fileName, savedFile.path, type);
+
+        final attachment = Attachment(
+          id: _uuid.v4(),
+          linkedEntityId: linkedEntityId,
+          linkedEntityType: linkedEntityType,
+          fileName: fileName,
+          storedPath: storedFile.path,
+          extension: ext,
+          fileSize: await file.length(),
+          createdAt: DateTime.now(),
+          sourceType: sourceType,
+        );
+
+        await repository.addAttachment(attachment);
+        await loadData();
       }
     } catch (e) {
-      debugPrint('Errore nel picking del file: $e');
+      debugPrint('Errore durante l\'aggiunta dell\'allegato: $e');
     }
   }
 

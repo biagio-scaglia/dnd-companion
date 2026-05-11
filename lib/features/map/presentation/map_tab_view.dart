@@ -24,7 +24,9 @@ class MapTabView extends StatefulWidget {
   State<MapTabView> createState() => _MapTabViewState();
 }
 
-class _MapTabViewState extends State<MapTabView> {
+class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late MapEditorGame _game;
   final GlobalKey _screenshotKey = GlobalKey();
   double _baseScale = 1.0;
@@ -104,6 +106,7 @@ class _MapTabViewState extends State<MapTabView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(

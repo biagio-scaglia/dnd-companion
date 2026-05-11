@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../presentation/widgets/attachment_section.dart';
 import '../domain/models/note.dart';
 import 'notes_controller.dart';
 
@@ -193,6 +194,17 @@ class _NoteEditViewState extends State<NoteEditView> {
               },
             ),
             if (widget.note != null) ...[
+              const SizedBox(height: 24),
+              AttachmentSection(
+                linkedEntityId: widget.note!.id,
+                linkedEntityType: 'note',
+                attachments: notesController.attachments,
+                onAdd: () => notesController.pickAndAddAttachment(
+                  linkedEntityId: widget.note!.id,
+                  linkedEntityType: 'note',
+                ),
+                onDelete: (attachment) => notesController.deleteAttachment(attachment.id),
+              ),
               const SizedBox(height: 40),
               TextButton.icon(
                 onPressed: () async {

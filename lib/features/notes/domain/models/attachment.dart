@@ -1,51 +1,91 @@
 class Attachment {
   final String id;
+  final String linkedEntityId;
+  final String linkedEntityType; // 'note', 'session', 'character'
   final String fileName;
-  final String filePath;
-  final String type; // e.g., 'image', 'pdf', 'text'
-  final DateTime dateAdded;
+  final String storedPath;
+  final String? mimeType;
+  final String? extension;
+  final int? fileSize;
+  final DateTime createdAt;
+  final String sourceType; // 'image', 'file', 'link', etc.
+  final String? note;
 
   const Attachment({
     required this.id,
+    required this.linkedEntityId,
+    required this.linkedEntityType,
     required this.fileName,
-    required this.filePath,
-    required this.type,
-    required this.dateAdded,
+    required this.storedPath,
+    this.mimeType,
+    this.extension,
+    this.fileSize,
+    required this.createdAt,
+    required this.sourceType,
+    this.note,
   });
 
   Attachment copyWith({
     String? id,
+    String? linkedEntityId,
+    String? linkedEntityType,
     String? fileName,
-    String? filePath,
-    String? type,
-    DateTime? dateAdded,
+    String? storedPath,
+    String? mimeType,
+    String? extension,
+    int? fileSize,
+    DateTime? createdAt,
+    String? sourceType,
+    String? note,
   }) {
     return Attachment(
       id: id ?? this.id,
+      linkedEntityId: linkedEntityId ?? this.linkedEntityId,
+      linkedEntityType: linkedEntityType ?? this.linkedEntityType,
       fileName: fileName ?? this.fileName,
-      filePath: filePath ?? this.filePath,
-      type: type ?? this.type,
-      dateAdded: dateAdded ?? this.dateAdded,
+      storedPath: storedPath ?? this.storedPath,
+      mimeType: mimeType ?? this.mimeType,
+      extension: extension ?? this.extension,
+      fileSize: fileSize ?? this.fileSize,
+      createdAt: createdAt ?? this.createdAt,
+      sourceType: sourceType ?? this.sourceType,
+      note: note ?? this.note,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'linkedEntityId': linkedEntityId,
+      'linkedEntityType': linkedEntityType,
       'fileName': fileName,
-      'filePath': filePath,
-      'type': type,
-      'dateAdded': dateAdded.toIso8601String(),
+      'storedPath': storedPath,
+      'mimeType': mimeType,
+      'extension': extension,
+      'fileSize': fileSize,
+      'createdAt': createdAt.toIso8601String(),
+      'sourceType': sourceType,
+      'note': note,
     };
   }
 
   factory Attachment.fromJson(Map<String, dynamic> json) {
     return Attachment(
       id: json['id'] as String,
+      linkedEntityId: json['linkedEntityId'] as String? ?? '',
+      linkedEntityType: json['linkedEntityType'] as String? ?? 'note',
       fileName: json['fileName'] as String,
-      filePath: json['filePath'] as String,
-      type: json['type'] as String,
-      dateAdded: DateTime.parse(json['dateAdded'] as String),
+      storedPath: json['storedPath'] as String? ?? json['filePath'] as String? ?? '',
+      mimeType: json['mimeType'] as String?,
+      extension: json['extension'] as String?,
+      fileSize: json['fileSize'] as int?,
+      createdAt: json['createdAt'] != null 
+          ? DateTime.parse(json['createdAt'] as String)
+          : json['dateAdded'] != null 
+              ? DateTime.parse(json['dateAdded'] as String)
+              : DateTime.now(),
+      sourceType: json['sourceType'] as String? ?? json['type'] as String? ?? 'file',
+      note: json['note'] as String?,
     );
   }
 }
