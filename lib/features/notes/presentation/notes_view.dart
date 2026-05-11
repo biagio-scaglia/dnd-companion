@@ -133,7 +133,14 @@ class NotesView extends StatelessWidget {
                   accentColor: AppColors.naturalAccent,
                 )
               else
-                ...notesController.notes.map((n) => Padding(
+                ...(List<Note>.from(notesController.notes)
+                  ..sort((a, b) {
+                    if (a.isImportant != b.isImportant) {
+                      return a.isImportant ? -1 : 1;
+                    }
+                    return b.date.compareTo(a.date);
+                  }))
+                .map((n) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: NoteCard(
                     note: n,

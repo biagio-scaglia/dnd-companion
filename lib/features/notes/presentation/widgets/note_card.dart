@@ -15,6 +15,27 @@ class NoteCard extends StatelessWidget {
     required this.onTap,
   });
 
+  Color _getTagColor(String tag) {
+    switch (tag.toLowerCase()) {
+      case 'png':
+      case 'npc':
+        return Colors.green;
+      case 'combattimento':
+      case 'combat':
+        return Colors.red;
+      case 'lore':
+      case 'storia':
+        return Colors.blue;
+      case 'oggetti':
+      case 'loot':
+        return Colors.orange;
+      case 'mistero':
+        return Colors.purple;
+      default:
+        return AppColors.naturalAccent;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -63,9 +84,7 @@ class NoteCard extends StatelessWidget {
                 children: note.tags
                     .map((tag) => DndChip(
                           label: tag,
-                          accentColor: note.isImportant
-                              ? AppColors.magicAccent
-                              : AppColors.naturalAccent,
+                          accentColor: _getTagColor(tag),
                           isSelected: true,
                         ))
                     .toList(),
