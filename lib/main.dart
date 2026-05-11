@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/home/home_shell.dart';
+import 'presentation/splash/splash_view.dart';
 import 'features/notes/data/notes_repository_impl.dart';
 import 'features/notes/presentation/notes_controller.dart';
 import 'features/settings/data/settings_repository_impl.dart';
@@ -50,7 +51,7 @@ class DndCompanionApp extends StatelessWidget {
           title: 'D&D Companion',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.getTheme(accentColor: settingsController.settings.accentColor),
-          home: const HomeShell(),
+          home: const SplashView(),
         );
       },
     );
