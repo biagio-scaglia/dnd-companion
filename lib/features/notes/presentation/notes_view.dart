@@ -11,6 +11,7 @@ import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_empty_state.dart';
 import '../../../presentation/widgets/dnd_text_field.dart';
 import 'notes_controller.dart';
+import '../domain/models/note.dart';
 import 'widgets/note_card.dart';
 import 'widgets/character_card.dart';
 import 'widgets/session_card.dart';
@@ -158,7 +159,10 @@ class NotesView extends StatelessWidget {
                 accentColor: AppColors.textSecondary,
                 trailing: IconButton(
                   icon: const Icon(Icons.attach_file_rounded, color: AppColors.textSecondary, size: 20),
-                  onPressed: () => notesController.pickAttachment(),
+                  onPressed: () => notesController.pickAndAddAttachment(
+                    linkedEntityId: 'global',
+                    linkedEntityType: 'global',
+                  ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),

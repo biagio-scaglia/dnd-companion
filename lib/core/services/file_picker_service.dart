@@ -5,7 +5,7 @@ class FilePickerService {
   /// Permette di selezionare un file generico o con estensioni specifiche.
   Future<File?> pickFile({List<String>? allowedExtensions}) async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
+      FilePickerResult? result = await FilePicker.pickFiles(
         type: allowedExtensions != null ? FileType.custom : FileType.any,
         allowedExtensions: allowedExtensions,
       );
@@ -22,7 +22,7 @@ class FilePickerService {
   /// Permette di selezionare un'immagine.
   Future<File?> pickImage() async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
+      FilePickerResult? result = await FilePicker.pickFiles(
         type: FileType.image,
       );
 

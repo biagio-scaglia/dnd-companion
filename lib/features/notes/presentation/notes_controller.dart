@@ -143,7 +143,7 @@ class NotesController extends ChangeNotifier {
   Future<void> deleteAttachment(String id) async {
     try {
       final attachment = _attachments.firstWhere((a) => a.id == id);
-      final file = File(attachment.filePath);
+      final file = File(attachment.storedPath);
       if (await file.exists()) {
         await file.delete();
       }
@@ -184,7 +184,7 @@ class NotesController extends ChangeNotifier {
 
   Attachment? get latestAttachment {
     try {
-      return _attachments.reduce((a, b) => a.dateAdded.isAfter(b.dateAdded) ? a : b);
+      return _attachments.reduce((a, b) => a.createdAt.isAfter(b.createdAt) ? a : b);
     } catch (_) {
       return null;
     }

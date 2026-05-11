@@ -97,80 +97,82 @@ class _AttachmentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isImage = attachment.sourceType == 'image';
     
-    return DndCard(
-      padding: EdgeInsets.zero,
+    return SizedBox(
       width: 100,
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                flex: 2,
-                child: isImage
-                    ? ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-                        child: Image.file(
-                          File(attachment.storedPath),
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Center(
-                              child: Icon(Icons.broken_image_rounded, color: AppColors.textSecondary),
-                            );
-                          },
-                        ),
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceSecondary,
+      child: DndCard(
+        padding: EdgeInsets.zero,
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: isImage
+                      ? ClipRRect(
                           borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+                          child: Image.file(
+                            File(attachment.storedPath),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Center(
+                                child: Icon(Icons.broken_image_rounded, color: AppColors.textSecondary),
+                              );
+                            },
+                          ),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceSecondary,
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+                          ),
+                          child: Icon(
+                            _getIconForType(attachment.sourceType),
+                            color: AppColors.magicAccent,
+                            size: 32,
+                          ),
                         ),
-                        child: Icon(
-                          _getIconForType(attachment.sourceType),
-                          color: AppColors.magicAccent,
-                          size: 32,
-                        ),
-                      ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        attachment.fileName,
-                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (attachment.fileSize != null)
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         Text(
-                          _formatFileSize(attachment.fileSize!),
-                          style: const TextStyle(fontSize: 8, color: AppColors.textSecondary),
+                          attachment.fileName,
+                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                    ],
+                        if (attachment.fileSize != null)
+                          Text(
+                            _formatFileSize(attachment.fileSize!),
+                            style: const TextStyle(fontSize: 8, color: AppColors.textSecondary),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Positioned(
-            top: 2,
-            right: 2,
-            child: CircleAvatar(
-              radius: 12,
-              backgroundColor: Colors.black.withValues(alpha: 0.6),
-              child: IconButton(
-                icon: const Icon(Icons.close_rounded, size: 10, color: Colors.white),
-                onPressed: onDelete,
-                padding: EdgeInsets.zero,
+              ],
+            ),
+            Positioned(
+              top: 2,
+              right: 2,
+              child: CircleAvatar(
+                radius: 12,
+                backgroundColor: Colors.black.withValues(alpha: 0.6),
+                child: IconButton(
+                  icon: const Icon(Icons.close_rounded, size: 10, color: Colors.white),
+                  onPressed: onDelete,
+                  padding: EdgeInsets.zero,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

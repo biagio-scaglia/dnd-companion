@@ -31,7 +31,7 @@ class AttachmentCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(attachment.fileName, style: AppTypography.body.copyWith(fontWeight: FontWeight.bold)),
-                    Text(attachment.type.toUpperCase(), style: AppTypography.caption),
+                    Text(attachment.sourceType.toUpperCase(), style: AppTypography.caption),
                   ],
                 ),
               ),
@@ -41,14 +41,14 @@ class AttachmentCard extends StatelessWidget {
               ),
             ],
           ),
-          if (attachment.type == 'image') ...[
+          if (attachment.sourceType == 'image') ...[
             const SizedBox(height: 12),
             GestureDetector(
-              onTap: () => _showFullscreenImage(context, attachment.filePath),
+              onTap: () => _showFullscreenImage(context, attachment.storedPath),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.file(
-                  File(attachment.filePath),
+                  File(attachment.storedPath),
                   height: 150,
                   width: double.infinity,
                   fit: BoxFit.cover,
