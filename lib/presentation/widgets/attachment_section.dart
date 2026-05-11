@@ -109,16 +109,19 @@ class _AttachmentCard extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: isImage
-                      ? ClipRRect(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-                          child: Image.file(
-                            File(attachment.storedPath),
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Center(
-                                child: Icon(Icons.broken_image_rounded, color: AppColors.textSecondary),
-                              );
-                            },
+                      ? GestureDetector(
+                          onTap: () => _showFullscreenImage(context, attachment.storedPath),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+                            child: Image.file(
+                              File(attachment.storedPath),
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Center(
+                                  child: Icon(Icons.broken_image_rounded, color: AppColors.textSecondary),
+                                );
+                              },
+                            ),
                           ),
                         )
                       : Container(
@@ -165,10 +168,34 @@ class _AttachmentCard extends StatelessWidget {
                 radius: 12,
                 backgroundColor: Colors.black.withValues(alpha: 0.6),
                 child: IconButton(
-                  icon: const Icon(Icons.close_rounded, size: 10, color: Colors.white),
+                  icon: const Icon(Icons.close_rounded, size: 10, color: AppColors.danger),
                   onPressed: onDelete,
                   padding: EdgeInsets.zero,
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showFullscreenImage(BuildContext context, String path) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog.fullscreen(
+        backgroundColor: Colors.black,
+        child: Stack(
+          children: [
+            Center(
+              child: Image.file(File(path)),
+            ),
+            Positioned(
+              top: 16,
+              right: 16,
+              child: IconButton(
+                icon: const Icon(Icons.close_rounded, color: AppColors.danger, size: 30),
+                onPressed: () => Navigator.pop(context),
               ),
             ),
           ],
