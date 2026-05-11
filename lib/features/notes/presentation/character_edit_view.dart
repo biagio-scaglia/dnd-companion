@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
+import '../../../presentation/widgets/attachment_section.dart';
 import '../domain/models/character.dart';
 import 'notes_controller.dart';
 
@@ -17,6 +18,13 @@ class CharacterEditView extends StatefulWidget {
 class _CharacterEditViewState extends State<CharacterEditView> {
   final _formKey = GlobalKey<FormState>();
   final _uuid = const Uuid();
+  late String _characterId;
+
+  @override
+  void initState() {
+    super.initState();
+    _characterId = _uuid.v4();
+  }
 
   // Controllers
   final _nameController = TextEditingController();
@@ -77,7 +85,7 @@ class _CharacterEditViewState extends State<CharacterEditView> {
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 final character = Character(
-                  id: _uuid.v4(),
+                  id: _characterId,
                   name: _nameController.text,
                   playerName: _playerNameController.text.isNotEmpty ? _playerNameController.text : null,
                   race: _raceController.text,
@@ -298,6 +306,17 @@ class _CharacterEditViewState extends State<CharacterEditView> {
               ),
               style: const TextStyle(color: AppColors.textPrimary),
               maxLines: 5,
+            ),
+            const SizedBox(height: 24),
+            AttachmentSection(
+              linkedEntityId: _characterId,
+              linkedEntityType: 'character',
+              attachments: notesController.attachments,
+              onAdd: () => notesController.pickAndAddAttachment(
+                linkedEntityId: _characterId,
+                linkedEntityType: 'character',
+              ),
+              onDelete: (attachment) => notesController.deleteAttachment(attachment.id),
             ),
           ],
         ),

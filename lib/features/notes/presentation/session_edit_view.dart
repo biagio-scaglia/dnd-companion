@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_chip.dart';
+import '../../../presentation/widgets/attachment_section.dart';
 import '../domain/models/session.dart';
 import 'notes_controller.dart';
 
@@ -18,6 +19,13 @@ class SessionEditView extends StatefulWidget {
 class _SessionEditViewState extends State<SessionEditView> {
   final _formKey = GlobalKey<FormState>();
   final _uuid = const Uuid();
+  late String _sessionId;
+
+  @override
+  void initState() {
+    super.initState();
+    _sessionId = _uuid.v4();
+  }
 
   // Controllers
   final _titleController = TextEditingController();
@@ -128,7 +136,7 @@ class _SessionEditViewState extends State<SessionEditView> {
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 final session = CampaignSession(
-                  id: _uuid.v4(),
+                  id: _sessionId,
                   title: _titleController.text,
                   number: _numberController.text.isNotEmpty ? int.tryParse(_numberController.text) : null,
                   campaign: _campaignController.text.isNotEmpty ? _campaignController.text : null,
@@ -329,6 +337,17 @@ class _SessionEditViewState extends State<SessionEditView> {
               ),
               style: const TextStyle(color: AppColors.textPrimary),
               maxLines: 6,
+            ),
+            const SizedBox(height: 24),
+            AttachmentSection(
+              linkedEntityId: _sessionId,
+              linkedEntityType: 'session',
+              attachments: notesController.attachments,
+              onAdd: () => notesController.pickAndAddAttachment(
+                linkedEntityId: _sessionId,
+                linkedEntityType: 'session',
+              ),
+              onDelete: (attachment) => notesController.deleteAttachment(attachment.id),
             ),
           ],
         ),
