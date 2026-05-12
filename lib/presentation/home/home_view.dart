@@ -87,20 +87,16 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                 children: [
                   // ── Header ──────────────────────────────────────────────
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.welcome,
-                            style: AppTypography.display.copyWith(
-                              letterSpacing: -0.5,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        AppLocalizations.of(context)!.welcome,
+                        style: AppTypography.display.copyWith(
+                          letterSpacing: -0.5,
+                        ),
                       ),
+                      const SizedBox(height: 12),
                       // Switch lingua
                       PopupMenuButton<String>(
                         onSelected: (String value) {
@@ -124,6 +120,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                             border: Border.all(color: AppColors.highlight.withOpacity(0.5)),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 lang.toUpperCase(),

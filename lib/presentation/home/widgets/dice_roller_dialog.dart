@@ -242,14 +242,14 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
                 runSpacing: 4,
                 alignment: WrapAlignment.center,
                 children: _history.map((h) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceSecondary,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     h, 
-                    style: const TextStyle(fontSize: 10, color: AppColors.textSecondary)
+                    style: const TextStyle(fontSize: 18, color: AppColors.textSecondary, fontWeight: FontWeight.bold)
                   ),
                 )).toList(),
               ),
