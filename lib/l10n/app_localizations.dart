@@ -1142,6 +1142,24 @@ abstract class AppLocalizations {
   /// **'Error during import'**
   String get backupImportError;
 
+  /// No description provided for @backupOverwritten.
+  ///
+  /// In en, this message translates to:
+  /// **'Data overwritten successfully!'**
+  String get backupOverwritten;
+
+  /// No description provided for @backupMerged.
+  ///
+  /// In en, this message translates to:
+  /// **'Data merged successfully!'**
+  String get backupMerged;
+
+  /// No description provided for @backupUnsupportedVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported format version. Please update the app.'**
+  String get backupUnsupportedVersion;
+
   /// No description provided for @ignored.
   ///
   /// In en, this message translates to:
@@ -1153,6 +1171,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Duplicated'**
   String get duplicated;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get appVersion;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @restoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoration Ritual'**
+  String get restoreTitle;
+
+  /// No description provided for @foundInFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Found in file:'**
+  String get foundInFile;
+
+  /// No description provided for @chooseProceed.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how to proceed:'**
+  String get chooseProceed;
+
+  /// No description provided for @merge.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge'**
+  String get merge;
+
+  /// No description provided for @overwrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Overwrite'**
+  String get overwrite;
+
+  /// No description provided for @warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning!'**
+  String get warning;
+
+  /// No description provided for @overwriteWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This operation will DELETE all current app data and replace it with the backup. Are you sure?'**
+  String get overwriteWarning;
+
+  /// No description provided for @yesOverwrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Overwrite'**
+  String get yesOverwrite;
+
+  /// No description provided for @recentSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Sessions'**
+  String get recentSessions;
+
+  /// No description provided for @recapWhatHappened.
+  ///
+  /// In en, this message translates to:
+  /// **'Recap what happened'**
+  String get recapWhatHappened;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See All'**
+  String get seeAll;
+
+  /// No description provided for @noSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions recorded.'**
+  String get noSessions;
+
+  /// No description provided for @nothingLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is lost between sessions'**
+  String get nothingLost;
+
+  /// No description provided for @newTag.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get newTag;
 
   /// No description provided for @newMap.
   ///
@@ -1507,12 +1621,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last rolls:'**
   String get lastRolls;
-
-  /// No description provided for @close.
-  ///
-  /// In en, this message translates to:
-  /// **'Close'**
-  String get close;
 }
 
 class _AppLocalizationsDelegate

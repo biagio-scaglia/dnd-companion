@@ -4,6 +4,7 @@ import 'package:dnd/l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/utils/app_navigation.dart';
 import '../../features/notes/presentation/notes_controller.dart';
 import '../../features/map/presentation/controllers/map_editor_controller.dart';
 import '../../features/settings/presentation/settings_controller.dart';
@@ -93,15 +94,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.appTitle,
-                            style: AppTypography.label.copyWith(
-                              color: AppColors.highlight,
-                              letterSpacing: 3,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
                             AppLocalizations.of(context)!.welcome,
                             style: AppTypography.display.copyWith(
                               letterSpacing: -0.5,
@@ -110,12 +102,37 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         ],
                       ),
                       // Switch lingua
-                      Row(
-                        children: [
-                          _buildLanguageButton(context, 'IT', lang == 'it', () => context.read<SettingsController>().setLocale('it')),
-                          const SizedBox(width: 8),
-                          _buildLanguageButton(context, 'EN', lang == 'en', () => context.read<SettingsController>().setLocale('en')),
+                      PopupMenuButton<String>(
+                        onSelected: (String value) {
+                          context.read<SettingsController>().setLocale(value);
+                        },
+                        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                            value: 'it',
+                            child: Text('Italiano'),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: 'en',
+                            child: Text('English'),
+                          ),
                         ],
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceSecondary,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: AppColors.highlight.withOpacity(0.5)),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                lang.toUpperCase(),
+                                style: AppTypography.label.copyWith(color: AppColors.highlight),
+                              ),
+                              const Icon(Icons.arrow_drop_down, color: AppColors.highlight, size: 20),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ).slideIn(delay: const Duration(milliseconds: 100)),
@@ -124,7 +141,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               // ── Lancio Dadi ─────────────────────────────────────────
               DndSectionHeader(
                 title: AppLocalizations.of(context)!.diceRoll,
-                subtitle: AppLocalizations.of(context)!.diceRollSub,
                 accentColor: AppColors.highlight,
               ).slideIn(delay: const Duration(milliseconds: 200)),
               const SizedBox(height: AppSpacing.m),
@@ -141,7 +157,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     children: [
                       DndSectionHeader(
                         title: AppLocalizations.of(context)!.maps,
-                        subtitle: AppLocalizations.of(context)!.mapsSub,
                         accentColor: AppColors.magicAccent,
                       ),
                       const SizedBox(height: AppSpacing.m),
@@ -149,6 +164,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         showGlow: true,
                         accentColor: AppColors.magicAccent,
                         padding: const EdgeInsets.all(16),
+                        onTap: () => AppNavigation.instance.currentTab.value = 4,
                         child: Row(
                           children: [
                             const DndMysticIconCircle(
@@ -183,7 +199,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               // ── Dal Compendio ────────────────────────────────────────
               DndSectionHeader(
                 title: AppLocalizations.of(context)!.compendium,
-                subtitle: AppLocalizations.of(context)!.compendiumSub,
                 accentColor: AppColors.magicAccent,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -194,7 +209,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               // ── Generatore Bottino ────────────────────────────────────
               DndSectionHeader(
                 title: AppLocalizations.of(context)!.generator,
-                subtitle: AppLocalizations.of(context)!.generatorSub,
                 accentColor: AppColors.naturalAccent,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -240,7 +254,6 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               // ── I Tuoi Contenuti ──────────────────────────────────────
               DndSectionHeader(
                 title: AppLocalizations.of(context)!.contents,
-                subtitle: AppLocalizations.of(context)!.contentsSub,
                 accentColor: AppColors.textSecondary,
               ),
               const SizedBox(height: AppSpacing.m),

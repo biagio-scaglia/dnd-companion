@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import 'dnd_chip.dart';
 
@@ -31,9 +32,9 @@ class DndListInput extends StatelessWidget {
             Expanded(
               child: TextFormField(
                 controller: controller,
-                decoration: const InputDecoration(
-                  hintText: 'Aggiungi...',
-                  hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: '${AppLocalizations.of(context)!.add}...',
+                  hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
                   enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
                 ),
                 style: const TextStyle(color: AppColors.textPrimary),

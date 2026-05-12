@@ -537,10 +537,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupImportError => 'Error during import';
 
   @override
+  String get backupOverwritten => 'Data overwritten successfully!';
+
+  @override
+  String get backupMerged => 'Data merged successfully!';
+
+  @override
+  String get backupUnsupportedVersion =>
+      'Unsupported format version. Please update the app.';
+
+  @override
   String get ignored => 'Ignored';
 
   @override
   String get duplicated => 'Duplicated';
+
+  @override
+  String get appVersion => 'Version';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get restoreTitle => 'Restoration Ritual';
+
+  @override
+  String get foundInFile => 'Found in file:';
+
+  @override
+  String get chooseProceed => 'Choose how to proceed:';
+
+  @override
+  String get merge => 'Merge';
+
+  @override
+  String get overwrite => 'Overwrite';
+
+  @override
+  String get warning => 'Warning!';
+
+  @override
+  String get overwriteWarning =>
+      'This operation will DELETE all current app data and replace it with the backup. Are you sure?';
+
+  @override
+  String get yesOverwrite => 'Yes, Overwrite';
+
+  @override
+  String get recentSessions => 'Recent Sessions';
+
+  @override
+  String get recapWhatHappened => 'Recap what happened';
+
+  @override
+  String get seeAll => 'See All';
+
+  @override
+  String get noSessions => 'No sessions recorded.';
+
+  @override
+  String get nothingLost => 'Nothing is lost between sessions';
+
+  @override
+  String get newTag => 'New';
 
   @override
   String get newMap => 'New Map';
@@ -725,7 +784,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lastRolls => 'Last rolls:';
-
-  @override
-  String get close => 'Close';
 }

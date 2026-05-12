@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/app_navigation.dart';
 import '../../../features/notes/presentation/notes_controller.dart';
@@ -23,18 +24,18 @@ class RecentSessions extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Sessioni Recenti',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.recentSessions,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'Ricapitola quello che è successo',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.recapWhatHappened,
+                      style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
                       ),
@@ -45,9 +46,9 @@ class RecentSessions extends StatelessWidget {
                   onPressed: () {
                     AppNavigation.instance.goToNotes();
                   },
-                  child: const Text(
-                    'Vedi Tutte',
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.seeAll,
+                    style: const TextStyle(
                       color: AppColors.highlight,
                       fontWeight: FontWeight.w600,
                     ),
@@ -61,8 +62,8 @@ class RecentSessions extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 24.0),
                 child: Center(
                   child: Text(
-                    'Nessuna sessione registrata.',
-                    style: TextStyle(color: AppColors.textSecondary),
+                    AppLocalizations.of(context)!.noSessions,
+                    style: const TextStyle(color: AppColors.textSecondary),
                   ),
                 ),
               )
@@ -79,8 +80,8 @@ class RecentSessions extends StatelessWidget {
             const SizedBox(height: 16),
             const Center(
               child: Text(
-                'Niente si perde tra una sessione e l\'altra',
-                style: TextStyle(
+                AppLocalizations.of(context)!.nothingLost,
+                style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.textSecondary,
                   fontStyle: FontStyle.italic,
@@ -144,9 +145,9 @@ class RecentSessions extends StatelessWidget {
                         color: AppColors.magicAccent.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Text(
-                        'Nuovo',
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(context)!.newTag,
+                        style: const TextStyle(
                           color: AppColors.magicAccent,
                           fontSize: 9,
                           fontWeight: FontWeight.w600,

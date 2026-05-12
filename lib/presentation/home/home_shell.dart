@@ -46,12 +46,8 @@ class _HomeShellState extends State<HomeShell> {
         _currentIndex = newIndex;
       });
       // Muovi la pagina se l'indice cambia da fuori (es. tap sulla barra)
-      if (_pageController.hasClients && _pageController.page?.round() != newIndex) {
-        _pageController.animateToPage(
-          newIndex,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
+      if (_pageController.hasClients) {
+        _pageController.jumpToPage(newIndex);
       }
     }
   }
@@ -151,28 +147,28 @@ class _HomeShellState extends State<HomeShell> {
               },
               destinations: [
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
+                  icon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 32, height: 32),
+                  selectedIcon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 32, height: 32),
                   label: AppLocalizations.of(context)!.chronicles,
                 ),
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 24, height: 24),
+                  icon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 32, height: 32),
+                  selectedIcon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 32, height: 32),
                   label: AppLocalizations.of(context)!.lore,
                 ),
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 24, height: 24),
+                  icon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 32, height: 32),
+                  selectedIcon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 32, height: 32),
                   label: AppLocalizations.of(context)!.memories,
                 ),
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 24, height: 24),
+                  icon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 32, height: 32),
+                  selectedIcon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 32, height: 32),
                   label: AppLocalizations.of(context)!.info,
                 ),
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24),
+                  icon: Image.asset('lib/assets/icone/Misc/Map.png', width: 32, height: 32),
+                  selectedIcon: Image.asset('lib/assets/icone/Misc/Map.png', width: 32, height: 32),
                   label: AppLocalizations.of(context)!.cartography,
                 ),
               ],

@@ -538,10 +538,69 @@ class AppLocalizationsIt extends AppLocalizations {
   String get backupImportError => 'Errore durante l\'import';
 
   @override
+  String get backupOverwritten => 'Dati sovrascritti con successo!';
+
+  @override
+  String get backupMerged => 'Dati uniti con successo!';
+
+  @override
+  String get backupUnsupportedVersion =>
+      'Versione del formato non supportata. Aggiorna l\'app.';
+
+  @override
   String get ignored => 'Ignorati';
 
   @override
   String get duplicated => 'Duplicati';
+
+  @override
+  String get appVersion => 'Versione';
+
+  @override
+  String get close => 'Chiudi';
+
+  @override
+  String get restoreTitle => 'Rituale di Ripristino';
+
+  @override
+  String get foundInFile => 'Trovati nel file:';
+
+  @override
+  String get chooseProceed => 'Scegli come procedere:';
+
+  @override
+  String get merge => 'Unisci';
+
+  @override
+  String get overwrite => 'Sovrascrivi';
+
+  @override
+  String get warning => 'Attenzione!';
+
+  @override
+  String get overwriteWarning =>
+      'Questa operazione CANCELLERÀ tutti i dati attuali dell\'app e li sostituirà con quelli del backup. Sei sicuro?';
+
+  @override
+  String get yesOverwrite => 'Sì, Sovrascrivi';
+
+  @override
+  String get recentSessions => 'Sessioni Recenti';
+
+  @override
+  String get recapWhatHappened => 'Ricapitola quello che è successo';
+
+  @override
+  String get seeAll => 'Vedi Tutte';
+
+  @override
+  String get noSessions => 'Nessuna sessione registrata.';
+
+  @override
+  String get nothingLost => 'Niente si perde tra una sessione e l\'altra';
+
+  @override
+  String get newTag => 'Nuovo';
 
   @override
   String get newMap => 'Nuova Mappa';
@@ -726,7 +785,4 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get lastRolls => 'Ultimi tiri:';
-
-  @override
-  String get close => 'Chiudi';
 }

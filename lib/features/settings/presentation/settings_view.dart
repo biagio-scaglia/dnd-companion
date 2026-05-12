@@ -61,7 +61,7 @@ class SettingsView extends StatelessWidget {
                     const SizedBox(height: AppSpacing.m),
                     Text('Vellum', style: AppTypography.h1),
                     const SizedBox(height: 4),
-                    Text('Versione 1.0.0', style: AppTypography.bodySmall),
+                    Text('${l10n.appVersion} 1.0.0', style: AppTypography.bodySmall),
                   ],
                 ),
               ),
@@ -196,6 +196,15 @@ class SettingsView extends StatelessWidget {
                         case 'backupImportError':
                           localizedMsg = '${l10n.backupImportError}: $details';
                           break;
+                        case 'backupOverwritten':
+                          localizedMsg = l10n.backupOverwritten;
+                          break;
+                        case 'backupMerged':
+                          localizedMsg = l10n.backupMerged;
+                          break;
+                        case 'backupUnsupportedVersion':
+                          localizedMsg = l10n.backupUnsupportedVersion;
+                          break;
                         default:
                           localizedMsg = msg;
                       }
@@ -308,7 +317,7 @@ class SettingsView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Chiudi', style: TextStyle(color: AppColors.magicAccent)),
+            child: Text(AppLocalizations.of(context)!.close, style: const TextStyle(color: AppColors.magicAccent)),
           ),
         ],
       ),
@@ -336,19 +345,19 @@ class SettingsView extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Rituale di Ripristino', style: AppTypography.h3),
+        title: Text(AppLocalizations.of(context)!.restoreTitle, style: AppTypography.h3),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Trovati nel file:', style: AppTypography.body),
+            Text(AppLocalizations.of(context)!.foundInFile, style: AppTypography.body),
             const SizedBox(height: 8),
-            Text('• ${preview.characterCount} Personaggi', style: AppTypography.bodySmall),
-            Text('• ${preview.sessionCount} Sessioni', style: AppTypography.bodySmall),
-            Text('• ${preview.noteCount} Note', style: AppTypography.bodySmall),
-            Text('• ${preview.attachmentCount} Allegati', style: AppTypography.bodySmall),
+            Text('• ${preview.characterCount} ${AppLocalizations.of(context)!.characters}', style: AppTypography.bodySmall),
+            Text('• ${preview.sessionCount} ${AppLocalizations.of(context)!.sessions}', style: AppTypography.bodySmall),
+            Text('• ${preview.noteCount} ${AppLocalizations.of(context)!.notes}', style: AppTypography.bodySmall),
+            Text('• ${preview.attachmentCount} ${AppLocalizations.of(context)!.attachments}', style: AppTypography.bodySmall),
             const SizedBox(height: 16),
-            const Text('Scegli come procedere:', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+            Text(AppLocalizations.of(context)!.chooseProceed, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
           ],
         ),
         actions: [
@@ -357,18 +366,18 @@ class SettingsView extends StatelessWidget {
               Navigator.pop(context);
               controller.executeImport(overwrite: false);
             },
-            child: const Text('Unisci', style: TextStyle(color: AppColors.magicAccent)),
+            child: Text(AppLocalizations.of(context)!.merge, style: const TextStyle(color: AppColors.magicAccent)),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               _showConfirmOverwriteDialog(context, controller);
             },
-            child: const Text('Sovrascrivi', style: TextStyle(color: AppColors.danger)),
+            child: Text(AppLocalizations.of(context)!.overwrite, style: const TextStyle(color: AppColors.danger)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.textSecondary)),
           ),
         ],
       ),
@@ -380,19 +389,19 @@ class SettingsView extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text('Attenzione!', style: TextStyle(color: AppColors.danger, fontWeight: FontWeight.bold)),
-        content: const Text('Questa operazione CANCELLERÀ tutti i dati attuali dell\'app e li sostituirà con quelli del backup. Sei sicuro?'),
+        title: Text(AppLocalizations.of(context)!.warning, style: const TextStyle(color: AppColors.danger, fontWeight: FontWeight.bold)),
+        content: Text(AppLocalizations.of(context)!.overwriteWarning),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               controller.executeImport(overwrite: true);
             },
-            child: const Text('Sì, Sovrascrivi', style: TextStyle(color: AppColors.danger)),
+            child: Text(AppLocalizations.of(context)!.yesOverwrite, style: const TextStyle(color: AppColors.danger)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.textSecondary)),
           ),
         ],
       ),

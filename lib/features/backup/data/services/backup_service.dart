@@ -147,7 +147,7 @@ class BackupService {
 
       if (!await manifestFile.exists() || !await dataFile.exists()) {
         await tempDir.delete(recursive: true);
-        return BackupResult(success: false, message: 'File di backup non valido o corrotto.');
+        return BackupResult(success: false, message: 'invalidBackupFile');
       }
 
       final manifestJson = jsonDecode(await manifestFile.readAsString());
@@ -156,7 +156,7 @@ class BackupService {
       // Controllo versione
       if (manifest.formatVersion > 1) {
         await tempDir.delete(recursive: true);
-        return BackupResult(success: false, message: 'Versione del formato non supportata. Aggiorna l\'app.');
+        return BackupResult(success: false, message: 'backupUnsupportedVersion');
       }
 
       final backupJsonData = await dataFile.readAsString();
@@ -185,7 +185,7 @@ class BackupService {
         }
         
         await tempDir.delete(recursive: true);
-        return BackupResult(success: true, message: 'Dati sovrascritti con successo!');
+        return BackupResult(success: true, message: 'backupOverwritten');
       } else {
         // Unisci i dati
         final currentJsonData = await repository.exportData();
@@ -211,12 +211,12 @@ class BackupService {
         await tempDir.delete(recursive: true);
         return BackupResult(
           success: true, 
-          message: 'Dati uniti con successo!',
+          message: 'backupMerged',
           mergeDetails: mergeResult.details,
         );
       }
     } catch (e) {
-      return BackupResult(success: false, message: 'Errore durante l\'import: $e');
+      return BackupResult(success: false, message: 'backupImportError|$e');
     }
   }
 
@@ -229,7 +229,7 @@ class BackupService {
       final dataFile = archive.findFile('data.json');
 
       if (manifestFile == null || dataFile == null) {
-        return BackupResult(success: false, message: 'File di backup non valido o corrotto.');
+        return BackupResult(success: false, message: 'invalidBackupFile');
       }
 
       final manifestJson = jsonDecode(utf8.decode(manifestFile.content));
@@ -237,7 +237,7 @@ class BackupService {
 
       // Controllo versione
       if (manifest.formatVersion > 1) {
-        return BackupResult(success: false, message: 'Versione del formato non supportata. Aggiorna l\'app.');
+        return BackupResult(success: false, message: 'backupUnsupportedVersion');
       }
 
       final backupJsonData = utf8.decode(dataFile.content);
@@ -245,7 +245,7 @@ class BackupService {
 
       if (overwrite) {
         await repository.importData(backupJsonData);
-        return BackupResult(success: true, message: 'Dati sovrascritti con successo!');
+        return BackupResult(success: true, message: 'backupOverwritten');
       } else {
         final currentJsonData = await repository.exportData();
         final currentData = jsonDecode(currentJsonData);
@@ -256,12 +256,12 @@ class BackupService {
 
         return BackupResult(
           success: true, 
-          message: 'Dati uniti con successo!',
+          message: 'backupMerged',
           mergeDetails: mergeResult.details,
         );
       }
     } catch (e) {
-      return BackupResult(success: false, message: 'Errore durante l\'import: $e');
+      return BackupResult(success: false, message: 'backupImportError|$e');
     }
   }
 
