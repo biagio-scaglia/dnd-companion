@@ -24,6 +24,9 @@ class BackupController extends ChangeNotifier {
   File? _selectedFile;
   File? get selectedFile => _selectedFile;
 
+  Uint8List? _selectedBytes;
+  Uint8List? get selectedBytes => _selectedBytes;
+
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
@@ -85,27 +88,50 @@ class BackupController extends ChangeNotifier {
     try {
       final result = await FilePicker.pickFiles(
         type: FileType.any,
+        withData: kIsWeb, // Importante per il Web!
       );
 
-      if (result == null || result.files.single.path == null) {
+      if (result == null) {
         _setLoading(false);
         return;
       }
 
-      final file = File(result.files.single.path!);
+      final fileName = result.files.single.name;
       
-      if (!file.path.endsWith('.comp')) {
+      if (!fileName.endsWith('.comp')) {
         _lastResult = BackupResult(success: false, message: 'invalidBackupFile');
         _setLoading(false);
         return;
       }
 
-      final preview = await backupService.generatePreview(file);
-      if (preview != null) {
-        _preview = preview;
-        _selectedFile = file;
+      if (kIsWeb) {
+        final bytes = result.files.single.bytes;
+        if (bytes == null) {
+          _lastResult = BackupResult(success: false, message: 'cannotReadManifest');
+          _setLoading(false);
+          return;
+        }
+
+        final preview = await backupService.generatePreviewFromBytes(bytes);
+        if (preview != null) {
+          _preview = preview;
+          _selectedBytes = bytes;
+        } else {
+          _lastResult = BackupResult(success: false, message: 'cannotReadManifest');
+        }
       } else {
-        _lastResult = BackupResult(success: false, message: 'cannotReadManifest');
+        if (result.files.single.path == null) {
+          _setLoading(false);
+          return;
+        }
+        final file = File(result.files.single.path!);
+        final preview = await backupService.generatePreview(file);
+        if (preview != null) {
+          _preview = preview;
+          _selectedFile = file;
+        } else {
+          _lastResult = BackupResult(success: false, message: 'cannotReadManifest');
+        }
       }
     } catch (e) {
       _lastResult = BackupResult(success: false, message: 'backupReadError|$e');
@@ -115,14 +141,23 @@ class BackupController extends ChangeNotifier {
   }
 
   Future<void> executeImport({bool overwrite = false}) async {
-    if (_selectedFile == null) return;
+    if (_selectedFile == null && _selectedBytes == null) return;
     _setLoading(true);
     
     try {
-      final result = await backupService.importBackup(_selectedFile!, overwrite: overwrite);
+      final BackupResult result;
+      if (kIsWeb && _selectedBytes != null) {
+        result = await backupService.importBackupFromBytes(_selectedBytes!, overwrite: overwrite);
+      } else if (_selectedFile != null) {
+        result = await backupService.importBackup(_selectedFile!, overwrite: overwrite);
+      } else {
+        _setLoading(false);
+        return;
+      }
       _lastResult = result;
       _preview = null;
       _selectedFile = null;
+      _selectedBytes = null;
     } catch (e) {
       _lastResult = BackupResult(success: false, message: 'backupImportError|$e');
     } finally {

@@ -114,6 +114,28 @@ class BackupService {
     }
   }
 
+  /// Genera una preview del backup dai bytes (per il Web)
+  Future<ImportPreview?> generatePreviewFromBytes(Uint8List bytes) async {
+    try {
+      final archive = ZipDecoder().decodeBytes(bytes);
+      
+      final manifestFile = archive.findFile('manifest.json');
+      if (manifestFile == null) return null;
+
+      final manifestJson = jsonDecode(utf8.decode(manifestFile.content));
+      final manifest = BackupManifest.fromJson(manifestJson);
+
+      return ImportPreview(
+        noteCount: manifest.counts['notes'] ?? 0,
+        sessionCount: manifest.counts['sessions'] ?? 0,
+        characterCount: manifest.counts['characters'] ?? 0,
+        attachmentCount: manifest.counts['attachments'] ?? 0,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
   /// Importa i dati da un file .comp
   Future<BackupResult> importBackup(File zipFile, {bool overwrite = false}) async {
     try {
@@ -187,6 +209,51 @@ class BackupService {
         }
 
         await tempDir.delete(recursive: true);
+        return BackupResult(
+          success: true, 
+          message: 'Dati uniti con successo!',
+          mergeDetails: mergeResult.details,
+        );
+      }
+    } catch (e) {
+      return BackupResult(success: false, message: 'Errore durante l\'import: $e');
+    }
+  }
+
+  /// Importa i dati dai bytes (per il Web)
+  Future<BackupResult> importBackupFromBytes(Uint8List bytes, {bool overwrite = false}) async {
+    try {
+      final archive = ZipDecoder().decodeBytes(bytes);
+      
+      final manifestFile = archive.findFile('manifest.json');
+      final dataFile = archive.findFile('data.json');
+
+      if (manifestFile == null || dataFile == null) {
+        return BackupResult(success: false, message: 'File di backup non valido o corrotto.');
+      }
+
+      final manifestJson = jsonDecode(utf8.decode(manifestFile.content));
+      final manifest = BackupManifest.fromJson(manifestJson);
+
+      // Controllo versione
+      if (manifest.formatVersion > 1) {
+        return BackupResult(success: false, message: 'Versione del formato non supportata. Aggiorna l\'app.');
+      }
+
+      final backupJsonData = utf8.decode(dataFile.content);
+      final backupData = jsonDecode(backupJsonData);
+
+      if (overwrite) {
+        await repository.importData(backupJsonData);
+        return BackupResult(success: true, message: 'Dati sovrascritti con successo!');
+      } else {
+        final currentJsonData = await repository.exportData();
+        final currentData = jsonDecode(currentJsonData);
+
+        final mergeResult = _mergeData(currentData, backupData);
+        
+        await repository.importData(jsonEncode(mergeResult.mergedData));
+
         return BackupResult(
           success: true, 
           message: 'Dati uniti con successo!',
