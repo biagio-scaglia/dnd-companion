@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
+import 'package:archive/archive.dart';
 import '../../../notes/domain/repositories/notes_repository.dart';
 import '../../domain/models/backup_manifest.dart';
 import '../../domain/models/backup_result.dart';
@@ -19,54 +21,65 @@ class BackupService {
     required this.archiveService,
   });
 
-  /// Esporta tutti i dati in un file .comp
-  Future<BackupResult> exportBackup(File targetFile) async {
-    try {
-      final tempDir = await Directory.systemTemp.createTemp('dnd_backup_');
-      
-      // 1. Ottieni i dati
-      final jsonData = await repository.exportData();
-      final dataFile = File(p.join(tempDir.path, 'data.json'));
-      await dataFile.writeAsString(jsonData);
+  /// Esporta tutti i dati in bytes (ideale per il Web)
+  Future<List<int>> exportBackupBytes() async {
+    final archive = Archive();
+    
+    // 1. Ottieni i dati
+    final jsonData = await repository.exportData();
+    final jsonBytes = utf8.encode(jsonData);
+    archive.addFile(ArchiveFile('data.json', jsonBytes.length, jsonBytes));
 
-      // 2. Copia gli allegati
+    // 2. Copia gli allegati (se possibile)
+    try {
       final docDir = await getApplicationDocumentsDirectory();
       final attachmentsDir = Directory(p.join(docDir.path, 'attachments'));
-      final targetAttachmentsDir = Directory(p.join(tempDir.path, 'attachments'));
       
       if (await attachmentsDir.exists()) {
-        await targetAttachmentsDir.create(recursive: true);
         await for (final file in attachmentsDir.list()) {
           if (file is File) {
-            await file.copy(p.join(targetAttachmentsDir.path, p.basename(file.path)));
+            final bytes = await file.readAsBytes();
+            final filename = p.basename(file.path);
+            archive.addFile(ArchiveFile('attachments/$filename', bytes.length, bytes));
           }
         }
       }
+    } catch (e) {
+      print('Info: Impossibile leggere allegati su questa piattaforma: $e');
+    }
 
-      // 3. Crea il manifest
-      final parsedData = jsonDecode(jsonData);
-      final manifest = BackupManifest(
-        formatVersion: 1,
-        appVersion: '1.0.0',
-        createdAt: DateTime.now(),
-        deviceInfo: Platform.operatingSystem,
-        counts: {
-          'notes': (parsedData['notes'] as List?)?.length ?? 0,
-          'sessions': (parsedData['sessions'] as List?)?.length ?? 0,
-          'characters': (parsedData['characters'] as List?)?.length ?? 0,
-          'attachments': (parsedData['attachments'] as List?)?.length ?? 0,
-        },
-      );
-      
-      final manifestFile = File(p.join(tempDir.path, 'manifest.json'));
-      await manifestFile.writeAsString(jsonEncode(manifest.toJson()));
+    // 3. Crea il manifest
+    final parsedData = jsonDecode(jsonData);
+    final manifest = BackupManifest(
+      formatVersion: 1,
+      appVersion: '1.0.0',
+      createdAt: DateTime.now(),
+      deviceInfo: kIsWeb ? 'Web Browser' : Platform.operatingSystem,
+      counts: {
+        'notes': (parsedData['notes'] as List?)?.length ?? 0,
+        'sessions': (parsedData['sessions'] as List?)?.length ?? 0,
+        'characters': (parsedData['characters'] as List?)?.length ?? 0,
+        'attachments': (parsedData['attachments'] as List?)?.length ?? 0,
+      },
+    );
+    
+    final manifestBytes = utf8.encode(jsonEncode(manifest.toJson()));
+    archive.addFile(ArchiveFile('manifest.json', manifestBytes.length, manifestBytes));
 
-      // 4. Crea lo ZIP
-      await archiveService.createArchive(tempDir, targetFile);
+    // 4. Crea lo ZIP
+    final encoder = ZipEncoder();
+    final zipBytes = encoder.encode(archive);
+    if (zipBytes == null) {
+      throw Exception('Failed to encode ZIP archive');
+    }
+    return zipBytes;
+  }
 
-      // Pulizia
-      await tempDir.delete(recursive: true);
-
+  /// Esporta tutti i dati in un file .comp
+  Future<BackupResult> exportBackup(File targetFile) async {
+    try {
+      final bytes = await exportBackupBytes();
+      await targetFile.writeAsBytes(bytes);
       return BackupResult(success: true, message: 'Backup creato con successo!');
     } catch (e) {
       return BackupResult(success: false, message: 'Errore durante l\'export: $e');

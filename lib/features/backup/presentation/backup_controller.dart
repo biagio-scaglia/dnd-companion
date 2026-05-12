@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
 import '../data/services/backup_service.dart';
 import '../domain/models/import_preview.dart';
@@ -32,25 +33,35 @@ class BackupController extends ChangeNotifier {
     _lastResult = null;
 
     try {
-      String? outputFile = await FilePicker.saveFile(
-        dialogTitle: 'Salva Backup',
-        fileName: 'Dnd_Backup_${DateTime.now().millisecondsSinceEpoch}.comp',
-        type: FileType.any,
-      );
+      final bytes = await backupService.exportBackupBytes();
 
-      if (outputFile == null) {
-        _setLoading(false);
-        return;
+      if (kIsWeb) {
+        await FilePicker.saveFile(
+          dialogTitle: 'Salva Backup',
+          fileName: 'Dnd_Backup_${DateTime.now().millisecondsSinceEpoch}.comp',
+          bytes: bytes,
+        );
+        _lastResult = BackupResult(success: true, message: 'Backup scaricato con successo!');
+      } else {
+        String? outputFile = await FilePicker.saveFile(
+          dialogTitle: 'Salva Backup',
+          fileName: 'Dnd_Backup_${DateTime.now().millisecondsSinceEpoch}.comp',
+          type: FileType.any,
+        );
+
+        if (outputFile == null) {
+          _setLoading(false);
+          return;
+        }
+
+        if (!outputFile.endsWith('.comp')) {
+          outputFile += '.comp';
+        }
+
+        final file = File(outputFile);
+        await file.writeAsBytes(bytes);
+        _lastResult = BackupResult(success: true, message: 'Backup creato con successo!');
       }
-
-      if (!outputFile.endsWith('.comp')) {
-        outputFile += '.comp';
-      }
-
-      final file = File(outputFile);
-      final result = await backupService.exportBackup(file);
-      
-      _lastResult = result;
     } catch (e) {
       _lastResult = BackupResult(success: false, message: 'Errore durante l\'esportazione: $e');
     } finally {
