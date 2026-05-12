@@ -104,6 +104,39 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
     }
   }
 
+  void _showRenameDialog(BuildContext context, MapEditorController controller, dynamic map) {
+    final TextEditingController textController = TextEditingController(text: map.name);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Rinomina Mappa'),
+          content: TextField(
+            controller: textController,
+            decoration: const InputDecoration(
+              labelText: 'Nome Mappa',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Annulla'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (textController.text.isNotEmpty) {
+                  controller.renameMap(map.id, textController.text);
+                }
+                Navigator.pop(context);
+              },
+              child: const Text('Salva'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -158,6 +191,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
                     final isSelected = map.id == controller.activeMapId;
                     return InkWell(
                       onTap: () => controller.setActiveMap(map.id),
+                      onDoubleTap: () => _showRenameDialog(context, controller, map),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         alignment: Alignment.center,

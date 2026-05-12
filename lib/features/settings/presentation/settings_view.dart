@@ -31,11 +31,30 @@ class SettingsView extends StatelessWidget {
               Center(
                 child: Column(
                   children: [
-                    const DndMysticIconCircle(
-                      icon: Icons.auto_awesome_rounded,
-                      accentColor: AppColors.magicAccent,
-                      size: 80,
-                      showGlow: true,
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.magicAccent.withValues(alpha: 0.3),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.magicAccent.withValues(alpha: 0.4),
+                            blurRadius: 15,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Image.asset(
+                          'lib/assets/logo/logo.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.m),
                     Text('Vellum', style: AppTypography.h1),

@@ -119,6 +119,16 @@ class MapEditorController extends ChangeNotifier {
     _setLoading(false);
   }
 
+  Future<void> renameMap(String mapId, String newName) async {
+    final index = _openMaps.indexWhere((m) => m.id == mapId);
+    if (index != -1) {
+      _openMaps[index].name = newName;
+      _openMaps[index].updatedAt = DateTime.now();
+      notifyListeners();
+      await _repository.saveMap(_openMaps[index]);
+    }
+  }
+
   // Azioni Strumenti
   void selectTool(MapEditorTool tool) {
     _selectedTool = tool;
