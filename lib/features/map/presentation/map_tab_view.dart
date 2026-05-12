@@ -397,10 +397,12 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
             const SizedBox(width: 12),
             // Preview Tile corrente
             if (controller.selectedTileType == MapTileType.emoji)
-              Text(
-                controller.selectedEmoji,
-                style: const TextStyle(fontSize: 18),
-              )
+              controller.selectedEmoji.endsWith('.png')
+                  ? Image.asset(controller.selectedEmoji, width: 20, height: 20, fit: BoxFit.contain)
+                  : Text(
+                      controller.selectedEmoji,
+                      style: const TextStyle(fontSize: 18),
+                    )
             else
               Container(
                 width: 20,

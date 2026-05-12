@@ -50,20 +50,20 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
 
   @override
   Widget build(BuildContext context) {
-    IconData typeIcon;
+    String? imagePath;
     Color typeColor;
 
     switch (_item.type) {
       case CompendiumItemType.monster:
-        typeIcon = Icons.pets_rounded;
+        imagePath = 'lib/assets/icone/Monster Part/Skull.png';
         typeColor = AppColors.danger;
         break;
       case CompendiumItemType.spell:
-        typeIcon = Icons.auto_awesome_rounded;
+        imagePath = 'lib/assets/icone/Misc/Scroll.png';
         typeColor = AppColors.magicAccent;
         break;
       case CompendiumItemType.item:
-        typeIcon = Icons.shield_rounded;
+        imagePath = 'lib/assets/icone/Equipment/Iron Armor.png';
         typeColor = AppColors.highlight;
         break;
     }
@@ -93,7 +93,9 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
                     color: typeColor.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Icon(typeIcon, color: typeColor, size: 32),
+                  child: imagePath != null
+                      ? Image.asset(imagePath, width: 32, height: 32, fit: BoxFit.contain)
+                      : Icon(Icons.help_outline_rounded, color: typeColor, size: 32),
                 ),
                 const SizedBox(width: 16),
                 Expanded(

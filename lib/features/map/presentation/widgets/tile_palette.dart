@@ -103,12 +103,22 @@ class TilePalette extends StatelessWidget {
                 {'emoji': '🐉', 'name': 'Drago'},
                 {'emoji': '💀', 'name': 'Teschio'},
                 {'emoji': '💰', 'name': 'Tesoro'},
+                {'emoji': 'lib/assets/icone/Misc/Chest.png', 'name': 'Tesoro (Pack)'},
+                {'emoji': 'lib/assets/icone/Monster Part/Skull.png', 'name': 'Mostro (Pack)'},
+                {'emoji': 'lib/assets/icone/Weapon & Tool/Iron Sword.png', 'name': 'Spada (Pack)'},
+                {'emoji': 'lib/assets/icone/Potion/Red Potion.png', 'name': 'Pozione (Pack)'},
+                {'emoji': 'lib/assets/icone/Misc/Map.png', 'name': 'Mappa (Pack)'},
+                {'emoji': 'lib/assets/icone/Weapon & Tool/Torch.png', 'name': 'Torcia (Pack)'},
+                {'emoji': 'lib/assets/icone/Misc/Golden Key.png', 'name': 'Chiave (Pack)'},
               ].map((e) {
+                final isPng = e['emoji']!.endsWith('.png');
                 return DropdownMenuItem<String>(
                   value: e['emoji'],
                   child: Row(
                     children: [
-                      Text(e['emoji']!, style: const TextStyle(fontSize: 20)),
+                      isPng
+                          ? Image.asset(e['emoji']!, width: 24, height: 24, fit: BoxFit.contain)
+                          : Text(e['emoji']!, style: const TextStyle(fontSize: 20)),
                       const SizedBox(width: 12),
                       Text(e['name']!, style: AppTypography.bodySmall),
                     ],

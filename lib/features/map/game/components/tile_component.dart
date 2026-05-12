@@ -4,8 +4,9 @@ import 'package:flame/components.dart';
 import '../../domain/models/map_element.dart';
 import '../../domain/models/map_tile_type.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../map_editor_game.dart';
 
-class TileComponent extends PositionComponent {
+class TileComponent extends PositionComponent with HasGameRef<MapEditorGame> {
   final MapElement element;
   final double tileSize;
 
@@ -21,15 +22,40 @@ class TileComponent extends PositionComponent {
   Future<void> onLoad() async {
     super.onLoad();
     if (element.emoji != null) {
-      // Usiamo TextComponent di Flame per renderizzare l'emoji
-      add(TextComponent(
-        text: element.emoji!,
-        position: Vector2(tileSize / 2, tileSize / 2),
-        anchor: Anchor.center,
-        textRenderer: TextPaint(
-          style: TextStyle(fontSize: tileSize * 0.8),
-        ),
-      ));
+      if (element.emoji!.endsWith('.png')) {
+        try {
+          // Carichiamo l'immagine tramite il gestore immagini del gioco
+          final image = await game.images.load(element.emoji!);
+          final sprite = Sprite(image);
+          add(SpriteComponent(
+            sprite: sprite,
+            size: Vector2(tileSize * 0.9, tileSize * 0.9),
+            anchor: Anchor.center,
+            position: Vector2(tileSize / 2, tileSize / 2),
+          ));
+        } catch (e) {
+          print('Errore caricamento icona mappa: $e');
+          // Fallback su testo se l'immagine fallisce
+          add(TextComponent(
+            text: '?',
+            position: Vector2(tileSize / 2, tileSize / 2),
+            anchor: Anchor.center,
+            textRenderer: TextPaint(
+              style: TextStyle(fontSize: tileSize * 0.8, color: Colors.white),
+            ),
+          ));
+        }
+      } else {
+        // Usiamo TextComponent di Flame per renderizzare l'emoji
+        add(TextComponent(
+          text: element.emoji!,
+          position: Vector2(tileSize / 2, tileSize / 2),
+          anchor: Anchor.center,
+          textRenderer: TextPaint(
+            style: TextStyle(fontSize: tileSize * 0.8),
+          ),
+        ));
+      }
     }
   }
 

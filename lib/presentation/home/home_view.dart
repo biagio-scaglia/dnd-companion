@@ -251,7 +251,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         child: DndStatCard(
                           label: 'Personaggi',
                           value: charCount.toString(),
-                          imagePath: 'lib/assets/icone/Misc/Helm.png',
+                          imagePath: 'lib/assets/icone/Equipment/Helm.png',
                           accentColor: AppColors.naturalAccent,
                         ),
                       ),
