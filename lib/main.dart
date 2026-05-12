@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/home/home_shell.dart';
 import 'presentation/splash/splash_view.dart';
@@ -62,6 +63,9 @@ class DndCompanionApp extends StatelessWidget {
           title: 'Vellum',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.getTheme(accentColor: settingsController.settings.accentColor),
+          locale: Locale(settingsController.settings.locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: const SplashView(),
         );
       },

@@ -59,4 +59,8 @@ class SettingsController extends ChangeNotifier {
   Future<void> toggleCompactMode(bool value) async {
     await updateSettings(_settings.copyWith(compactMode: value));
   }
+
+  Future<void> setLocale(String locale) async {
+    await updateSettings(_settings.copyWith(locale: locale));
+  }
 }

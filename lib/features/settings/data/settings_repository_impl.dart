@@ -1,29 +1,28 @@
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/models/settings_model.dart';
 import '../domain/repositories/settings_repository.dart';
 
 class SettingsRepositoryImpl implements SettingsRepository {
-  String _jsonData = '{}';
-  bool _initialized = false;
-
-  Future<void> _init() async {
-    if (_initialized) return;
-    
-    // Inizializziamo con valori di default
-    _jsonData = jsonEncode(SettingsModel().toJson());
-    _initialized = true;
-  }
+  static const String _key = 'app_settings';
 
   @override
   Future<SettingsModel> getSettings() async {
-    await _init();
-    final data = jsonDecode(_jsonData);
-    return SettingsModel.fromJson(data);
+    final prefs = await SharedPreferences.getInstance();
+    final jsonStr = prefs.getString(_key);
+    if (jsonStr != null) {
+      try {
+        return SettingsModel.fromJson(jsonDecode(jsonStr));
+      } catch (e) {
+        print('Errore parsing settings: $e');
+      }
+    }
+    return SettingsModel(); // Default
   }
 
   @override
   Future<void> saveSettings(SettingsModel settings) async {
-    await _init();
-    _jsonData = jsonEncode(settings.toJson());
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_key, jsonEncode(settings.toJson()));
   }
 }

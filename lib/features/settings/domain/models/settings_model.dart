@@ -5,6 +5,7 @@ class SettingsModel {
   final bool hapticFeedback;
   final bool confirmDestructiveActions;
   final bool compactMode;
+  final String locale; // 'it' or 'en'
 
   SettingsModel({
     this.darkTheme = true,
@@ -13,6 +14,7 @@ class SettingsModel {
     this.hapticFeedback = true,
     this.confirmDestructiveActions = true,
     this.compactMode = false,
+    this.locale = 'it',
   });
 
   SettingsModel copyWith({
@@ -22,6 +24,7 @@ class SettingsModel {
     bool? hapticFeedback,
     bool? confirmDestructiveActions,
     bool? compactMode,
+    String? locale,
   }) {
     return SettingsModel(
       darkTheme: darkTheme ?? this.darkTheme,
@@ -30,6 +33,7 @@ class SettingsModel {
       hapticFeedback: hapticFeedback ?? this.hapticFeedback,
       confirmDestructiveActions: confirmDestructiveActions ?? this.confirmDestructiveActions,
       compactMode: compactMode ?? this.compactMode,
+      locale: locale ?? this.locale,
     );
   }
 
@@ -41,6 +45,7 @@ class SettingsModel {
       'hapticFeedback': hapticFeedback,
       'confirmDestructiveActions': confirmDestructiveActions,
       'compactMode': compactMode,
+      'locale': locale,
     };
   }
 
@@ -52,6 +57,7 @@ class SettingsModel {
       hapticFeedback: json['hapticFeedback'] ?? true,
       confirmDestructiveActions: json['confirmDestructiveActions'] ?? true,
       compactMode: json['compactMode'] ?? false,
+      locale: json['locale'] ?? 'it',
     );
   }
 }

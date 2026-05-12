@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -16,8 +17,9 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Info')),
+      appBar: AppBar(title: Text(l10n.information)),
       body: Consumer<SettingsController>(
         builder: (context, controller, child) {
           if (controller.isLoading) {
@@ -65,9 +67,49 @@ class SettingsView extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xl),
 
+              // Lingua
+              DndSectionHeader(
+                title: l10n.language,
+                accentColor: AppColors.highlight,
+              ),
+              const SizedBox(height: AppSpacing.s),
+              DndCard(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                child: Row(
+                  children: [
+                    Image.asset('lib/assets/icone/Misc/Scroll.png', width: 18, height: 18),
+                    const SizedBox(width: 12),
+                    Text(l10n.languageApp, style: AppTypography.bodySmall),
+                    const Spacer(),
+                    DropdownButton<String>(
+                      value: controller.settings.locale,
+                      dropdownColor: AppColors.surface,
+                      style: AppTypography.body,
+                      underline: const SizedBox(),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'it',
+                          child: Text('Italiano'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'en',
+                          child: Text('English'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          controller.setLocale(value);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.m),
+
               // Informazioni
-              const DndSectionHeader(
-                title: 'Informazioni',
+              DndSectionHeader(
+                title: l10n.information,
                 accentColor: AppColors.highlight,
               ),
               const SizedBox(height: AppSpacing.s),
@@ -76,13 +118,13 @@ class SettingsView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _infoRow(null, 'App', 'Vellum', imagePath: 'lib/assets/icone/Misc/Book.png'),
+                    _infoRow(null, l10n.app, 'Vellum', imagePath: 'lib/assets/icone/Misc/Book.png'),
                     const Divider(height: 24),
-                    _infoRow(Icons.tag_rounded, 'Build', '1'),
+                    _infoRow(Icons.tag_rounded, l10n.build, '1'),
                     const Divider(height: 24),
-                    _infoRow(null, 'Dati', 'Salvati localmente', imagePath: 'lib/assets/icone/Misc/Chest.png'),
+                    _infoRow(null, l10n.data, l10n.savedLocally, imagePath: 'lib/assets/icone/Misc/Chest.png'),
                     const Divider(height: 24),
-                    _infoRow(Icons.wifi_off_rounded, 'Modalità', 'Offline-first'),
+                    _infoRow(Icons.wifi_off_rounded, l10n.mode, l10n.offlineFirst),
                     const Divider(height: 24),
                     _infoRow(null, 'API', 'D&D 5e API', imagePath: 'lib/assets/icone/Misc/Scroll.png'),
                     const Divider(height: 24),
@@ -91,8 +133,8 @@ class SettingsView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.m),
-              const DndSectionHeader(
-                title: 'Legale',
+              DndSectionHeader(
+                title: l10n.legal,
                 accentColor: AppColors.highlight,
               ),
               const SizedBox(height: AppSpacing.s),
@@ -101,21 +143,20 @@ class SettingsView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _actionRow(context, null, 'Privacy Policy', () {
-                      _showPolicyDialog(context, 'Privacy Policy', 'Questa applicazione rispetta la tua privacy. Tutti i dati inseriti (note, mappe, personaggi) vengono salvati esclusivamente in locale sul tuo dispositivo e non vengono inviati a nessun server esterno.\n\nL\'app non raccoglie dati personali, non richiede registrazione e non traccia le tue attività.\n\nI permessi richiesti (come l\'accesso alla memoria) servono solo per consentirti di salvare le mappe come immagini o allegare file alle tue note.');
+                    _actionRow(context, null, l10n.privacyPolicy, () {
+                      _showPolicyDialog(context, l10n.privacyPolicy, l10n.privacyPolicyContent);
                     }, imagePath: 'lib/assets/icone/Misc/Scroll.png'),
                     const Divider(height: 24),
-                    _actionRow(context, null, 'Cookie Policy', () {
-                      _showPolicyDialog(context, 'Cookie Policy', 'Questa applicazione è sviluppata in Flutter ed è pensata principalmente come app mobile.\n\nNon utilizza cookie di tracciamento, cookie di terze parti o cookie di profilazione.\n\nSe utilizzata su piattaforma Web, potrebbero essere utilizzati solo cookie tecnici strettamente necessari per il funzionamento dell\'interfaccia (come il mantenimento dello stato o delle preferenze locali tramite LocalStorage), che non profilano l\'utente in alcun modo.');
+                    _actionRow(context, null, l10n.cookiePolicy, () {
+                      _showPolicyDialog(context, l10n.cookiePolicy, l10n.cookiePolicyContent);
                     }, imagePath: 'lib/assets/icone/Misc/Book 3.png'),
                   ],
                 ),
               ),
               const SizedBox(height: AppSpacing.m),
               
-              // Backup e Ripristino
-              const DndSectionHeader(
-                title: 'Backup e Ripristino',
+              DndSectionHeader(
+                title: l10n.backupRestore,
                 accentColor: AppColors.highlight,
               ),
               const SizedBox(height: AppSpacing.s),
@@ -155,11 +196,11 @@ class SettingsView extends StatelessWidget {
                             ),
                           )
                         else ...[
-                          _actionRow(context, null, 'Esporta Dati (.comp)', () {
+                          _actionRow(context, null, l10n.exportData, () {
                             backupController.exportBackup();
                           }, imagePath: 'lib/assets/icone/Misc/Chest.png'),
                           const Divider(height: 24),
-                          _actionRow(context, null, 'Ripristina Dati (.comp)', () async {
+                           _actionRow(context, null, l10n.restoreData, () async {
                             await backupController.pickAndPreviewBackup();
                             if (backupController.preview != null) {
                               _showImportOptionsDialog(context, backupController);
@@ -172,8 +213,8 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               const SizedBox(height: AppSpacing.m),
-              const DndSectionHeader(
-                title: 'Permessi',
+              DndSectionHeader(
+                title: l10n.permissions,
                 accentColor: AppColors.highlight,
               ),
               const SizedBox(height: AppSpacing.s),
@@ -182,7 +223,7 @@ class SettingsView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _actionRow(context, Icons.settings_applications_rounded, 'Gestisci Permessi App', () async {
+                    _actionRow(context, Icons.settings_applications_rounded, l10n.managePermissions, () async {
                       await openAppSettings();
                     }),
                   ],
@@ -192,10 +233,10 @@ class SettingsView extends StatelessWidget {
 
               Center(
                 child: Text(
-                  'Creato per veri avventurieri ⚔️',
+                  l10n.createdForAdventurers,
                   style: AppTypography.caption,
                 ),
-              ),
+              ),  ),
             ],
           );
         },
