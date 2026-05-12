@@ -11,6 +11,13 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
   @override
   Future<void> syncWithApi() async {
     try {
+      // Evita di ricaricare il compendio se ci sono già dati nel DB
+      final existingItems = await _dbHelper.queryAllItems();
+      if (existingItems.isNotEmpty) {
+        print('Compendio già popolato, salto la sincronizzazione iniziale.');
+        return;
+      }
+
       final items = await _apiClient.fetchAllItems();
       
       // Salva gli elementi nel DB (rimpiazza quelli esistenti per aggiornare)
