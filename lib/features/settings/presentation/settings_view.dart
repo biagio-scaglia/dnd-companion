@@ -85,6 +85,8 @@ class SettingsView extends StatelessWidget {
                     _infoRow(Icons.wifi_off_rounded, 'Modalità', 'Offline-first'),
                     const Divider(height: 24),
                     _infoRow(null, 'API', 'D&D 5e API', imagePath: 'lib/assets/icone/Misc/Scroll.png'),
+                    const Divider(height: 24),
+                    _infoRow(Icons.palette_outlined, 'Icone', 'Cainos (itch.io)'),
                   ],
                 ),
               ),

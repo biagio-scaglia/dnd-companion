@@ -4,18 +4,20 @@ import '../../core/theme/app_colors.dart';
 /// Cerchio per icone con effetto aura (glow).
 /// Usato per dare importanza alle icone nelle card o nei titoli.
 class DndMysticIconCircle extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final Color accentColor;
   final double size;
   final bool showGlow;
 
   const DndMysticIconCircle({
     super.key,
-    required this.icon,
+    this.icon,
+    this.imagePath,
     this.accentColor = AppColors.magicAccent,
     this.size = 40.0,
     this.showGlow = true,
-  });
+  }) : assert(icon != null || imagePath != null);
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +40,18 @@ class DndMysticIconCircle extends StatelessWidget {
         ] : null,
       ),
       child: Center(
-        child: Icon(
-          icon,
-          color: accentColor,
-          size: size * 0.55,
-        ),
+        child: imagePath != null
+            ? Image.asset(
+                imagePath!,
+                width: size * 0.55,
+                height: size * 0.55,
+                fit: BoxFit.contain,
+              )
+            : Icon(
+                icon!,
+                color: accentColor,
+                size: size * 0.55,
+              ),
       ),
     );
   }

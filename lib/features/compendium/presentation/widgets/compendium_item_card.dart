@@ -21,20 +21,21 @@ class CompendiumItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    IconData typeIcon;
+    String? imagePath;
+    IconData? typeIcon;
     Color typeColor;
 
     switch (item.type) {
       case CompendiumItemType.monster:
-        typeIcon = Icons.pest_control_rounded;
+        imagePath = 'lib/assets/icone/Monster Part/Skull.png';
         typeColor = AppColors.danger;
         break;
       case CompendiumItemType.spell:
-        typeIcon = Icons.auto_awesome_rounded;
+        imagePath = 'lib/assets/icone/Misc/Scroll.png';
         typeColor = AppColors.magicAccent;
         break;
       case CompendiumItemType.item:
-        typeIcon = Icons.shield_rounded;
+        imagePath = 'lib/assets/icone/Equipment/Iron Armor.png';
         typeColor = AppColors.highlight;
         break;
     }
@@ -54,6 +55,7 @@ class CompendiumItemCard extends StatelessWidget {
               children: [
                 DndMysticIconCircle(
                   icon: typeIcon,
+                  imagePath: imagePath,
                   accentColor: typeColor,
                   size: 44,
                   showGlow: false,
