@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/app_radius.dart';
@@ -35,13 +36,13 @@ class AttachmentSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Allegati',
+              AppLocalizations.of(context)!.attachments,
               style: AppTypography.h3.copyWith(color: AppColors.magicAccent),
             ),
             IconButton(
               icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.magicAccent),
               onPressed: onAdd,
-              tooltip: 'Aggiungi allegato',
+              tooltip: AppLocalizations.of(context)!.addAttachment,
             ),
           ],
         ),
@@ -54,9 +55,9 @@ class AttachmentSection extends StatelessWidget {
               children: [
                 Icon(Icons.attach_file_rounded, color: AppColors.textSecondary.withValues(alpha: 0.5)),
                 const SizedBox(width: 8),
-                const Text(
-                  'Nessun allegato per questa sezione',
-                  style: TextStyle(color: AppColors.textSecondary),
+                Text(
+                  AppLocalizations.of(context)!.noAttachments,
+                  style: const TextStyle(color: AppColors.textSecondary),
                 ),
               ],
             ),

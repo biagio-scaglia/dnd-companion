@@ -42,7 +42,7 @@ class BackupController extends ChangeNotifier {
           fileName: 'Dnd_Backup_${DateTime.now().millisecondsSinceEpoch}.comp',
           bytes: Uint8List.fromList(bytes),
         );
-        _lastResult = BackupResult(success: true, message: 'Backup scaricato con successo!');
+        _lastResult = BackupResult(success: true, message: 'backupDownloadSuccess');
       } else {
         String? outputFile = await FilePicker.saveFile(
           dialogTitle: 'Salva Backup',
@@ -67,10 +67,10 @@ class BackupController extends ChangeNotifier {
           final file = File(outputFile);
           await file.writeAsBytes(bytes);
         }
-        _lastResult = BackupResult(success: true, message: 'Backup creato con successo!');
+        _lastResult = BackupResult(success: true, message: 'backupCreateSuccess');
       }
     } catch (e) {
-      _lastResult = BackupResult(success: false, message: 'Errore durante l\'esportazione: $e');
+      _lastResult = BackupResult(success: false, message: 'backupExportError|$e');
     } finally {
       _setLoading(false);
     }
@@ -95,7 +95,7 @@ class BackupController extends ChangeNotifier {
       final file = File(result.files.single.path!);
       
       if (!file.path.endsWith('.comp')) {
-        _lastResult = BackupResult(success: false, message: 'Il file selezionato non è un backup .comp valido.');
+        _lastResult = BackupResult(success: false, message: 'invalidBackupFile');
         _setLoading(false);
         return;
       }
@@ -105,10 +105,10 @@ class BackupController extends ChangeNotifier {
         _preview = preview;
         _selectedFile = file;
       } else {
-        _lastResult = BackupResult(success: false, message: 'Impossibile leggere il manifest del backup.');
+        _lastResult = BackupResult(success: false, message: 'cannotReadManifest');
       }
     } catch (e) {
-      _lastResult = BackupResult(success: false, message: 'Errore durante la lettura del file: $e');
+      _lastResult = BackupResult(success: false, message: 'backupReadError|$e');
     } finally {
       _setLoading(false);
     }
@@ -124,7 +124,7 @@ class BackupController extends ChangeNotifier {
       _preview = null;
       _selectedFile = null;
     } catch (e) {
-      _lastResult = BackupResult(success: false, message: 'Errore durante l\'import: $e');
+      _lastResult = BackupResult(success: false, message: 'backupImportError|$e');
     } finally {
       _setLoading(false);
     }

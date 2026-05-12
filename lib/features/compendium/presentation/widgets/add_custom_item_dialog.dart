@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../domain/models/compendium_item.dart';
 
 class AddCustomItemDialog extends StatefulWidget {
@@ -18,8 +19,9 @@ class _AddCustomItemDialogState extends State<AddCustomItemDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: const Text('Aggiungi Elemento'),
+      title: Text(l10n.addItem),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -27,18 +29,18 @@ class _AddCustomItemDialogState extends State<AddCustomItemDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Nome'),
-                validator: (val) => val == null || val.isEmpty ? 'Campo obbligatorio' : null,
+                decoration: InputDecoration(labelText: l10n.name),
+                validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
                 onSaved: (val) => _name = val!,
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<CompendiumItemType>(
                 value: _type,
-                decoration: const InputDecoration(labelText: 'Categoria'),
-                items: const [
-                  DropdownMenuItem(value: CompendiumItemType.item, child: Text('Oggetto')),
-                  DropdownMenuItem(value: CompendiumItemType.monster, child: Text('Mostro')),
-                  DropdownMenuItem(value: CompendiumItemType.spell, child: Text('Incantesimo')),
+                decoration: InputDecoration(labelText: l10n.category),
+                items: [
+                  DropdownMenuItem(value: CompendiumItemType.item, child: Text(l10n.item)),
+                  DropdownMenuItem(value: CompendiumItemType.monster, child: Text(l10n.monster)),
+                  DropdownMenuItem(value: CompendiumItemType.spell, child: Text(l10n.spell)),
                 ],
                 onChanged: (val) {
                   if (val != null) setState(() => _type = val);
@@ -46,15 +48,15 @@ class _AddCustomItemDialogState extends State<AddCustomItemDialog> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Breve Descrizione'),
-                validator: (val) => val == null || val.isEmpty ? 'Campo obbligatorio' : null,
+                decoration: InputDecoration(labelText: l10n.shortDescription),
+                validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
                 onSaved: (val) => _shortDesc = val!,
               ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Descrizione Completa'),
+                decoration: InputDecoration(labelText: l10n.fullDescription),
                 maxLines: 3,
-                validator: (val) => val == null || val.isEmpty ? 'Campo obbligatorio' : null,
+                validator: (val) => val == null || val.isEmpty ? l10n.requiredField : null,
                 onSaved: (val) => _desc = val!,
               ),
             ],
@@ -64,7 +66,7 @@ class _AddCustomItemDialogState extends State<AddCustomItemDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Annulla'),
+          child: Text(l10n.cancel),
         ),
         FilledButton(
           onPressed: () {
@@ -84,7 +86,7 @@ class _AddCustomItemDialogState extends State<AddCustomItemDialog> {
               Navigator.of(context).pop(newItem);
             }
           },
-          child: const Text('Salva'),
+          child: Text(l10n.save),
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
@@ -152,7 +153,7 @@ class _SessionEditViewState extends State<SessionEditView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.session != null ? 'Modifica Sessione' : 'Nuova Sessione'),
+        title: Text(widget.session != null ? AppLocalizations.of(context)!.editSession : AppLocalizations.of(context)!.newSession),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -201,18 +202,18 @@ class _SessionEditViewState extends State<SessionEditView> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           children: [
-            const DndSectionHeader(title: 'Dati Essenziali'),
+            DndSectionHeader(title: AppLocalizations.of(context)!.essentialData),
             const SizedBox(height: 16),
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Titolo Sessione *',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
-                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.magicAccent)),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.sessionTitle,
+                labelStyle: const TextStyle(color: AppColors.textSecondary),
+                enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
+                focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.magicAccent)),
               ),
               style: const TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.bold),
-              validator: (value) => value == null || value.isEmpty ? 'Inserisci un titolo' : null,
+              validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.enterTitle : null,
             ),
             const SizedBox(height: 16),
             Row(
@@ -220,10 +221,10 @@ class _SessionEditViewState extends State<SessionEditView> {
                 Expanded(
                   child: TextFormField(
                     controller: _numberController,
-                    decoration: const InputDecoration(
-                      labelText: 'Numero Sessione',
-                      labelStyle: TextStyle(color: AppColors.textSecondary),
-                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.sessionNumber,
+                      labelStyle: const TextStyle(color: AppColors.textSecondary),
+                      enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
                     ),
                     keyboardType: TextInputType.number,
                     style: const TextStyle(color: AppColors.textPrimary),
@@ -232,7 +233,7 @@ class _SessionEditViewState extends State<SessionEditView> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: ListTile(
-                    title: const Text('Data Reale *', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                    title: Text(AppLocalizations.of(context)!.realDate, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                     subtitle: Text(
                       '${_realDate.day}/${_realDate.month}/${_realDate.year}',
                       style: const TextStyle(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.bold),
@@ -247,17 +248,17 @@ class _SessionEditViewState extends State<SessionEditView> {
             const SizedBox(height: 16),
             DropdownButtonFormField<SessionStatus>(
               value: _status,
-              decoration: const InputDecoration(
-                labelText: 'Stato',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.status,
+                labelStyle: const TextStyle(color: AppColors.textSecondary),
+                enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
               ),
               dropdownColor: AppColors.surface,
               style: const TextStyle(color: AppColors.textPrimary),
               items: SessionStatus.values.map((status) {
                 return DropdownMenuItem(
                   value: status,
-                  child: Text(status == SessionStatus.bozza ? 'Bozza' : (status == SessionStatus.completata ? 'Completata' : 'Archiviata')),
+                  child: Text(status == SessionStatus.bozza ? AppLocalizations.of(context)!.draft : (status == SessionStatus.completata ? AppLocalizations.of(context)!.completed : AppLocalizations.of(context)!.archived)),
                 );
               }).toList(),
               onChanged: (value) {
@@ -267,14 +268,14 @@ class _SessionEditViewState extends State<SessionEditView> {
             const SizedBox(height: 16),
             Row(
               children: [
-                const Text('Importante', style: TextStyle(color: AppColors.textPrimary)),
+                Text(AppLocalizations.of(context)!.important, style: const TextStyle(color: AppColors.textPrimary)),
                 Switch(
                   value: _isImportant,
                   onChanged: (val) => setState(() => _isImportant = val),
                   activeColor: AppColors.magicAccent,
                 ),
                 const Spacer(),
-                const Text('Fissato', style: TextStyle(color: AppColors.textPrimary)),
+                Text(AppLocalizations.of(context)!.pinned, style: const TextStyle(color: AppColors.textPrimary)),
                 Switch(
                   value: _isPinned,
                   onChanged: (val) => setState(() => _isPinned = val),
@@ -285,22 +286,22 @@ class _SessionEditViewState extends State<SessionEditView> {
             const SizedBox(height: 24),
             TextFormField(
               controller: _shortRecapController,
-              decoration: const InputDecoration(
-                labelText: 'Recap Breve *',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.shortRecap,
+                labelStyle: const TextStyle(color: AppColors.textSecondary),
                 alignLabelWithHint: true,
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
-                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.magicAccent)),
+                enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
+                focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppColors.magicAccent)),
               ),
               style: const TextStyle(color: AppColors.textPrimary),
               maxLines: 2,
-              validator: (value) => value == null || value.isEmpty ? 'Inserisci un breve recap' : null,
+              validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.enterShortRecap : null,
             ),
             const SizedBox(height: 24),
             
             // Sezioni Espandibili
             ExpansionTile(
-              title: const Text('Dettagli Campagna', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+              title: Text(AppLocalizations.of(context)!.campaignDetails, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
               textColor: AppColors.magicAccent,
               iconColor: AppColors.magicAccent,
               collapsedTextColor: AppColors.textSecondary,
@@ -308,19 +309,19 @@ class _SessionEditViewState extends State<SessionEditView> {
               children: [
                 TextFormField(
                   controller: _campaignController,
-                  decoration: const InputDecoration(labelText: 'Campagna', labelStyle: TextStyle(color: AppColors.textSecondary)),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.campaign, labelStyle: const TextStyle(color: AppColors.textSecondary)),
                   style: const TextStyle(color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _inGameDateController,
-                  decoration: const InputDecoration(labelText: 'Data In-Game', labelStyle: TextStyle(color: AppColors.textSecondary)),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.inGameDate, labelStyle: const TextStyle(color: AppColors.textSecondary)),
                   style: const TextStyle(color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _locationController,
-                  decoration: const InputDecoration(labelText: 'Luogo In-Game', labelStyle: TextStyle(color: AppColors.textSecondary)),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.inGameLocation, labelStyle: const TextStyle(color: AppColors.textSecondary)),
                   style: const TextStyle(color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 16),
@@ -328,49 +329,49 @@ class _SessionEditViewState extends State<SessionEditView> {
             ),
             
             ExpansionTile(
-              title: const Text('Liste e Contenuti', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+              title: Text(AppLocalizations.of(context)!.listsAndContents, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
               textColor: AppColors.magicAccent,
               iconColor: AppColors.magicAccent,
               collapsedTextColor: AppColors.textSecondary,
               collapsedIconColor: AppColors.textSecondary,
               children: [
                 DndListInput(
-                  label: 'Eventi Principali',
+                  label: AppLocalizations.of(context)!.mainEvents,
                   controller: _eventInputController,
                   list: _mainEvents,
                   onAdd: () => _addToList(_mainEvents, _eventInputController),
                   onRemove: (index) => _removeFromList(_mainEvents, index),
                 ),
                 DndListInput(
-                  label: 'NPC Incontrati',
+                  label: AppLocalizations.of(context)!.metNpcs,
                   controller: _npcInputController,
                   list: _metNpcs,
                   onAdd: () => _addToList(_metNpcs, _npcInputController),
                   onRemove: (index) => _removeFromList(_metNpcs, index),
                 ),
                 DndListInput(
-                  label: 'Luoghi Visitati',
+                  label: AppLocalizations.of(context)!.visitedLocations,
                   controller: _locationInputController,
                   list: _visitedLocations,
                   onAdd: () => _addToList(_visitedLocations, _locationInputController),
                   onRemove: (index) => _removeFromList(_visitedLocations, index),
                 ),
                 DndListInput(
-                  label: 'Obiettivi Completati',
+                  label: AppLocalizations.of(context)!.completedObjectives,
                   controller: _compObjectiveInputController,
                   list: _completedObjectives,
                   onAdd: () => _addToList(_completedObjectives, _compObjectiveInputController),
                   onRemove: (index) => _removeFromList(_completedObjectives, index),
                 ),
                 DndListInput(
-                  label: 'Obiettivi Aperti',
+                  label: AppLocalizations.of(context)!.openObjectives,
                   controller: _openObjectiveInputController,
                   list: _openObjectives,
                   onAdd: () => _addToList(_openObjectives, _openObjectiveInputController),
                   onRemove: (index) => _removeFromList(_openObjectives, index),
                 ),
                 DndListInput(
-                  label: 'Tag',
+                  label: AppLocalizations.of(context)!.tags,
                   controller: _tagInputController,
                   list: _tags,
                   onAdd: () => _addToList(_tags, _tagInputController),
@@ -381,14 +382,14 @@ class _SessionEditViewState extends State<SessionEditView> {
             ),
             
             const SizedBox(height: 24),
-            const DndSectionHeader(title: 'Note e Bottino'),
+            DndSectionHeader(title: AppLocalizations.of(context)!.notesAndLoot),
             const SizedBox(height: 16),
             TextFormField(
               controller: _lootController,
-              decoration: const InputDecoration(
-                labelText: 'Bottino / Ricompense',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.lootRewards,
+                labelStyle: const TextStyle(color: AppColors.textSecondary),
+                enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
               ),
               style: const TextStyle(color: AppColors.textPrimary),
               maxLines: 2,
@@ -396,10 +397,10 @@ class _SessionEditViewState extends State<SessionEditView> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _notesController,
-              decoration: const InputDecoration(
-                labelText: 'Note Libere',
-                labelStyle: TextStyle(color: AppColors.textSecondary),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.freeNotes,
+                labelStyle: const TextStyle(color: AppColors.textSecondary),
+                enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
               ),
               style: const TextStyle(color: AppColors.textPrimary),
               maxLines: 6,
@@ -417,10 +418,10 @@ class _SessionEditViewState extends State<SessionEditView> {
                 await notesController.deleteAttachment(attachment.id);
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Allegato eliminato', style: TextStyle(color: AppColors.textPrimary)),
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context)!.attachmentDeleted, style: const TextStyle(color: AppColors.textPrimary)),
                       backgroundColor: AppColors.surfaceSecondary,
-                      duration: Duration(seconds: 2),
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 }

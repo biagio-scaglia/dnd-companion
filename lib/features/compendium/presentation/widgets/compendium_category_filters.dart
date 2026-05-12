@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/models/compendium_item.dart';
 import '../../../../presentation/widgets/dnd_chip.dart';
@@ -19,13 +20,14 @@ class CompendiumCategoryFilters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
       child: Row(
         children: [
           DndChip(
-            label: 'Preferiti',
+            label: l10n.favorites,
             icon: showOnlyFavorites ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
             isSelected: showOnlyFavorites,
             onTap: onFavoritesTapped,
@@ -35,7 +37,7 @@ class CompendiumCategoryFilters extends StatelessWidget {
           Container(width: 1, height: 24, color: AppColors.surfaceSecondary),
           const SizedBox(width: 8),
           DndChip(
-            label: 'Mostri',
+            label: l10n.monsters,
             imagePath: 'lib/assets/icone/Monster Part/Skull.png',
             isSelected: selectedCategory == CompendiumItemType.monster,
             onTap: () => onCategoryTapped(CompendiumItemType.monster),
@@ -43,7 +45,7 @@ class CompendiumCategoryFilters extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           DndChip(
-            label: 'Incantesimi',
+            label: l10n.spells,
             imagePath: 'lib/assets/icone/Misc/Scroll.png',
             isSelected: selectedCategory == CompendiumItemType.spell,
             onTap: () => onCategoryTapped(CompendiumItemType.spell),
@@ -51,7 +53,7 @@ class CompendiumCategoryFilters extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           DndChip(
-            label: 'Oggetti',
+            label: l10n.items,
             imagePath: 'lib/assets/icone/Equipment/Iron Armor.png',
             isSelected: selectedCategory == CompendiumItemType.item,
             onTap: () => onCategoryTapped(CompendiumItemType.item),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/models/compendium_item.dart';
 import '../data/datasources/dnd_api_client.dart';
@@ -17,16 +18,35 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
   late CompendiumItem _item;
   bool _isLoadingDesc = false;
 
+  bool _detailsFetched = false;
+
+  String _translateMetaInfo(BuildContext context, String metaInfo) {
+    final l10n = AppLocalizations.of(context)!;
+    if (metaInfo == 'Incantesimo') return l10n.spell;
+    if (metaInfo == 'Mostro') return l10n.monster;
+    if (metaInfo == 'Oggetto') return l10n.item;
+    return metaInfo;
+  }
+
   @override
   void initState() {
     super.initState();
     _item = widget.item;
-    _fetchDetailsIfNeeded();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_detailsFetched) {
+      _fetchDetailsIfNeeded();
+      _detailsFetched = true;
+    }
   }
 
   Future<void> _fetchDetailsIfNeeded() async {
+    final l10n = AppLocalizations.of(context)!;
     // Controlla se la descrizione è quella generica e non è un item custom
-    if (!_item.isCustom && _item.description.contains('Dettagli non disponibili')) {
+    if (!_item.isCustom && _item.description.contains(l10n.detailsNotAvailable)) {
       setState(() => _isLoadingDesc = true);
       try {
         final client = DndApiClient();
@@ -68,9 +88,10 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
         break;
     }
 
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dettaglio'),
+        title: Text(l10n.detail),
         actions: [
           if (_item.isFavorite)
             const Padding(
@@ -141,7 +162,7 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            _item.metaInfo!,
+                            _translateMetaInfo(context, _item.metaInfo!),
                             style: TextStyle(
                               color: typeColor,
                               fontWeight: FontWeight.bold,
@@ -156,9 +177,9 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
               ],
             ),
             const SizedBox(height: 32),
-            const Text(
-              'Descrizione',
-              style: TextStyle(
+            Text(
+              l10n.description,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,

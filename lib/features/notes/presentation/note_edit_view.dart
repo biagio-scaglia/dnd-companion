@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../presentation/widgets/attachment_section.dart';
 import '../domain/models/note.dart';
@@ -51,7 +52,7 @@ class _NoteEditViewState extends State<NoteEditView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.note == null ? 'Nuova Nota' : 'Modifica Nota'),
+        title: Text(widget.note == null ? AppLocalizations.of(context)!.newNote : AppLocalizations.of(context)!.editNote),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -104,7 +105,7 @@ class _NoteEditViewState extends State<NoteEditView> {
             TextFormField(
               controller: _titleController,
               decoration: InputDecoration(
-                labelText: 'Titolo',
+                labelText: AppLocalizations.of(context)!.title,
                 labelStyle: const TextStyle(color: AppColors.textSecondary),
                 enabledBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: AppColors.surfaceSecondary),
@@ -118,13 +119,13 @@ class _NoteEditViewState extends State<NoteEditView> {
                 fillColor: AppColors.surface,
               ),
               style: const TextStyle(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.bold),
-              validator: (value) => value == null || value.isEmpty ? 'Inserisci un titolo' : null,
+              validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.enterTitle : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _contentController,
               decoration: InputDecoration(
-                labelText: 'Contenuto',
+                labelText: AppLocalizations.of(context)!.content,
                 labelStyle: const TextStyle(color: AppColors.textSecondary),
                 alignLabelWithHint: true,
                 enabledBorder: OutlineInputBorder(
@@ -141,13 +142,13 @@ class _NoteEditViewState extends State<NoteEditView> {
               style: const TextStyle(color: AppColors.textPrimary),
               maxLines: 10,
               minLines: 5,
-              validator: (value) => value == null || value.isEmpty ? 'Inserisci il contenuto' : null,
+              validator: (value) => value == null || value.isEmpty ? AppLocalizations.of(context)!.enterContent : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _tagsController,
               decoration: InputDecoration(
-                labelText: 'Tag (separati da virgola)',
+                labelText: AppLocalizations.of(context)!.tagsComma,
                 labelStyle: const TextStyle(color: AppColors.textSecondary),
                 enabledBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: AppColors.surfaceSecondary),
@@ -164,7 +165,7 @@ class _NoteEditViewState extends State<NoteEditView> {
             ),
             const SizedBox(height: 24),
             SwitchListTile(
-              title: const Text('Contrassegna come importante', style: TextStyle(color: AppColors.textPrimary)),
+              title: Text(AppLocalizations.of(context)!.markAsImportant, style: const TextStyle(color: AppColors.textPrimary)),
               value: _isImportant,
               onChanged: (bool value) {
                 setState(() {
@@ -175,7 +176,7 @@ class _NoteEditViewState extends State<NoteEditView> {
               contentPadding: EdgeInsets.zero,
             ),
             const SizedBox(height: 24),
-            const Text('Collega a una sessione', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+            Text(AppLocalizations.of(context)!.linkToSession, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               value: _selectedSessionId != null && sessions.any((s) => s.id == _selectedSessionId) ? _selectedSessionId : null,
@@ -186,9 +187,9 @@ class _NoteEditViewState extends State<NoteEditView> {
                 focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.magicAccent)),
               ),
               items: [
-                const DropdownMenuItem<String>(
+                DropdownMenuItem<String>(
                   value: null,
-                  child: Text('Nessuna sessione'),
+                  child: Text(AppLocalizations.of(context)!.noSession),
                 ),
                 ...sessions.map((session) => DropdownMenuItem<String>(
                       value: session.id,
@@ -214,10 +215,10 @@ class _NoteEditViewState extends State<NoteEditView> {
                 await notesController.deleteAttachment(attachment.id);
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Allegato eliminato', style: TextStyle(color: AppColors.textPrimary)),
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context)!.attachmentDeleted, style: const TextStyle(color: AppColors.textPrimary)),
                       backgroundColor: AppColors.surfaceSecondary,
-                      duration: Duration(seconds: 2),
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 }
@@ -231,7 +232,7 @@ class _NoteEditViewState extends State<NoteEditView> {
                   if (mounted) Navigator.pop(context);
                 },
                 icon: const Icon(Icons.delete_rounded, color: Colors.red),
-                label: const Text('Elimina Nota', style: TextStyle(color: Colors.red)),
+                label: Text(AppLocalizations.of(context)!.deleteNote, style: const TextStyle(color: Colors.red)),
                 style: TextButton.styleFrom(alignment: Alignment.centerLeft),
               ),
             ],

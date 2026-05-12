@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../presentation/widgets/dnd_card.dart';
@@ -70,7 +71,7 @@ class CharacterCard extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          '${character.race} • ${character.characterClass} • Liv. ${character.level}'.toUpperCase(),
+                          '${character.race} • ${character.characterClass} • ${AppLocalizations.of(context)!.levelShort} ${character.level}'.toUpperCase(),
                           style: AppTypography.label.copyWith(
                             color: AppColors.highlight,
                             fontSize: 10,
@@ -81,7 +82,7 @@ class CharacterCard extends StatelessWidget {
                       if (character.status != CharacterStatus.attivo) ...[
                         const SizedBox(height: 4),
                         DndChip(
-                          label: character.status == CharacterStatus.npcAlly ? 'Alleato' : (character.status == CharacterStatus.morto ? 'Morto' : 'Ritirato'),
+                          label: character.status == CharacterStatus.npcAlly ? AppLocalizations.of(context)!.ally : (character.status == CharacterStatus.morto ? AppLocalizations.of(context)!.dead : AppLocalizations.of(context)!.retired),
                           accentColor: character.status == CharacterStatus.morto ? AppColors.danger : AppColors.textSecondary,
                           isSelected: false,
                         ),
@@ -114,18 +115,18 @@ class CharacterCard extends StatelessWidget {
                             builder: (context) => AlertDialog(
                               backgroundColor: AppColors.surface,
                               title: Text(a.fileName, style: AppTypography.h3),
-                              content: Text('Vuoi eliminare questo allegato?', style: AppTypography.bodySmall),
+                              content: Text(AppLocalizations.of(context)!.deleteAttachmentConfirm, style: AppTypography.bodySmall),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+                                  child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.textSecondary)),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                     onDeleteAttachment(a.id);
                                   },
-                                  child: const Text('Elimina', style: TextStyle(color: Colors.red)),
+                                  child: Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: Colors.red)),
                                 ),
                               ],
                             ),

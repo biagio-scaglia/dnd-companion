@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 
 class DiceRollerDialog extends StatefulWidget {
@@ -67,9 +68,9 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
     return AlertDialog(
       backgroundColor: AppColors.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      title: const Text(
-        'Tira Dadi', 
-        style: TextStyle(
+      title: Text(
+        AppLocalizations.of(context)!.diceRoll, 
+        style: const TextStyle(
           color: AppColors.textPrimary,
           fontWeight: FontWeight.bold,
           fontSize: 22,
@@ -145,7 +146,7 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
                       if (_modifier != 0) ...[
                         const SizedBox(height: 8),
                         Text(
-                          'Risultato: $_result',
+                          AppLocalizations.of(context)!.resultLabel('$_result'),
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -168,11 +169,11 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
                 ),
               )
             else 
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 24.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0),
                 child: Text(
-                  'Scegli un dado da tirare',
-                  style: TextStyle(color: AppColors.textSecondary),
+                  AppLocalizations.of(context)!.chooseDice,
+                  style: const TextStyle(color: AppColors.textSecondary),
                 ),
               ),
               
@@ -231,9 +232,9 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
             // ── Storia dei Tiri ──────────────────────────────────────────
             if (_history.isNotEmpty) ...[
               const SizedBox(height: 24),
-              const Text(
-                'Ultimi tiri:', 
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 11, fontWeight: FontWeight.bold)
+              Text(
+                AppLocalizations.of(context)!.lastRolls, 
+                style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, fontWeight: FontWeight.bold)
               ),
               const SizedBox(height: 8),
               Wrap(
@@ -259,7 +260,7 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Chiudi', style: TextStyle(color: AppColors.textSecondary)),
+          child: Text(AppLocalizations.of(context)!.close, style: const TextStyle(color: AppColors.textSecondary)),
         ),
       ],
     );

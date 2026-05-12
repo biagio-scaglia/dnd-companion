@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../presentation/widgets/dnd_dialog.dart';
 import '../../../../presentation/widgets/dnd_text_field.dart';
@@ -14,17 +15,17 @@ void showCreateCharacterDialog(BuildContext context, NotesController controller)
   showDialog(
     context: context,
     builder: (context) => DndDialog(
-      title: 'Nuovo Personaggio',
+      title: AppLocalizations.of(context)!.newCharacter,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          DndTextField(controller: nameCtrl, label: 'Nome'),
+          DndTextField(controller: nameCtrl, label: AppLocalizations.of(context)!.name),
           const SizedBox(height: 12),
-          DndTextField(controller: classCtrl, label: 'Classe'),
+          DndTextField(controller: classCtrl, label: AppLocalizations.of(context)!.classLabel),
           const SizedBox(height: 12),
           DndTextField(
             controller: levelCtrl,
-            label: 'Livello',
+            label: AppLocalizations.of(context)!.level,
             keyboardType: TextInputType.number,
           ),
         ],
@@ -32,7 +33,7 @@ void showCreateCharacterDialog(BuildContext context, NotesController controller)
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Annulla'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
           onPressed: () {
@@ -43,7 +44,7 @@ void showCreateCharacterDialog(BuildContext context, NotesController controller)
                   name: nameCtrl.text,
                   characterClass: classCtrl.text,
                   level: int.tryParse(levelCtrl.text) ?? 1,
-                  race: 'Sconosciuta',
+                  race: AppLocalizations.of(context)!.unknown,
                   status: CharacterStatus.attivo,
                   createdAt: DateTime.now(),
                   updatedAt: DateTime.now(),
@@ -52,7 +53,7 @@ void showCreateCharacterDialog(BuildContext context, NotesController controller)
               Navigator.pop(context);
             }
           },
-          child: const Text('Crea', style: TextStyle(color: AppColors.magicAccent)),
+          child: Text(AppLocalizations.of(context)!.create, style: const TextStyle(color: AppColors.magicAccent)),
         ),
       ],
     ),

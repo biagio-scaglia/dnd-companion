@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class CompendiumEmptyState extends StatelessWidget {
@@ -21,7 +22,7 @@ class CompendiumEmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              isFiltering ? 'Nessun risultato trovato...' : 'Il compendio è vuoto.',
+              isFiltering ? AppLocalizations.of(context)!.noResults : AppLocalizations.of(context)!.compendiumEmpty,
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -32,8 +33,8 @@ class CompendiumEmptyState extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               isFiltering 
-                  ? 'Prova a cercare con altre parole magiche.'
-                  : 'Aggiungi elementi per popolare questo grimorio.',
+                  ? AppLocalizations.of(context)!.tryOtherWords
+                  : AppLocalizations.of(context)!.addElementsGrimoire,
               style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,

@@ -4,30 +4,21 @@ import 'package:flutter/material.dart';
 class HomeController extends ChangeNotifier {
   final Random _random = Random();
 
-  String _currentLanguage = 'it';
-  String get currentLanguage => _currentLanguage;
-
-  void setLanguage(String lang) {
-    if (_currentLanguage == lang) return;
-    _currentLanguage = lang;
-    notifyListeners();
-  }
-
-  String _lastRollResult = 'Tocca un dado per lanciare';
+  String _lastRollResult = 'tapToRoll';
   String get lastRollResult => _lastRollResult;
 
-  String _lastLootResult = 'Tocca "Genera" per un bottino';
+  String _lastLootResult = 'tapGenerate';
   String get lastLootResult => _lastLootResult;
 
   final List<String> _lootTable = [
-    '10 Monete d\'Oro',
-    'Pozione di Guarigione',
-    'Gemma Preziosa (50 mo)',
-    'Spada Corta +1',
-    'Anello d\'Argento antico',
-    'Mappa del Tesoro sgualcita',
-    'Pergamena di "Dardo Incantato"',
-    'Chiave di Ferro arrugginita',
+    'goldCoins',
+    'healingPotion',
+    'gem50',
+    'swordPlus1',
+    'silverRing',
+    'treasureMap',
+    'magicMissileScroll',
+    'rustyKey',
   ];
 
   void rollDice(int sides) {

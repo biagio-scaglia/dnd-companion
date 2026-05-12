@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../widgets/dnd_card.dart';
@@ -16,8 +17,8 @@ class CompendiumPreviewWidget extends StatelessWidget {
           id: 'beholder',
           name: 'Beholder',
           type: CompendiumItemType.monster,
-          shortDescription: 'GS 13 • Aberrazione',
-          description: 'Un grande occhio fluttuante con molti occhi minori su steli. È uno dei mostri più iconici di D&D.',
+          shortDescription: 'GS 13 • ${AppLocalizations.of(context)!.aberration}',
+          description: AppLocalizations.of(context)!.beholderDesc,
           metaInfo: 'GS 13',
         );
         Navigator.push(
@@ -54,14 +55,14 @@ class CompendiumPreviewWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'MOSTRO DEL GIORNO',
+                    AppLocalizations.of(context)!.monsterOfTheDay.toUpperCase(),
                     style: AppTypography.sectionLabel(color: AppColors.magicAccent),
                   ),
                   const SizedBox(height: 4),
                   Text('Beholder', style: AppTypography.h2),
                   const SizedBox(height: 2),
                   Text(
-                    'GS 13 • Aberrazione',
+                    'GS 13 • ${AppLocalizations.of(context)!.aberration}',
                     style: AppTypography.bodySmall,
                   ),
                 ],

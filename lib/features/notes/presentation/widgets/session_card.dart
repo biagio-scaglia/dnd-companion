@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../presentation/widgets/dnd_card.dart';
@@ -87,18 +88,18 @@ class SessionCard extends StatelessWidget {
                             builder: (context) => AlertDialog(
                               backgroundColor: AppColors.surface,
                               title: Text(a.fileName, style: AppTypography.h3),
-                              content: Text('Vuoi eliminare questo allegato?', style: AppTypography.bodySmall),
+                              content: Text(AppLocalizations.of(context)!.deleteAttachmentConfirm, style: AppTypography.bodySmall),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+                                  child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.textSecondary)),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                     onDeleteAttachment(a.id);
                                   },
-                                  child: const Text('Elimina', style: TextStyle(color: Colors.red)),
+                                  child: Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: Colors.red)),
                                 ),
                               ],
                             ),

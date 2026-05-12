@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../presentation/widgets/dnd_card.dart';
@@ -25,7 +26,7 @@ class LayerPanel extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'LIVELLI',
+                AppLocalizations.of(context)!.layers.toUpperCase(),
                 style: AppTypography.label.copyWith(color: AppColors.magicAccent),
               ),
               IconButton(
@@ -74,7 +75,7 @@ class LayerPanel extends StatelessWidget {
                         _showDeleteConfirmDialog(context, controller, layer.id, layer.name);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Non puoi eliminare l\'ultimo livello!')),
+                          SnackBar(content: Text(AppLocalizations.of(context)!.cannotDeleteLastLayer)),
                         );
                       }
                     },
@@ -99,19 +100,19 @@ class LayerPanel extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Rinomina Livello', style: AppTypography.h3),
+        title: Text(AppLocalizations.of(context)!.renameLayer, style: AppTypography.h3),
         content: TextField(
           controller: textController,
           style: AppTypography.body,
-          decoration: const InputDecoration(
-            hintText: 'Nome livello',
-            hintStyle: TextStyle(color: AppColors.textSecondary),
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.layerName,
+            hintStyle: const TextStyle(color: AppColors.textSecondary),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
@@ -120,7 +121,7 @@ class LayerPanel extends StatelessWidget {
               }
               Navigator.pop(context);
             },
-            child: const Text('Salva', style: TextStyle(color: AppColors.magicAccent)),
+            child: Text(AppLocalizations.of(context)!.save, style: const TextStyle(color: AppColors.magicAccent)),
           ),
         ],
       ),
@@ -133,19 +134,19 @@ class LayerPanel extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Aggiungi Livello', style: AppTypography.h3),
+        title: Text(AppLocalizations.of(context)!.addLayer, style: AppTypography.h3),
         content: TextField(
           controller: textController,
           style: AppTypography.body,
-          decoration: const InputDecoration(
-            hintText: 'Nome livello (es. Trappole)',
-            hintStyle: TextStyle(color: AppColors.textSecondary),
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.layerNameExample,
+            hintStyle: const TextStyle(color: AppColors.textSecondary),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
@@ -154,7 +155,7 @@ class LayerPanel extends StatelessWidget {
               }
               Navigator.pop(context);
             },
-            child: const Text('Aggiungi', style: TextStyle(color: AppColors.magicAccent)),
+            child: Text(AppLocalizations.of(context)!.add, style: const TextStyle(color: AppColors.magicAccent)),
           ),
         ],
       ),
@@ -166,19 +167,19 @@ class LayerPanel extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Elimina Livello', style: AppTypography.h3),
-        content: Text('Sei sicuro di voler eliminare il livello "$layerName"? Questa azione non può essere annullata.', style: AppTypography.body),
+        title: Text(AppLocalizations.of(context)!.deleteLayer, style: AppTypography.h3),
+        content: Text(AppLocalizations.of(context)!.deleteLayerConfirm(layerName), style: AppTypography.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
               controller.deleteLayer(layerId);
               Navigator.pop(context);
             },
-            child: const Text('Elimina', style: TextStyle(color: AppColors.danger)),
+            child: Text(AppLocalizations.of(context)!.delete, style: const TextStyle(color: AppColors.danger)),
           ),
         ],
       ),

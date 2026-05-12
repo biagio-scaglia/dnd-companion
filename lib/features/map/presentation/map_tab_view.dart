@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:flutter/gestures.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
 import '../../../presentation/widgets/dnd_empty_state.dart';
@@ -39,7 +40,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
     super.initState();
     _game = MapEditorGame();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MapEditorController>().createNewMap('Nuova Mappa', 30, 30);
+      context.read<MapEditorController>().createNewMap(AppLocalizations.of(context)!.newMap, 30, 30);
     });
   }
 
@@ -63,7 +64,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
           if (result[Permission.storage] != PermissionStatus.granted && 
               result[Permission.photos] != PermissionStatus.granted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Permesso di archiviazione negato!')),
+              SnackBar(content: Text(AppLocalizations.of(context)!.storagePermissionDenied)),
             );
             return;
           }
@@ -79,7 +80,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
       // 3. Salva nel dispositivo
       if (kIsWeb) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Salvataggio su Web non implementato direttamente. Usa screenshot!')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.webSaveNotImplemented)),
         );
       } else {
         // Su mobile salviamo nella galleria usando image_gallery_saver_plus
@@ -91,17 +92,17 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
         
         if (result != null && result['isSuccess'] == true) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Mappa salvata nella galleria!')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.mapSavedToGallery)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Errore nel salvataggio!')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.saveError)),
           );
         }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Errore: $e')),
+        SnackBar(content: Text('${AppLocalizations.of(context)!.errorPrefix}: $e')),
       );
     }
   }
@@ -112,17 +113,17 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Rinomina Mappa'),
+          title: Text(AppLocalizations.of(context)!.renameMap),
           content: TextField(
             controller: textController,
-            decoration: const InputDecoration(
-              labelText: 'Nome Mappa',
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.mapNameLabel,
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Annulla'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
               onPressed: () {
@@ -131,7 +132,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
                 }
                 Navigator.pop(context);
               },
-              child: const Text('Salva'),
+              child: Text(AppLocalizations.of(context)!.save),
             ),
           ],
         );
@@ -145,7 +146,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Editor Mappa'),
+        title: Text(AppLocalizations.of(context)!.mapEditor),
         actions: [
           IconButton(
             icon: Icon(_isUIVisible ? Icons.visibility_off_rounded : Icons.visibility_rounded, color: AppColors.magicAccent),
@@ -154,26 +155,26 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
                 _isUIVisible = !_isUIVisible;
               });
             },
-            tooltip: _isUIVisible ? 'Nascondi UI' : 'Mostra UI',
+            tooltip: _isUIVisible ? AppLocalizations.of(context)!.hideUI : AppLocalizations.of(context)!.showUI,
           ),
           IconButton(
             icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent),
             onPressed: () {
-              context.read<MapEditorController>().createNewMap('Nuova Mappa', 30, 30);
+              context.read<MapEditorController>().createNewMap(AppLocalizations.of(context)!.newMap, 30, 30);
             },
-            tooltip: 'Nuova Mappa',
+            tooltip: AppLocalizations.of(context)!.newMap,
           ),
           IconButton(
             icon: const Icon(Icons.photo_camera_rounded, color: AppColors.magicAccent),
             onPressed: _captureAndSaveImage,
-            tooltip: 'Esporta come immagine',
+            tooltip: AppLocalizations.of(context)!.exportAsImage,
           ),
           IconButton(
             icon: const Icon(Icons.save_rounded, color: AppColors.magicAccent),
             onPressed: () {
               context.read<MapEditorController>().saveCurrentMap();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Mappa salvata!')),
+                SnackBar(content: Text(AppLocalizations.of(context)!.mapSaved)),
               );
             },
           ),
@@ -240,16 +241,16 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
       body: Consumer<MapEditorController>(
         builder: (context, controller, child) {
           if (controller.isLoading) {
-            return const DndLoadingIndicator(message: 'Caricamento editor...');
+            return DndLoadingIndicator(message: AppLocalizations.of(context)!.loadingEditor);
           }
 
           if (controller.openMaps.isEmpty) {
             return DndEmptyState(
               imagePath: 'lib/assets/icone/Misc/Map.png',
-              message: 'Nessuna mappa aperta',
-              subMessage: 'Tocca il + in alto o il pulsante qui sotto per crearne una.',
-              actionLabel: 'Crea Nuova Mappa',
-              onAction: () => controller.createNewMap('Nuova Mappa', 30, 30),
+              message: AppLocalizations.of(context)!.noMapOpen,
+              subMessage: AppLocalizations.of(context)!.tapPlusToCreate,
+              actionLabel: AppLocalizations.of(context)!.createNewMap,
+              onAction: () => controller.createNewMap(AppLocalizations.of(context)!.newMap, 30, 30),
               accentColor: AppColors.magicAccent,
             );
           }
@@ -401,7 +402,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
               onPressed: () => controller.selectTool(MapEditorTool.brush),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
-              tooltip: 'Pennello',
+              tooltip: AppLocalizations.of(context)!.brush,
             ),
             const SizedBox(width: 12),
             IconButton(
@@ -410,7 +411,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
               onPressed: () => controller.selectTool(MapEditorTool.eraser),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
-              tooltip: 'Gomma',
+              tooltip: AppLocalizations.of(context)!.eraser,
             ),
             const SizedBox(width: 12),
             // Preview Tile corrente
@@ -442,7 +443,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
               },
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
-              tooltip: 'Mostra Strumenti',
+              tooltip: AppLocalizations.of(context)!.showTools,
             ),
           ],
         ),

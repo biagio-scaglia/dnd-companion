@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../presentation/widgets/dnd_card.dart';
@@ -21,7 +22,7 @@ class TilePalette extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'TILE',
+            AppLocalizations.of(context)!.tile.toUpperCase(),
             style: AppTypography.label.copyWith(color: AppColors.highlight),
           ),
           const SizedBox(height: 12),
@@ -37,7 +38,7 @@ class TilePalette extends StatelessWidget {
               dropdownColor: AppColors.surface,
               isExpanded: true,
               underline: const SizedBox(),
-              hint: Text('Seleziona Tile', style: AppTypography.bodySmall),
+              hint: Text(AppLocalizations.of(context)!.selectTile, style: AppTypography.bodySmall),
               items: MapTileType.values.where((e) => e != MapTileType.emoji).map((type) {
                 return DropdownMenuItem<MapTileType>(
                   value: type,
@@ -72,12 +73,12 @@ class TilePalette extends StatelessWidget {
           const Divider(color: AppColors.surfaceSecondary),
           const SizedBox(height: 8),
           Text(
-            'ICONE & EMOJI',
+            AppLocalizations.of(context)!.iconsAndEmoji.toUpperCase(),
             style: AppTypography.label.copyWith(color: AppColors.magicAccent),
           ),
           const SizedBox(height: 12),
           DndButton(
-            text: 'Sfoglia Icone',
+            text: AppLocalizations.of(context)!.browseIcons,
             onPressed: () => _showIconPicker(context, controller),
             backgroundColor: AppColors.surfaceSecondary,
             foregroundColor: AppColors.textPrimary,
@@ -105,48 +106,48 @@ class TilePalette extends StatelessWidget {
 
   void _showIconPicker(BuildContext context, MapEditorController controller) {
     final Map<String, List<String>> categories = {
-      'Equip': [
+      'equip': [
         'Bag.png', 'Belt.png', 'Helm.png', 'Iron Armor.png', 'Iron Boot.png',
         'Iron Helmet.png', 'Leather Armor.png', 'Leather Boot.png', 'Leather Helmet.png',
         'Wizard Hat.png', 'Wooden Armor.png'
       ].map((e) => 'lib/assets/icone/Equipment/$e').toList(),
-      'Pozioni': [
+      'potions': [
         'Blue Potion 2.png', 'Blue Potion 3.png', 'Blue Potion.png', 'Empty Bottle.png',
         'Green Potion 2.png', 'Green Potion 3.png', 'Green Potion.png', 'Red Potion 2.png',
         'Red Potion 3.png', 'Red Potion.png', 'Water Bottle.png'
       ].map((e) => 'lib/assets/icone/Potion/$e').toList(),
-      'Armi': [
+      'weapons': [
         'Arrow.png', 'Axe.png', 'Bow.png', 'Emerald Staff.png', 'Golden Sword.png',
         'Hammer.png', 'Iron Shield.png', 'Iron Sword.png', 'Knife.png', 'Magic Wand.png',
         'Pickaxe.png', 'Ruby Staff.png', 'Sapphire Staff.png', 'Shovel.png', 'Silver Sword.png',
         'Topaz Staff.png', 'Torch.png', 'Wooden Shield.png', 'Wooden Staff.png', 'Wooden Sword.png'
       ].map((e) => 'lib/assets/icone/Weapon & Tool/$e').toList(),
-      'Cibo': [
+      'food': [
         'Apple.png', 'Beer.png', 'Bread.png', 'Cheese.png', 'Fish Steak.png',
         'Green Apple.png', 'Ham.png', 'Meat.png', 'Mushroom.png', 'Wine 2.png', 'Wine.png'
       ].map((e) => 'lib/assets/icone/Food/$e').toList(),
-      'Materiali': [
+      'materials': [
         'Fabric.png', 'Leather.png', 'Paper.png', 'Rope.png', 'String.png',
         'Wood Log.png', 'Wooden Plank.png', 'Wool.png'
       ].map((e) => 'lib/assets/icone/Material/$e').toList(),
-      'Mostri': [
+      'monsters': [
         'Bone.png', 'Egg.png', 'Feather.png', 'Monster Egg.png', 'Monster Eye.png',
         'Monster Meat.png', 'Skull.png', 'Slime Gel.png'
       ].map((e) => 'lib/assets/icone/Monster Part/$e').toList(),
-      'Gemme': [
+      'gems': [
         'Coal.png', 'Copper Ingot.png', 'Copper Nugget.png', 'Crystal.png',
         'Cut Emerald.png', 'Cut Ruby.png', 'Cut Sapphire.png', 'Cut Topaz.png',
         'Diamond.png', 'Emerald.png', 'Gold Nugget.png', 'Golden Ingot.png',
         'Obsidian.png', 'Pearl.png', 'Ruby.png', 'Sapphire.png', 'Silver Ingot.png',
         'Silver Nugget.png', 'Topaz.png'
       ].map((e) => 'lib/assets/icone/Ore & Gem/$e').toList(),
-      'Misc': [
+      'misc': [
         'Book 2.png', 'Book 3.png', 'Book.png', 'Candle.png', 'Chest.png',
         'Copper Coin.png', 'Crate.png', 'Envolop.png', 'Gear.png', 'Golden Coin.png',
         'Golden Key.png', 'Heart.png', 'Iron Key.png', 'Lantern.png', 'Map.png',
         'Rune Stone.png', 'Scroll.png', 'Silver Coin.png', 'Silver Key.png'
       ].map((e) => 'lib/assets/icone/Misc/$e').toList(),
-      'Emoji': ['🧱', '🪵', '💧', '🔥', '🚪', '📦', '🌲', '🪨', '🏰', '👹', '🧙', '🐉', '💀', '💰'],
+      'emoji': ['🧱', '🪵', '💧', '🔥', '🚪', '📦', '🌲', '🪨', '🏰', '👹', '🧙', '🐉', '💀', '💰'],
     };
 
     showModalBottomSheet(
@@ -179,7 +180,20 @@ class TilePalette extends StatelessWidget {
                   labelColor: AppColors.magicAccent,
                   unselectedLabelColor: AppColors.textSecondary,
                   indicatorColor: AppColors.magicAccent,
-                  tabs: categories.keys.map((cat) => Tab(text: cat)).toList(),
+                  tabs: categories.keys.map((cat) {
+                    switch (cat) {
+                      case 'equip': return Tab(text: AppLocalizations.of(context)!.equip);
+                      case 'potions': return Tab(text: AppLocalizations.of(context)!.potions);
+                      case 'weapons': return Tab(text: AppLocalizations.of(context)!.weapons);
+                      case 'food': return Tab(text: AppLocalizations.of(context)!.food);
+                      case 'materials': return Tab(text: AppLocalizations.of(context)!.materials);
+                      case 'monsters': return Tab(text: AppLocalizations.of(context)!.monsters);
+                      case 'gems': return Tab(text: AppLocalizations.of(context)!.gems);
+                      case 'misc': return Tab(text: AppLocalizations.of(context)!.misc);
+                      case 'emoji': return Tab(text: AppLocalizations.of(context)!.emoji);
+                      default: return Tab(text: cat);
+                    }
+                  }).toList(),
                 ),
                 Expanded(
                   child: TabBarView(

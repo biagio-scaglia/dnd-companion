@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -32,7 +33,7 @@ class NotesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Appunti e Sessioni'),
+        title: Text(AppLocalizations.of(context)!.appuntiESessioni),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent),
@@ -66,9 +67,9 @@ class NotesView extends StatelessWidget {
 
           if (notesController.hasError) {
             return DndErrorState(
-              message: 'Il rituale di evocazione è fallito',
-              subMessage: 'Non siamo riusciti a recuperare i tuoi dati dall\'abisso.',
-              actionLabel: 'Riprova il rituale',
+              message: AppLocalizations.of(context)!.ritualFailed,
+              subMessage: AppLocalizations.of(context)!.dataRetrieveError,
+              actionLabel: AppLocalizations.of(context)!.retryRitual,
               onAction: () => notesController.loadData(),
             );
           }
@@ -91,7 +92,7 @@ class NotesView extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
                 sliver: SliverToBoxAdapter(
                   child: DndSectionHeader(
-                    title: 'I Tuoi Personaggi',
+                    title: AppLocalizations.of(context)!.yourCharacters,
                     accentColor: AppColors.highlight,
                     trailing: IconButton(
                       icon: const Icon(Icons.add_rounded, color: AppColors.highlight, size: 20),
@@ -112,9 +113,9 @@ class NotesView extends StatelessWidget {
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
                       imagePath: 'lib/assets/icone/Equipment/Helm.png',
-                      message: 'Nessun eroe',
-                      subMessage: 'L\'elenco dei personaggi è vuoto.',
-                      actionLabel: 'Genera Eroe',
+                      message: AppLocalizations.of(context)!.noHero,
+                      subMessage: AppLocalizations.of(context)!.emptyCharacters,
+                      actionLabel: AppLocalizations.of(context)!.generateHero,
                       onAction: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => const CharacterEditView()),
@@ -154,7 +155,7 @@ class NotesView extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
                 sliver: SliverToBoxAdapter(
                   child: DndSectionHeader(
-                    title: 'Sessioni',
+                    title: AppLocalizations.of(context)!.sessionsTitle,
                     accentColor: AppColors.magicAccent,
                     trailing: IconButton(
                       icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent, size: 20),
@@ -175,9 +176,9 @@ class NotesView extends StatelessWidget {
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
                       imagePath: 'lib/assets/icone/Misc/Book.png',
-                      message: 'Nessun capitolo',
-                      subMessage: 'Le pagine delle cronache sono vuote.',
-                      actionLabel: 'Scrivi Capitolo',
+                      message: AppLocalizations.of(context)!.noChapter,
+                      subMessage: AppLocalizations.of(context)!.emptySessions,
+                      actionLabel: AppLocalizations.of(context)!.writeChapter,
                       onAction: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => const SessionEditView()),
@@ -217,7 +218,7 @@ class NotesView extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
                 sliver: SliverToBoxAdapter(
                   child: DndSectionHeader(
-                    title: 'Appunti Recenti',
+                    title: AppLocalizations.of(context)!.recentNotes,
                     accentColor: AppColors.naturalAccent,
                   ),
                 ),
@@ -229,9 +230,9 @@ class NotesView extends StatelessWidget {
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
                       imagePath: 'lib/assets/icone/Misc/Scroll.png',
-                      message: 'Nessuna memoria',
-                      subMessage: 'Le pagine sono ancora bianche.',
-                      actionLabel: 'Trascrivi',
+                      message: AppLocalizations.of(context)!.noMemory,
+                      subMessage: AppLocalizations.of(context)!.emptyNotes,
+                      actionLabel: AppLocalizations.of(context)!.transcribe,
                       onAction: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => const NoteEditView()),
@@ -270,7 +271,7 @@ class NotesView extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
                 sliver: SliverToBoxAdapter(
                   child: DndSectionHeader(
-                    title: 'Allegati',
+                    title: AppLocalizations.of(context)!.attachments,
                     accentColor: AppColors.textSecondary,
                     trailing: IconButton(
                       icon: const Icon(Icons.attach_file_rounded, color: AppColors.textSecondary, size: 20),
@@ -286,12 +287,12 @@ class NotesView extends StatelessWidget {
               ),
 
                 if (globalAttachments.isEmpty)
-                  const SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     sliver: SliverToBoxAdapter(
                       child: DndEmptyState(
                         imagePath: 'lib/assets/icone/Misc/Chest.png',
-                        message: 'Nessun reperto',
+                        message: AppLocalizations.of(context)!.noArtifact,
                         accentColor: AppColors.textSecondary,
                       ),
                     ),

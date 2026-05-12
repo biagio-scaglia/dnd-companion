@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/compendium/presentation/compendium_view.dart';
 import '../../features/notes/presentation/notes_view.dart';
@@ -92,27 +93,27 @@ class _HomeShellState extends State<HomeShell> {
                 NavigationRailDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
-                  label: Text('Cronache'),
+                  label: Text(AppLocalizations.of(context)!.chronicles),
                 ),
                 NavigationRailDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 24, height: 24),
-                  label: Text('Sapere'),
+                  label: Text(AppLocalizations.of(context)!.lore),
                 ),
                 NavigationRailDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 24, height: 24),
-                  label: Text('Memorie'),
+                  label: Text(AppLocalizations.of(context)!.memories),
                 ),
                 NavigationRailDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 24, height: 24),
-                  label: Text('Info'),
+                  label: Text(AppLocalizations.of(context)!.info),
                 ),
                 NavigationRailDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24),
-                  label: Text('Cartografia'),
+                  label: Text(AppLocalizations.of(context)!.cartography),
                 ),
               ],
             ),
@@ -152,27 +153,27 @@ class _HomeShellState extends State<HomeShell> {
                 NavigationDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
-                  label: 'Cronache',
+                  label: AppLocalizations.of(context)!.chronicles,
                 ),
                 NavigationDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 24, height: 24),
-                  label: 'Sapere',
+                  label: AppLocalizations.of(context)!.lore,
                 ),
                 NavigationDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 24, height: 24),
-                  label: 'Memorie',
+                  label: AppLocalizations.of(context)!.memories,
                 ),
                 NavigationDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 24, height: 24),
-                  label: 'Info',
+                  label: AppLocalizations.of(context)!.info,
                 ),
                 NavigationDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24),
-                  label: 'Cartografia',
+                  label: AppLocalizations.of(context)!.cartography,
                 ),
               ],
             )

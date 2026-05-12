@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/theme/app_radius.dart';
@@ -18,6 +19,14 @@ class CompendiumItemCard extends StatelessWidget {
     required this.onTap,
     required this.onFavoriteToggle,
   });
+
+  String _translateMetaInfo(BuildContext context, String metaInfo) {
+    final l10n = AppLocalizations.of(context)!;
+    if (metaInfo == 'Incantesimo') return l10n.spell;
+    if (metaInfo == 'Mostro') return l10n.monster;
+    if (metaInfo == 'Oggetto') return l10n.item;
+    return metaInfo;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +98,7 @@ class CompendiumItemCard extends StatelessWidget {
                       if (item.metaInfo != null) ...[
                         const SizedBox(height: 6),
                         DndChip(
-                          label: item.metaInfo!,
+                          label: _translateMetaInfo(context, item.metaInfo!),
                           accentColor: typeColor,
                           isSelected: true,
                         ),

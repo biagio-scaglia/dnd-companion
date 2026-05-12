@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -169,14 +169,45 @@ class SettingsView extends StatelessWidget {
                       backupController.clearLastResult();
                       
                       String msg = result.message;
+                      final parts = msg.split('|');
+                      final key = parts[0];
+                      final details = parts.length > 1 ? parts[1] : '';
+                      
+                      String localizedMsg = '';
+                      switch (key) {
+                        case 'backupDownloadSuccess':
+                          localizedMsg = l10n.backupDownloadSuccess;
+                          break;
+                        case 'backupCreateSuccess':
+                          localizedMsg = l10n.backupCreateSuccess;
+                          break;
+                        case 'backupExportError':
+                          localizedMsg = '${l10n.backupExportError}: $details';
+                          break;
+                        case 'invalidBackupFile':
+                          localizedMsg = l10n.invalidBackupFile;
+                          break;
+                        case 'cannotReadManifest':
+                          localizedMsg = l10n.cannotReadManifest;
+                          break;
+                        case 'backupReadError':
+                          localizedMsg = '${l10n.backupReadError}: $details';
+                          break;
+                        case 'backupImportError':
+                          localizedMsg = '${l10n.backupImportError}: $details';
+                          break;
+                        default:
+                          localizedMsg = msg;
+                      }
+                      
                       if (result.mergeDetails != null) {
                         final d = result.mergeDetails!;
-                        msg += '\n(Ignorati: ${d['ignored']}, Duplicati: ${d['duplicated']})';
+                        localizedMsg += '\n(${l10n.ignored}: ${d['ignored']}, ${l10n.duplicated}: ${d['duplicated']})';
                       }
                       
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(msg),
+                          content: Text(localizedMsg),
                           backgroundColor: result.success ? AppColors.naturalAccent : AppColors.danger,
                         ),
                       );
@@ -236,7 +267,7 @@ class SettingsView extends StatelessWidget {
                   l10n.createdForAdventurers,
                   style: AppTypography.caption,
                 ),
-              ),  ),
+              ),
             ],
           );
         },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/app_navigation.dart';
 import '../data/repositories/compendium_repository_impl.dart';
@@ -109,9 +110,9 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const DndSectionHeader(
-                    title: 'Compendio',
-                    subtitle: 'Cerca conoscenze e antichi segreti',
+                  DndSectionHeader(
+                    title: AppLocalizations.of(context)!.compendiumTitle,
+                    subtitle: AppLocalizations.of(context)!.compendiumSubtitle,
                     accentColor: AppColors.magicAccent,
                   ),
                   SizedBox(
@@ -120,9 +121,9 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
                       scrollDirection: Axis.horizontal,
                       itemCount: 27, // "Tutti" + A-Z
                       itemBuilder: (context, index) {
-                        final letters = ['Tutti', ...List.generate(26, (i) => String.fromCharCode(65 + i))];
+                        final letters = [AppLocalizations.of(context)!.all, ...List.generate(26, (i) => String.fromCharCode(65 + i))];
                         final letter = letters[index];
-                        final isSelected = (letter == 'Tutti' && _controller.filter.selectedLetter == null) ||
+                        final isSelected = (letter == AppLocalizations.of(context)!.all && _controller.filter.selectedLetter == null) ||
                             (_controller.filter.selectedLetter == letter);
                         
                         return Padding(
@@ -132,7 +133,7 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
                             accentColor: AppColors.magicAccent,
                             isSelected: isSelected,
                             onTap: () {
-                              if (letter == 'Tutti') {
+                              if (letter == AppLocalizations.of(context)!.all) {
                                 _controller.setLetter(null);
                               } else {
                                 _controller.setLetter(letter);
@@ -170,9 +171,9 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
 
   Widget _buildBody() {
     if (_controller.isLoading) {
-      return const Center(
-        key: ValueKey('loading'),
-        child: DndLoadingIndicator(message: 'Caricamento compendio...'),
+      return Center(
+        key: const ValueKey('loading'),
+        child: DndLoadingIndicator(message: AppLocalizations.of(context)!.loadingCompendium),
       );
     }
 

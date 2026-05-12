@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dnd/l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/app_spacing.dart';
-import '../../core/localization/app_strings.dart';
 import '../../features/notes/presentation/notes_controller.dart';
 import '../../features/map/presentation/controllers/map_editor_controller.dart';
+import '../../features/settings/presentation/settings_controller.dart';
 import 'home_controller.dart';
 import 'widgets/dice_roller_widget.dart';
 import 'widgets/compendium_preview_widget.dart';
@@ -54,6 +55,22 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
+  String _getLootTranslation(BuildContext context, String key) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (key) {
+      case 'tapGenerate': return l10n.emptyLoot;
+      case 'goldCoins': return l10n.goldCoins;
+      case 'healingPotion': return l10n.healingPotion;
+      case 'gem50': return l10n.gem50;
+      case 'swordPlus1': return l10n.swordPlus1;
+      case 'silverRing': return l10n.silverRing;
+      case 'treasureMap': return l10n.treasureMap;
+      case 'magicMissileScroll': return l10n.magicMissileScroll;
+      case 'rustyKey': return l10n.rustyKey;
+      default: return key;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -64,7 +81,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         child: SafeArea(
           child: Consumer<HomeController>(
             builder: (context, homeController, child) {
-              final lang = homeController.currentLanguage;
+              final lang = context.watch<SettingsController>().settings.locale;
               return ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                 children: [
@@ -76,7 +93,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            AppStrings.get('app_title', lang),
+                            AppLocalizations.of(context)!.appTitle,
                             style: AppTypography.label.copyWith(
                               color: AppColors.highlight,
                               letterSpacing: 3,
@@ -85,7 +102,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            AppStrings.get('welcome', lang),
+                            AppLocalizations.of(context)!.welcome,
                             style: AppTypography.display.copyWith(
                               letterSpacing: -0.5,
                             ),
@@ -95,9 +112,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       // Switch lingua
                       Row(
                         children: [
-                          _buildLanguageButton(context, 'IT', lang == 'it', () => homeController.setLanguage('it')),
+                          _buildLanguageButton(context, 'IT', lang == 'it', () => context.read<SettingsController>().setLocale('it')),
                           const SizedBox(width: 8),
-                          _buildLanguageButton(context, 'EN', lang == 'en', () => homeController.setLanguage('en')),
+                          _buildLanguageButton(context, 'EN', lang == 'en', () => context.read<SettingsController>().setLocale('en')),
                         ],
                       ),
                     ],
@@ -106,8 +123,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
               // ── Lancio Dadi ─────────────────────────────────────────
               DndSectionHeader(
-                title: AppStrings.get('dice_roll', lang),
-                subtitle: AppStrings.get('dice_roll_sub', lang),
+                title: AppLocalizations.of(context)!.diceRoll,
+                subtitle: AppLocalizations.of(context)!.diceRollSub,
                 accentColor: AppColors.highlight,
               ).slideIn(delay: const Duration(milliseconds: 200)),
               const SizedBox(height: AppSpacing.m),
@@ -118,13 +135,13 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               // ── Mappe ────────────────────────────────────────
               Consumer<MapEditorController>(
                 builder: (context, mapController, child) {
-                  final mapName = mapController.currentMap?.name ?? 'Nessuna mappa';
+                  final mapName = mapController.currentMap?.name ?? AppLocalizations.of(context)!.noMap;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       DndSectionHeader(
-                        title: AppStrings.get('maps', lang),
-                        subtitle: AppStrings.get('maps_sub', lang),
+                        title: AppLocalizations.of(context)!.maps,
+                        subtitle: AppLocalizations.of(context)!.mapsSub,
                         accentColor: AppColors.magicAccent,
                       ),
                       const SizedBox(height: AppSpacing.m),
@@ -145,7 +162,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    AppStrings.get('last_map', lang),
+                                    AppLocalizations.of(context)!.lastMap,
                                     style: AppTypography.sectionLabel(color: AppColors.magicAccent),
                                   ),
                                   const SizedBox(height: 4),
@@ -165,8 +182,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
               // ── Dal Compendio ────────────────────────────────────────
               DndSectionHeader(
-                title: AppStrings.get('compendium', lang),
-                subtitle: AppStrings.get('compendium_sub', lang),
+                title: AppLocalizations.of(context)!.compendium,
+                subtitle: AppLocalizations.of(context)!.compendiumSub,
                 accentColor: AppColors.magicAccent,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -176,8 +193,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
               // ── Generatore Bottino ────────────────────────────────────
               DndSectionHeader(
-                title: AppStrings.get('generator', lang),
-                subtitle: AppStrings.get('generator_sub', lang),
+                title: AppLocalizations.of(context)!.generator,
+                subtitle: AppLocalizations.of(context)!.generatorSub,
                 accentColor: AppColors.naturalAccent,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -199,17 +216,17 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            AppStrings.get('loot', lang),
+                            AppLocalizations.of(context)!.loot,
                             style: AppTypography.sectionLabel(color: AppColors.naturalAccent),
                           ),
                           const SizedBox(height: 4),
-                          Text(context.watch<HomeController>().lastLootResult, style: AppTypography.h3),
+                          Text(_getLootTranslation(context, context.watch<HomeController>().lastLootResult), style: AppTypography.h3),
                         ],
                       ),
                     ),
                     const SizedBox(width: 12),
                     DndButton(
-                      text: AppStrings.get('generate', lang),
+                      text: AppLocalizations.of(context)!.generate,
                       onPressed: () => context.read<HomeController>().generateLoot(),
                       backgroundColor: AppColors.naturalAccent,
                       foregroundColor: AppColors.background,
@@ -222,8 +239,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
               // ── I Tuoi Contenuti ──────────────────────────────────────
               DndSectionHeader(
-                title: AppStrings.get('contents', lang),
-                subtitle: AppStrings.get('contents_sub', lang),
+                title: AppLocalizations.of(context)!.contents,
+                subtitle: AppLocalizations.of(context)!.contentsSub,
                 accentColor: AppColors.textSecondary,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -237,8 +254,8 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   if (noteCount == 0 && sessionCount == 0 && charCount == 0) {
                     return DndEmptyState(
                       icon: Icons.book_outlined,
-                      message: AppStrings.get('no_content', lang),
-                      subMessage: AppStrings.get('add_content', lang),
+                      message: AppLocalizations.of(context)!.noContent,
+                      subMessage: AppLocalizations.of(context)!.addContent,
                       accentColor: AppColors.highlight,
                       isCompact: true,
                     );
@@ -248,7 +265,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     children: [
                       Expanded(
                         child: DndStatCard(
-                          label: AppStrings.get('notes', lang),
+                          label: AppLocalizations.of(context)!.notes,
                           value: noteCount.toString(),
                           imagePath: 'lib/assets/icone/Misc/Scroll.png',
                           accentColor: AppColors.highlight,
@@ -257,7 +274,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       const SizedBox(width: AppSpacing.m),
                       Expanded(
                         child: DndStatCard(
-                          label: AppStrings.get('sessions', lang),
+                          label: AppLocalizations.of(context)!.sessions,
                           value: sessionCount.toString(),
                           imagePath: 'lib/assets/icone/Misc/Book 2.png',
                           accentColor: AppColors.magicAccent,
@@ -266,7 +283,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       const SizedBox(width: AppSpacing.m),
                       Expanded(
                         child: DndStatCard(
-                          label: AppStrings.get('characters', lang),
+                          label: AppLocalizations.of(context)!.characters,
                           value: charCount.toString(),
                           imagePath: 'lib/assets/icone/Equipment/Helm.png',
                           accentColor: AppColors.naturalAccent,
@@ -291,7 +308,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
         },
       ),
     ),
-  );
+  ));
 }
 
 Widget _buildLanguageButton(BuildContext context, String label, bool isSelected, VoidCallback onTap) {
