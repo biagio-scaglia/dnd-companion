@@ -22,6 +22,7 @@ class MapEditorGame extends FlameGame with ScaleDetector {
 
   @override
   Future<void> onLoad() async {
+    images.prefix = ''; // Rimuove il prefisso 'assets/images/' di default di Flame
     mapWorld = World();
     mapCamera = CameraComponent(world: mapWorld);
     addAll([mapWorld, mapCamera]);
