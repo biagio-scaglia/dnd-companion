@@ -39,7 +39,14 @@ class CompendiumPreviewWidget extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.magicAccent.withOpacity(0.3)),
               ),
-              child: const Icon(Icons.auto_stories_rounded, color: AppColors.magicAccent, size: 26),
+              child: Center(
+                child: Image.asset(
+                  'lib/assets/icone/Misc/Book 3.png',
+                  width: 26,
+                  height: 26,
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(

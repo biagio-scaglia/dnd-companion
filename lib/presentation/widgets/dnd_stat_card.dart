@@ -8,16 +8,18 @@ import '../../core/theme/app_radius.dart';
 class DndStatCard extends StatelessWidget {
   final String label;
   final String value;
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final Color accentColor;
 
   const DndStatCard({
     super.key,
     required this.label,
     required this.value,
-    required this.icon,
+    this.icon,
+    this.imagePath,
     this.accentColor = AppColors.highlight,
-  });
+  }) : assert(icon != null || imagePath != null, 'Devi fornire un icon o un imagePath');
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +53,9 @@ class DndStatCard extends StatelessWidget {
               color: accentColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: accentColor, size: 20),
+            child: imagePath != null
+                ? Image.asset(imagePath!, width: 20, height: 20, fit: BoxFit.contain)
+                : Icon(icon, color: accentColor, size: 20),
           ),
           const SizedBox(height: 10),
           Text(

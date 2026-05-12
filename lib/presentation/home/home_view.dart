@@ -118,7 +118,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         child: Row(
                           children: [
                             const DndMysticIconCircle(
-                              icon: Icons.map_rounded,
+                              imagePath: 'lib/assets/icone/Misc/Map.png',
                               accentColor: AppColors.magicAccent,
                               size: 48,
                             ),
@@ -172,7 +172,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                 child: Row(
                   children: [
                     const DndMysticIconCircle(
-                      icon: Icons.card_giftcard_rounded,
+                      imagePath: 'lib/assets/icone/Misc/Chest.png',
                       accentColor: AppColors.naturalAccent,
                       size: 44,
                     ),
@@ -233,7 +233,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         child: DndStatCard(
                           label: 'Note',
                           value: noteCount.toString(),
-                          icon: Icons.note_rounded,
+                          imagePath: 'lib/assets/icone/Misc/Scroll.png',
                           accentColor: AppColors.highlight,
                         ),
                       ),
@@ -242,7 +242,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         child: DndStatCard(
                           label: 'Sessioni',
                           value: sessionCount.toString(),
-                          icon: Icons.menu_book_rounded,
+                          imagePath: 'lib/assets/icone/Misc/Book 2.png',
                           accentColor: AppColors.magicAccent,
                         ),
                       ),
@@ -251,7 +251,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         child: DndStatCard(
                           label: 'Personaggi',
                           value: charCount.toString(),
-                          icon: Icons.person_rounded,
+                          imagePath: 'lib/assets/icone/Misc/Helm.png',
                           accentColor: AppColors.naturalAccent,
                         ),
                       ),
@@ -264,7 +264,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               // Footer
               Center(
                 child: Text(
-                  'D&D Companion v1.0.0',
+                  'Vellum v1.0.0',
                   style: AppTypography.caption,
                 ),
               ),
