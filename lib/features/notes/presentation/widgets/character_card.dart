@@ -59,10 +59,24 @@ class CharacterCard extends StatelessWidget {
                     children: [
                       Text(character.name, style: AppTypography.h3),
                       const SizedBox(height: 4),
-                      DndChip(
-                        label: '${character.race} • ${character.characterClass} • Liv. ${character.level}',
-                        accentColor: AppColors.highlight,
-                        isSelected: true,
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: AppColors.highlight.withValues(alpha: 0.5),
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          '${character.race} • ${character.characterClass} • Liv. ${character.level}'.toUpperCase(),
+                          style: AppTypography.label.copyWith(
+                            color: AppColors.highlight,
+                            fontSize: 10,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
                       ),
                       if (character.status != CharacterStatus.attivo) ...[
                         const SizedBox(height: 4),
