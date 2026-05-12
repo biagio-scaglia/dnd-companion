@@ -99,8 +99,8 @@ class CharacterCard extends StatelessWidget {
                             context: context,
                             builder: (context) => AlertDialog(
                               backgroundColor: AppColors.surface,
-                              title: Text(a.name, style: AppTypography.h3),
-                              content: const Text('Vuoi eliminare questo allegato?', style: AppTypography.bodySmall),
+                              title: Text(a.fileName, style: AppTypography.h3),
+                              content: Text('Vuoi eliminare questo allegato?', style: AppTypography.bodySmall),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),

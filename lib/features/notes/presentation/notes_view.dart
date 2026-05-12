@@ -81,6 +81,8 @@ class NotesView extends StatelessWidget {
               return b.date.compareTo(a.date);
             });
 
+          final globalAttachments = notesController.attachments.where((a) => a.linkedEntityId == 'global').toList();
+
           return CustomScrollView(
             key: const PageStorageKey('notes_list'),
             slivers: [
@@ -283,8 +285,6 @@ class NotesView extends StatelessWidget {
                 ),
               ),
 
-                final globalAttachments = notesController.attachments.where((a) => a.linkedEntityId == 'global').toList();
-                
                 if (globalAttachments.isEmpty)
                   const SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
