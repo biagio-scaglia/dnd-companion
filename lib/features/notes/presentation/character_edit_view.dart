@@ -344,7 +344,18 @@ class _CharacterEditViewState extends State<CharacterEditView> {
                 linkedEntityId: _characterId,
                 linkedEntityType: 'character',
               ),
-              onDelete: (attachment) => notesController.deleteAttachment(attachment.id),
+              onDelete: (attachment) async {
+                await notesController.deleteAttachment(attachment.id);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Allegato eliminato', style: TextStyle(color: AppColors.textPrimary)),
+                      backgroundColor: AppColors.surfaceSecondary,
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
+              },
             ),
           ],
         ),
