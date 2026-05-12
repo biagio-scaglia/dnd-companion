@@ -27,9 +27,9 @@ class CompendiumController extends ChangeNotifier {
 
   // --- Azioni ---
 
-  void setQuery(String query) {
-    if (_filter.query == query) return;
-    _filter = _filter.copyWith(query: query);
+  void setLetter(String? letter) {
+    if (_filter.selectedLetter == letter) return;
+    _filter = _filter.copyWith(selectedLetter: letter, clearLetter: letter == null);
     _fetchItems();
   }
 

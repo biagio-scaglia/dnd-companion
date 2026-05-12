@@ -49,12 +49,11 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
       results = results.where((item) => item.isFavorite).toList();
     }
 
-    // Filtro per query testuale (case-insensitive)
-    if (filter.query.trim().isNotEmpty) {
-      final q = filter.query.toLowerCase();
+    // Filtro per lettera iniziale
+    if (filter.selectedLetter != null) {
+      final l = filter.selectedLetter!.toLowerCase();
       results = results.where((item) {
-        return item.name.toLowerCase().contains(q) || 
-               item.shortDescription.toLowerCase().contains(q);
+        return item.name.toLowerCase().startsWith(l);
       }).toList();
     }
 

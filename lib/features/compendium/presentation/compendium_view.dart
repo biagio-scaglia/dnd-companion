@@ -12,6 +12,7 @@ import 'widgets/add_custom_item_dialog.dart';
 import '../domain/models/compendium_item.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
+import '../../../presentation/widgets/dnd_chip.dart';
 
 class CompendiumView extends StatefulWidget {
   const CompendiumView({super.key});
@@ -113,10 +114,34 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
                     subtitle: 'Cerca conoscenze e antichi segreti',
                     accentColor: AppColors.magicAccent,
                   ),
-                  const SizedBox(height: 16),
-                  
-                  CompendiumSearchBar(
-                    onChanged: (val) => _controller.setQuery(val),
+                  SizedBox(
+                    height: 40,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 27, // "Tutti" + A-Z
+                      itemBuilder: (context, index) {
+                        final letters = ['Tutti', ...List.generate(26, (i) => String.fromCharCode(65 + i))];
+                        final letter = letters[index];
+                        final isSelected = (letter == 'Tutti' && _controller.filter.selectedLetter == null) ||
+                            (_controller.filter.selectedLetter == letter);
+                        
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: DndChip(
+                            label: letter,
+                            accentColor: AppColors.magicAccent,
+                            isSelected: isSelected,
+                            onTap: () {
+                              if (letter == 'Tutti') {
+                                _controller.setLetter(null);
+                              } else {
+                                _controller.setLetter(letter);
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   const SizedBox(height: 20),
                   
