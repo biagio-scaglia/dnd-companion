@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
@@ -39,7 +40,7 @@ class BackupController extends ChangeNotifier {
         await FilePicker.saveFile(
           dialogTitle: 'Salva Backup',
           fileName: 'Dnd_Backup_${DateTime.now().millisecondsSinceEpoch}.comp',
-          bytes: bytes,
+          bytes: Uint8List.fromList(bytes),
         );
         _lastResult = BackupResult(success: true, message: 'Backup scaricato con successo!');
       } else {
