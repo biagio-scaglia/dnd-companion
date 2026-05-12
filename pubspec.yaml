@@ -103,6 +103,7 @@ flutter:
     - "lib/assets/icone/Ore & Gem/"
     - lib/assets/icone/Potion/
     - "lib/assets/icone/Weapon & Tool/"
+    - lib/assets/dices/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

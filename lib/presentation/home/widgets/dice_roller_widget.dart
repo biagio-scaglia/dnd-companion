@@ -62,18 +62,30 @@ class DiceRollerWidget extends StatelessWidget {
       onTap: () => context.read<HomeController>().rollDice(sides),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: BoxDecoration(
           color: AppColors.surfaceSecondary,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: AppColors.highlight.withOpacity(0.2)),
         ),
-        child: Text(
-          label,
-          style: AppTypography.label.copyWith(
-            color: AppColors.textPrimary,
-            fontSize: 12,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'lib/assets/dices/$label.png',
+              width: 24,
+              height: 24,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label.toUpperCase(),
+              style: AppTypography.label.copyWith(
+                color: AppColors.textPrimary,
+                fontSize: 10,
+              ),
+            ),
+          ],
         ),
       ),
     );
