@@ -1,3 +1,5 @@
+import 'compendium_item.dart';
+
 class CompendiumFilter {
   final String query;
   final CompendiumItemType? selectedCategory;

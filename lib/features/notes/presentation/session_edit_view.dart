@@ -6,6 +6,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_chip.dart';
 import '../../../presentation/widgets/attachment_section.dart';
+import '../../../presentation/widgets/dnd_list_input.dart';
 import '../domain/models/session.dart';
 import 'notes_controller.dart';
 
@@ -333,12 +334,48 @@ class _SessionEditViewState extends State<SessionEditView> {
               collapsedTextColor: AppColors.textSecondary,
               collapsedIconColor: AppColors.textSecondary,
               children: [
-                _buildListInput('Eventi Principali', _eventInputController, _mainEvents),
-                _buildListInput('NPC Incontrati', _npcInputController, _metNpcs),
-                _buildListInput('Luoghi Visitati', _locationInputController, _visitedLocations),
-                _buildListInput('Obiettivi Completati', _compObjectiveInputController, _completedObjectives),
-                _buildListInput('Obiettivi Aperti', _openObjectiveInputController, _openObjectives),
-                _buildListInput('Tag', _tagInputController, _tags),
+                DndListInput(
+                  label: 'Eventi Principali',
+                  controller: _eventInputController,
+                  list: _mainEvents,
+                  onAdd: () => _addToList(_mainEvents, _eventInputController),
+                  onRemove: (index) => _removeFromList(_mainEvents, index),
+                ),
+                DndListInput(
+                  label: 'NPC Incontrati',
+                  controller: _npcInputController,
+                  list: _metNpcs,
+                  onAdd: () => _addToList(_metNpcs, _npcInputController),
+                  onRemove: (index) => _removeFromList(_metNpcs, index),
+                ),
+                DndListInput(
+                  label: 'Luoghi Visitati',
+                  controller: _locationInputController,
+                  list: _visitedLocations,
+                  onAdd: () => _addToList(_visitedLocations, _locationInputController),
+                  onRemove: (index) => _removeFromList(_visitedLocations, index),
+                ),
+                DndListInput(
+                  label: 'Obiettivi Completati',
+                  controller: _compObjectiveInputController,
+                  list: _completedObjectives,
+                  onAdd: () => _addToList(_completedObjectives, _compObjectiveInputController),
+                  onRemove: (index) => _removeFromList(_completedObjectives, index),
+                ),
+                DndListInput(
+                  label: 'Obiettivi Aperti',
+                  controller: _openObjectiveInputController,
+                  list: _openObjectives,
+                  onAdd: () => _addToList(_openObjectives, _openObjectiveInputController),
+                  onRemove: (index) => _removeFromList(_openObjectives, index),
+                ),
+                DndListInput(
+                  label: 'Tag',
+                  controller: _tagInputController,
+                  list: _tags,
+                  onAdd: () => _addToList(_tags, _tagInputController),
+                  onRemove: (index) => _removeFromList(_tags, index),
+                ),
                 const SizedBox(height: 16),
               ],
             ),
@@ -395,48 +432,5 @@ class _SessionEditViewState extends State<SessionEditView> {
     );
   }
 
-  Widget _buildListInput(String label, TextEditingController controller, List<String> list) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 12),
-        Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: controller,
-                decoration: const InputDecoration(
-                  hintText: 'Aggiungi...',
-                  hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.surfaceSecondary)),
-                ),
-                style: const TextStyle(color: AppColors.textPrimary),
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.magicAccent),
-              onPressed: () => _addToList(list, controller),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 4,
-          children: list.asMap().entries.map((entry) {
-            final index = entry.key;
-            final value = entry.value;
-            return DndChip(
-              label: value,
-              accentColor: AppColors.highlight,
-              isSelected: false,
-              onTap: () => _removeFromList(list, index), // Clicca per rimuovere
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
+
 }
