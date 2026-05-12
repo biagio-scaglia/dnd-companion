@@ -265,35 +265,52 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
               // Canvas Flame con GestureDetector Flutter
               RepaintBoundary(
                 key: _screenshotKey,
-                child: GestureDetector(
-                  onTapDown: isPanTool
-                      ? null
-                      : (d) => _handlePointerAt(
-                            d.localPosition.dx,
-                            d.localPosition.dy,
-                          ),
-                  onScaleStart: (details) {
-                    _baseScale = _game.mapCamera.viewfinder.zoom;
-                  },
-                  onScaleUpdate: (details) {
-                    if (isPanTool) {
-                      // Gestione Zoom
-                      if (details.scale != 1.0) {
-                        _game.mapCamera.viewfinder.zoom = (_baseScale * details.scale).clamp(0.5, 3.0);
+                child: Listener(
+                  onPointerSignal: (pointerSignal) {
+                    if (pointerSignal is ui.PointerScrollEvent) {
+                      final controller = context.read<MapEditorController>();
+                      // Permettiamo lo zoom con la rotella solo quando è selezionata la "Mano" (Pan)
+                      if (controller.selectedTool == MapEditorTool.pan) {
+                        final delta = pointerSignal.scrollDelta.dy;
+                        final currentZoom = _game.mapCamera.viewfinder.zoom;
+                        // Regola la sensibilità dello zoom (0.001 è un buon valore)
+                        final newZoom = (currentZoom - delta * 0.001).clamp(0.5, 3.0);
+                        setState(() {
+                          _game.mapCamera.viewfinder.zoom = newZoom;
+                        });
                       }
-                      // Gestione Pan
-                      _game.mapCamera.viewfinder.position -= Vector2(
-                        details.focalPointDelta.dx / _game.mapCamera.viewfinder.zoom,
-                        details.focalPointDelta.dy / _game.mapCamera.viewfinder.zoom,
-                      );
-                    } else {
-                      _handlePointerAt(
-                        details.localFocalPoint.dx,
-                        details.localFocalPoint.dy,
-                      );
                     }
                   },
-                  child: GameWidget(game: _game),
+                  child: GestureDetector(
+                    onTapDown: isPanTool
+                        ? null
+                        : (d) => _handlePointerAt(
+                              d.localPosition.dx,
+                              d.localPosition.dy,
+                            ),
+                    onScaleStart: (details) {
+                      _baseScale = _game.mapCamera.viewfinder.zoom;
+                    },
+                    onScaleUpdate: (details) {
+                      if (isPanTool) {
+                        // Gestione Zoom da touch (pinch)
+                        if (details.scale != 1.0) {
+                          _game.mapCamera.viewfinder.zoom = (_baseScale * details.scale).clamp(0.5, 3.0);
+                        }
+                        // Gestione Pan
+                        _game.mapCamera.viewfinder.position -= Vector2(
+                          details.focalPointDelta.dx / _game.mapCamera.viewfinder.zoom,
+                          details.focalPointDelta.dy / _game.mapCamera.viewfinder.zoom,
+                        );
+                      } else {
+                        _handlePointerAt(
+                          details.localFocalPoint.dx,
+                          details.localFocalPoint.dy,
+                        );
+                      }
+                    },
+                    child: GameWidget(game: _game),
+                  ),
                 ),
               ),
 
