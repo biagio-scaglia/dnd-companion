@@ -110,20 +110,28 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
                     ),
                     const SizedBox(height: 12),
                     // Immagine del dado con il risultato!
-                    Image.asset(
-                      'lib/assets/dadi/D$_lastDice/d${_lastDice}_yellow_$_currentRoll.png',
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        // Fallback se l'immagine non esiste!
-                        return Text(
-                          '$_currentRoll',
-                          style: const TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
-                          ),
+                    Builder(
+                      builder: (context) {
+                        String fileName = 'd${_lastDice}_yellow_$_currentRoll.png';
+                        if (_lastDice == 6) {
+                          fileName = 'D6N_yellow_$_currentRoll.png';
+                        }
+                        return Image.asset(
+                          'lib/assets/dadi/D$_lastDice/$fileName',
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            // Fallback se l'immagine non esiste!
+                            return Text(
+                              '$_currentRoll',
+                              style: const TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
