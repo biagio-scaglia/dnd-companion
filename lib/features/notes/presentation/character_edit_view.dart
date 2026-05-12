@@ -95,7 +95,7 @@ class _CharacterEditViewState extends State<CharacterEditView> {
 
   @override
   Widget build(BuildContext context) {
-    final notesController = Provider.of<NotesController>(context, listen: false);
+    final notesController = Provider.of<NotesController>(context);
 
     return Scaffold(
       appBar: AppBar(

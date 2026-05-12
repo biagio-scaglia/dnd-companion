@@ -147,7 +147,7 @@ class _SessionEditViewState extends State<SessionEditView> {
 
   @override
   Widget build(BuildContext context) {
-    final notesController = Provider.of<NotesController>(context, listen: false);
+    final notesController = Provider.of<NotesController>(context);
 
     return Scaffold(
       appBar: AppBar(
