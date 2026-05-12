@@ -11,6 +11,7 @@ import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_empty_state.dart';
 import '../../../presentation/widgets/dnd_text_field.dart';
 import '../../../presentation/widgets/dnd_error_state.dart';
+import '../../../presentation/widgets/dnd_motion.dart';
 import 'notes_controller.dart';
 import '../domain/models/note.dart';
 import 'widgets/note_card.dart';

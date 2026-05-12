@@ -32,7 +32,7 @@ class BackupController extends ChangeNotifier {
     _lastResult = null;
 
     try {
-      String? outputFile = await FilePicker.platform.saveFile(
+      String? outputFile = await FilePicker.saveFile(
         dialogTitle: 'Salva Backup',
         fileName: 'Dnd_Backup_${DateTime.now().millisecondsSinceEpoch}.comp',
         type: FileType.any,
@@ -65,7 +65,7 @@ class BackupController extends ChangeNotifier {
     _selectedFile = null;
 
     try {
-      final result = await FilePicker.platform.pickFiles(
+      final result = await FilePicker.pickFiles(
         type: FileType.any,
       );
 
