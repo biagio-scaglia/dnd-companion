@@ -44,7 +44,22 @@ class NotesView extends StatelessWidget {
       body: Consumer<NotesController>(
         builder: (context, notesController, child) {
           if (notesController.isLoading) {
-            return const DndLoadingIndicator(message: 'Caricamento appunti...');
+            return CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => const Padding(
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: _NoteSkeletonCard(),
+                      ),
+                      childCount: 5,
+                    ),
+                  ),
+                ),
+              ],
+            );
           }
 
           final sortedNotes = List<Note>.from(notesController.notes)
@@ -280,6 +295,94 @@ class NotesView extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _NoteSkeletonCard extends StatelessWidget {
+  const _NoteSkeletonCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return DndCard(
+      padding: const EdgeInsets.all(16),
+      child: DndShimmer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 120,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceSecondary,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceSecondary,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              height: 14,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceSecondary,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Container(
+              width: double.infinity,
+              height: 14,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceSecondary,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Container(
+              width: 150,
+              height: 14,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceSecondary,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Container(
+                  width: 60,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceSecondary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  width: 80,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceSecondary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
