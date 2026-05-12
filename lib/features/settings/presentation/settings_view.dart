@@ -76,15 +76,15 @@ class SettingsView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _infoRow(Icons.info_outline_rounded, 'App', 'Vellum'),
+                    _infoRow(null, 'App', 'Vellum', imagePath: 'lib/assets/icone/Misc/Book.png'),
                     const Divider(height: 24),
                     _infoRow(Icons.tag_rounded, 'Build', '1'),
                     const Divider(height: 24),
-                    _infoRow(Icons.storage_rounded, 'Dati', 'Salvati localmente'),
+                    _infoRow(null, 'Dati', 'Salvati localmente', imagePath: 'lib/assets/icone/Misc/Chest.png'),
                     const Divider(height: 24),
                     _infoRow(Icons.wifi_off_rounded, 'Modalità', 'Offline-first'),
                     const Divider(height: 24),
-                    _infoRow(Icons.public_rounded, 'API', 'D&D 5e API'),
+                    _infoRow(null, 'API', 'D&D 5e API', imagePath: 'lib/assets/icone/Misc/Scroll.png'),
                   ],
                 ),
               ),
@@ -99,13 +99,13 @@ class SettingsView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _actionRow(context, Icons.privacy_tip_outlined, 'Privacy Policy', () {
+                    _actionRow(context, null, 'Privacy Policy', () {
                       _showPolicyDialog(context, 'Privacy Policy', 'Questa applicazione rispetta la tua privacy. Tutti i dati inseriti (note, mappe, personaggi) vengono salvati esclusivamente in locale sul tuo dispositivo e non vengono inviati a nessun server esterno.\n\nL\'app non raccoglie dati personali, non richiede registrazione e non traccia le tue attività.\n\nI permessi richiesti (come l\'accesso alla memoria) servono solo per consentirti di salvare le mappe come immagini o allegare file alle tue note.');
-                    }),
+                    }, imagePath: 'lib/assets/icone/Misc/Scroll.png'),
                     const Divider(height: 24),
-                    _actionRow(context, Icons.cookie_outlined, 'Cookie Policy', () {
+                    _actionRow(context, null, 'Cookie Policy', () {
                       _showPolicyDialog(context, 'Cookie Policy', 'Questa applicazione è sviluppata in Flutter ed è pensata principalmente come app mobile.\n\nNon utilizza cookie di tracciamento, cookie di terze parti o cookie di profilazione.\n\nSe utilizzata su piattaforma Web, potrebbero essere utilizzati solo cookie tecnici strettamente necessari per il funzionamento dell\'interfaccia (come il mantenimento dello stato o delle preferenze locali tramite LocalStorage), che non profilano l\'utente in alcun modo.');
-                    }),
+                    }, imagePath: 'lib/assets/icone/Misc/Book 3.png'),
                   ],
                 ),
               ),
@@ -153,16 +153,16 @@ class SettingsView extends StatelessWidget {
                             ),
                           )
                         else ...[
-                          _actionRow(context, Icons.cloud_upload_outlined, 'Esporta Dati (.comp)', () {
+                          _actionRow(context, null, 'Esporta Dati (.comp)', () {
                             backupController.exportBackup();
-                          }),
+                          }, imagePath: 'lib/assets/icone/Misc/Chest.png'),
                           const Divider(height: 24),
-                          _actionRow(context, Icons.cloud_download_outlined, 'Ripristina Dati (.comp)', () async {
+                          _actionRow(context, null, 'Ripristina Dati (.comp)', () async {
                             await backupController.pickAndPreviewBackup();
                             if (backupController.preview != null) {
                               _showImportOptionsDialog(context, backupController);
                             }
-                          }),
+                          }, imagePath: 'lib/assets/icone/Misc/Crate.png'),
                         ],
                       ],
                     ),
@@ -201,14 +201,17 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  Widget _actionRow(BuildContext context, IconData icon, String label, VoidCallback onTap) {
+  Widget _actionRow(BuildContext context, IconData? icon, String label, VoidCallback onTap, {String? imagePath}) {
     return InkWell(
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Row(
           children: [
-            Icon(icon, color: AppColors.textSecondary, size: 18),
+            if (imagePath != null)
+              Image.asset(imagePath, width: 18, height: 18)
+            else
+              Icon(icon!, color: AppColors.textSecondary, size: 18),
             const SizedBox(width: 12),
             Text(label, style: AppTypography.bodySmall),
             const Spacer(),
@@ -238,10 +241,13 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  Widget _infoRow(IconData icon, String label, String value) {
+  Widget _infoRow(IconData? icon, String label, String value, {String? imagePath}) {
     return Row(
       children: [
-        Icon(icon, color: AppColors.textSecondary, size: 18),
+        if (imagePath != null)
+          Image.asset(imagePath, width: 18, height: 18)
+        else
+          Icon(icon!, color: AppColors.textSecondary, size: 18),
         const SizedBox(width: 12),
         Text(label, style: AppTypography.bodySmall),
         const Spacer(),

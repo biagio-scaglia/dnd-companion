@@ -17,13 +17,13 @@ class ToolBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _ToolButton(
-            imagePath: 'lib/assets/icone/Weapon & Tool/Magic Wand.png',
+            icon: Icons.brush_rounded,
             isSelected: controller.selectedTool == MapEditorTool.brush,
             onTap: () => controller.selectTool(MapEditorTool.brush),
           ),
           const SizedBox(width: 4),
           _ToolButton(
-            imagePath: 'lib/assets/icone/Weapon & Tool/Knife.png',
+            icon: Icons.backspace_rounded,
             isSelected: controller.selectedTool == MapEditorTool.eraser,
             onTap: () => controller.selectTool(MapEditorTool.eraser),
           ),

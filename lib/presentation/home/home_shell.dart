@@ -90,8 +90,8 @@ class _HomeShellState extends State<HomeShell> {
               extended: screenWidth >= 1000,
               destinations: [
                 NavigationRailDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Book.png', width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Book.png', width: 24, height: 24),
+                  icon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
+                  selectedIcon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
                   label: Text('Cronache'),
                 ),
                 NavigationRailDestination(
@@ -150,8 +150,8 @@ class _HomeShellState extends State<HomeShell> {
               },
               destinations: [
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Book.png', width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Book.png', width: 24, height: 24),
+                  icon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
+                  selectedIcon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
                   label: 'Cronache',
                 ),
                 NavigationDestination(
