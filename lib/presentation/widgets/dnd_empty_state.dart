@@ -13,6 +13,7 @@ class DndEmptyState extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
   final Color accentColor;
+  final bool isCompact;
 
   const DndEmptyState({
     super.key,
@@ -22,30 +23,34 @@ class DndEmptyState extends StatelessWidget {
     this.actionLabel,
     this.onAction,
     this.accentColor = AppColors.magicAccent,
+    this.isCompact = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.xxl),
+        padding: EdgeInsets.symmetric(
+          horizontal: isCompact ? AppSpacing.m : AppSpacing.xl,
+          vertical: isCompact ? AppSpacing.m : AppSpacing.xxl,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 72,
-              height: 72,
+              width: isCompact ? 48 : 72,
+              height: isCompact ? 48 : 72,
               decoration: BoxDecoration(
                 color: accentColor.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
                 border: Border.all(color: accentColor.withValues(alpha: 0.15), width: 1.5),
               ),
-              child: Icon(icon, color: accentColor.withValues(alpha: 0.6), size: 32),
+              child: Icon(icon, color: accentColor.withValues(alpha: 0.6), size: isCompact ? 24 : 32),
             ),
             const SizedBox(height: AppSpacing.m),
             Text(
               message,
-              style: AppTypography.h3,
+              style: isCompact ? AppTypography.body.copyWith(fontWeight: FontWeight.bold) : AppTypography.h3,
               textAlign: TextAlign.center,
             ),
             if (subMessage != null) ...[

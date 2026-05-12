@@ -223,6 +223,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       message: 'Nessun contenuto ancora',
                       subMessage: 'Aggiungi note, sessioni o personaggi dalla tab Appunti',
                       accentColor: AppColors.highlight,
+                      isCompact: true,
                     );
                   }
 

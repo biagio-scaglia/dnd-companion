@@ -68,10 +68,15 @@ class NotesView extends StatelessWidget {
               const SizedBox(height: AppSpacing.m),
 
               if (notesController.characters.isEmpty)
-                const DndEmptyState(
+                DndEmptyState(
                   icon: Icons.person_outline_rounded,
                   message: 'Nessun personaggio',
                   subMessage: 'Aggiungi il tuo primo eroe',
+                  actionLabel: 'Crea Eroe',
+                  onAction: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CharacterEditView()),
+                  ),
                   accentColor: AppColors.highlight,
                 )
               else
@@ -102,10 +107,15 @@ class NotesView extends StatelessWidget {
               const SizedBox(height: AppSpacing.m),
 
               if (notesController.sessions.isEmpty)
-                const DndEmptyState(
+                DndEmptyState(
                   icon: Icons.menu_book_outlined,
                   message: 'Nessuna sessione',
                   subMessage: 'Inizia a documentare le tue avventure',
+                  actionLabel: 'Nuova Sessione',
+                  onAction: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SessionEditView()),
+                  ),
                   accentColor: AppColors.magicAccent,
                 )
               else
@@ -127,10 +137,15 @@ class NotesView extends StatelessWidget {
               const SizedBox(height: AppSpacing.m),
 
               if (notesController.notes.isEmpty)
-                const DndEmptyState(
+                DndEmptyState(
                   icon: Icons.note_outlined,
                   message: 'Nessun appunto',
-                  subMessage: 'Tocca il + in alto per creare il primo appunto',
+                  subMessage: 'Inizia a scrivere le tue cronache',
+                  actionLabel: 'Scrivi Appunto',
+                  onAction: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const NoteEditView()),
+                  ),
                   accentColor: AppColors.naturalAccent,
                 )
               else
