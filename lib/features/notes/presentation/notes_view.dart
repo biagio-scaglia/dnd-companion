@@ -10,6 +10,7 @@ import '../../../presentation/widgets/dnd_loading_indicator.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_empty_state.dart';
 import '../../../presentation/widgets/dnd_text_field.dart';
+import '../../../presentation/widgets/dnd_error_state.dart';
 import 'notes_controller.dart';
 import '../domain/models/note.dart';
 import 'widgets/note_card.dart';
@@ -59,6 +60,15 @@ class NotesView extends StatelessWidget {
                   ),
                 ),
               ],
+            );
+          }
+
+          if (notesController.hasError) {
+            return DndErrorState(
+              message: 'Il rituale di evocazione è fallito',
+              subMessage: 'Non siamo riusciti a recuperare i tuoi dati dall\'abisso.',
+              actionLabel: 'Riprova il rituale',
+              onAction: () => notesController.loadData(),
             );
           }
 

@@ -33,16 +33,21 @@ class NotesController extends ChangeNotifier {
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
+  bool _hasError = false;
+  bool get hasError => _hasError;
+
   Future<void> loadData() async {
     _isLoading = true;
     notifyListeners();
 
     try {
+      _hasError = false;
       _notes = await repository.getNotes();
       _sessions = await repository.getSessions();
       _attachments = await repository.getAttachments();
       _characters = await repository.getCharacters();
     } catch (e) {
+      _hasError = true;
       debugPrint('Error loading notes data: $e');
     } finally {
       _isLoading = false;
