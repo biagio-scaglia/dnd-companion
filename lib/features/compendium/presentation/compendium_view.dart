@@ -168,6 +168,7 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
       itemBuilder: (context, index) {
         final item = _controller.items[index];
         return CompendiumItemCard(
+          key: ValueKey(item.id),
           item: item,
           onTap: () {
             Navigator.of(context).push(
