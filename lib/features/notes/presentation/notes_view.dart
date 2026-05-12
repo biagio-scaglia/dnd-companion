@@ -132,7 +132,12 @@ class NotesView extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 8),
                           child: CharacterCard(
                             character: c,
+                            attachments: notesController.attachments.where((a) => a.linkedEntityId == c.id).toList(),
                             onDelete: () => notesController.deleteCharacter(c.id),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => CharacterEditView(character: c)),
+                            ),
                           ),
                         );
                       },
@@ -189,7 +194,12 @@ class NotesView extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 8),
                           child: SessionCard(
                             session: s,
+                            attachments: notesController.attachments.where((a) => a.linkedEntityId == s.id).toList(),
                             onDelete: () => notesController.deleteSession(s.id),
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => SessionEditView(session: s)),
+                            ),
                           ),
                         );
                       },
@@ -237,6 +247,7 @@ class NotesView extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 12),
                           child: NoteCard(
                             note: n,
+                            attachments: notesController.attachments.where((a) => a.linkedEntityId == n.id).toList(),
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(builder: (_) => NoteEditView(note: n)),

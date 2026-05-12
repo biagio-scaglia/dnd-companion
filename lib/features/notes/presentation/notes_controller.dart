@@ -87,6 +87,11 @@ class NotesController extends ChangeNotifier {
     await loadData();
   }
 
+  Future<void> updateSession(CampaignSession session) async {
+    await repository.updateSession(session);
+    await loadData();
+  }
+
   Future<void> deleteSession(String id) async {
     await repository.deleteSession(id);
     await loadData();
@@ -98,10 +103,16 @@ class NotesController extends ChangeNotifier {
     await loadData();
   }
 
+  Future<void> updateCharacter(Character character) async {
+    await repository.updateCharacter(character);
+    await loadData();
+  }
+
   Future<void> deleteCharacter(String id) async {
     await repository.deleteCharacter(id);
     await loadData();
   }
+
 
   // --- Attachments Actions ---
   Future<void> pickAndAddAttachment({
@@ -119,7 +130,7 @@ class NotesController extends ChangeNotifier {
         final ext = path.extension(file.path).replaceAll('.', '');
         
         String sourceType = 'file';
-        if (['jpg', 'jpeg', 'png', 'gif'].contains(ext.toLowerCase())) {
+        if (['jpg', 'jpeg', 'png', 'gif', 'webp'].contains(ext.toLowerCase())) {
           sourceType = 'image';
         } else if (ext.toLowerCase() == 'pdf') {
           sourceType = 'pdf';

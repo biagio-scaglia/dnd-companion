@@ -10,7 +10,8 @@ import '../domain/models/session.dart';
 import 'notes_controller.dart';
 
 class SessionEditView extends StatefulWidget {
-  const SessionEditView({super.key});
+  final CampaignSession? session;
+  const SessionEditView({super.key, this.session});
 
   @override
   State<SessionEditView> createState() => _SessionEditViewState();
@@ -24,7 +25,30 @@ class _SessionEditViewState extends State<SessionEditView> {
   @override
   void initState() {
     super.initState();
-    _sessionId = _uuid.v4();
+    if (widget.session != null) {
+      _sessionId = widget.session!.id;
+      _titleController.text = widget.session!.title;
+      _numberController.text = widget.session!.number?.toString() ?? '';
+      _campaignController.text = widget.session!.campaign ?? '';
+      _realDate = widget.session!.realDate;
+      _inGameDateController.text = widget.session!.inGameDate ?? '';
+      _locationController.text = widget.session!.location ?? '';
+      _shortRecapController.text = widget.session!.shortRecap;
+      _lootController.text = widget.session!.loot ?? '';
+      _notesController.text = widget.session!.notes ?? '';
+      _status = widget.session!.status;
+      _isImportant = widget.session!.isImportant;
+      _isPinned = widget.session!.isPinned;
+      
+      _mainEvents.addAll(widget.session!.mainEvents);
+      _metNpcs.addAll(widget.session!.metNpcs);
+      _visitedLocations.addAll(widget.session!.visitedLocations);
+      _completedObjectives.addAll(widget.session!.completedObjectives);
+      _openObjectives.addAll(widget.session!.openObjectives);
+      _tags.addAll(widget.session!.tags);
+    } else {
+      _sessionId = _uuid.v4();
+    }
   }
 
   // Controllers
@@ -127,7 +151,7 @@ class _SessionEditViewState extends State<SessionEditView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nuova Sessione'),
+        title: Text(widget.session != null ? 'Modifica Sessione' : 'Nuova Sessione'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -155,11 +179,16 @@ class _SessionEditViewState extends State<SessionEditView> {
                   isImportant: _isImportant,
                   isPinned: _isPinned,
                   tags: _tags,
-                  createdAt: DateTime.now(),
+                  createdAt: widget.session?.createdAt ?? DateTime.now(),
                   updatedAt: DateTime.now(),
                 );
 
-                await notesController.createSession(session);
+                if (widget.session != null) {
+                  await notesController.updateSession(session);
+                } else {
+                  await notesController.createSession(session);
+                }
+                
                 if (mounted) Navigator.pop(context);
               }
             },

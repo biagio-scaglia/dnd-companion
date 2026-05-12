@@ -9,7 +9,8 @@ import '../domain/models/character.dart';
 import 'notes_controller.dart';
 
 class CharacterEditView extends StatefulWidget {
-  const CharacterEditView({super.key});
+  final Character? character;
+  const CharacterEditView({super.key, this.character});
 
   @override
   State<CharacterEditView> createState() => _CharacterEditViewState();
@@ -23,7 +24,29 @@ class _CharacterEditViewState extends State<CharacterEditView> {
   @override
   void initState() {
     super.initState();
-    _characterId = _uuid.v4();
+    if (widget.character != null) {
+      _characterId = widget.character!.id;
+      _nameController.text = widget.character!.name;
+      _playerNameController.text = widget.character!.playerName ?? '';
+      _raceController.text = widget.character!.race;
+      _classController.text = widget.character!.characterClass;
+      _subclassController.text = widget.character!.subclass ?? '';
+      _levelController.text = widget.character!.level.toString();
+      _alignmentController.text = widget.character!.alignment ?? '';
+      _backgroundController.text = widget.character!.background ?? '';
+      _campaignController.text = widget.character!.campaign ?? '';
+      _locationController.text = widget.character!.currentLocation ?? '';
+      _goalController.text = widget.character!.goal ?? '';
+      _traitsController.text = widget.character!.traits ?? '';
+      _idealsController.text = widget.character!.ideals ?? '';
+      _bondsController.text = widget.character!.bonds ?? '';
+      _flawsController.text = widget.character!.flaws ?? '';
+      _shortDescriptionController.text = widget.character!.shortDescription ?? '';
+      _notesController.text = widget.character!.notes ?? '';
+      _status = widget.character!.status;
+    } else {
+      _characterId = _uuid.v4();
+    }
   }
 
   // Controllers
@@ -76,7 +99,7 @@ class _CharacterEditViewState extends State<CharacterEditView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nuovo Personaggio'),
+        title: Text(widget.character != null ? 'Modifica Personaggio' : 'Nuovo Personaggio'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -104,11 +127,16 @@ class _CharacterEditViewState extends State<CharacterEditView> {
                   flaws: _flawsController.text.isNotEmpty ? _flawsController.text : null,
                   shortDescription: _shortDescriptionController.text.isNotEmpty ? _shortDescriptionController.text : null,
                   notes: _notesController.text.isNotEmpty ? _notesController.text : null,
-                  createdAt: DateTime.now(),
+                  createdAt: widget.character?.createdAt ?? DateTime.now(),
                   updatedAt: DateTime.now(),
                 );
 
-                await notesController.createCharacter(character);
+                if (widget.character != null) {
+                  await notesController.updateCharacter(character);
+                } else {
+                  await notesController.createCharacter(character);
+                }
+                
                 if (mounted) Navigator.pop(context);
               }
             },

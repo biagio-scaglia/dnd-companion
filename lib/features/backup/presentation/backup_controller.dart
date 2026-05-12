@@ -48,6 +48,7 @@ class BackupController extends ChangeNotifier {
           dialogTitle: 'Salva Backup',
           fileName: 'Dnd_Backup_${DateTime.now().millisecondsSinceEpoch}.comp',
           type: FileType.any,
+          bytes: Uint8List.fromList(bytes),
         );
 
         if (outputFile == null) {
