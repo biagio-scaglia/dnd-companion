@@ -38,7 +38,7 @@ class SettingsView extends StatelessWidget {
                       showGlow: true,
                     ),
                     const SizedBox(height: AppSpacing.m),
-                    Text('D&D Companion', style: AppTypography.h1),
+                    Text('Vellum', style: AppTypography.h1),
                     const SizedBox(height: 4),
                     Text('Versione 1.0.0', style: AppTypography.bodySmall),
                   ],
@@ -57,7 +57,7 @@ class SettingsView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _infoRow(Icons.info_outline_rounded, 'App', 'D&D Companion'),
+                    _infoRow(Icons.info_outline_rounded, 'App', 'Vellum'),
                     const Divider(height: 24),
                     _infoRow(Icons.tag_rounded, 'Build', '1'),
                     const Divider(height: 24),

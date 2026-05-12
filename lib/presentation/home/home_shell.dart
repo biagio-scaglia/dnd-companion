@@ -92,17 +92,17 @@ class _HomeShellState extends State<HomeShell> {
                 NavigationRailDestination(
                   icon: Icon(Icons.home_outlined),
                   selectedIcon: Icon(Icons.home_rounded),
-                  label: Text('Home'),
+                  label: Text('Cronache'),
                 ),
                 NavigationRailDestination(
                   icon: Icon(Icons.book_outlined),
                   selectedIcon: Icon(Icons.book_rounded),
-                  label: Text('Compendio'),
+                  label: Text('Sapere'),
                 ),
                 NavigationRailDestination(
                   icon: Icon(Icons.edit_note_outlined),
                   selectedIcon: Icon(Icons.edit_note_rounded),
-                  label: Text('Appunti'),
+                  label: Text('Memorie'),
                 ),
                 NavigationRailDestination(
                   icon: Icon(Icons.settings_outlined),
@@ -112,7 +112,7 @@ class _HomeShellState extends State<HomeShell> {
                 NavigationRailDestination(
                   icon: Icon(Icons.map_outlined),
                   selectedIcon: Icon(Icons.map_rounded),
-                  label: Text('Mappa'),
+                  label: Text('Cartografia'),
                 ),
               ],
             ),
@@ -152,17 +152,17 @@ class _HomeShellState extends State<HomeShell> {
                 NavigationDestination(
                   icon: Icon(Icons.home_outlined),
                   selectedIcon: Icon(Icons.home_rounded),
-                  label: 'Home',
+                  label: 'Cronache',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.book_outlined),
                   selectedIcon: Icon(Icons.book_rounded),
-                  label: 'Compendio',
+                  label: 'Sapere',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.edit_note_outlined),
                   selectedIcon: Icon(Icons.edit_note_rounded),
-                  label: 'Appunti',
+                  label: 'Memorie',
                 ),
                 NavigationDestination(
                   icon: Icon(Icons.settings_outlined),
@@ -172,7 +172,7 @@ class _HomeShellState extends State<HomeShell> {
                 NavigationDestination(
                   icon: Icon(Icons.map_outlined),
                   selectedIcon: Icon(Icons.map_rounded),
-                  label: 'Mappa',
+                  label: 'Cartografia',
                 ),
               ],
             )

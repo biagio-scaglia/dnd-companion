@@ -190,7 +190,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                 return Opacity(
                   opacity: _textOpacity.value,
                   child: Text(
-                    'D&D COMPANION',
+                    'VELLUM',
                     style: AppTypography.h2.copyWith(
                       letterSpacing: tracking,
                       color: AppColors.textPrimary,

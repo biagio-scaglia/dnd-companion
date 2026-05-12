@@ -110,9 +110,9 @@ class NotesView extends StatelessWidget {
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
                       icon: Icons.person_outline_rounded,
-                      message: 'Nessun personaggio',
-                      subMessage: 'Aggiungi il tuo primo eroe',
-                      actionLabel: 'Crea Eroe',
+                      message: 'Nessun eroe',
+                      subMessage: 'L\'elenco dei personaggi è vuoto.',
+                      actionLabel: 'Genera Eroe',
                       onAction: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => const CharacterEditView()),
@@ -167,9 +167,9 @@ class NotesView extends StatelessWidget {
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
                       icon: Icons.menu_book_outlined,
-                      message: 'Nessuna sessione',
-                      subMessage: 'Inizia a documentare le tue avventure',
-                      actionLabel: 'Nuova Sessione',
+                      message: 'Nessun capitolo',
+                      subMessage: 'Le pagine delle cronache sono vuote.',
+                      actionLabel: 'Scrivi Capitolo',
                       onAction: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => const SessionEditView()),
@@ -215,9 +215,9 @@ class NotesView extends StatelessWidget {
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
                       icon: Icons.note_outlined,
-                      message: 'Nessun appunto',
-                      subMessage: 'Inizia a scrivere le tue cronache',
-                      actionLabel: 'Scrivi Appunto',
+                      message: 'Nessuna memoria',
+                      subMessage: 'Le pagine sono ancora bianche.',
+                      actionLabel: 'Trascrivi',
                       onAction: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => const NoteEditView()),
@@ -275,7 +275,7 @@ class NotesView extends StatelessWidget {
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
                       icon: Icons.attach_file_outlined,
-                      message: 'Nessun allegato',
+                      message: 'Nessun reperto',
                       accentColor: AppColors.textSecondary,
                     ),
                   ),

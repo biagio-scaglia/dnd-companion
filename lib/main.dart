@@ -59,7 +59,7 @@ class DndCompanionApp extends StatelessWidget {
     return Consumer<SettingsController>(
       builder: (context, settingsController, child) {
         return MaterialApp(
-          title: 'D&D Companion',
+          title: 'Vellum',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.getTheme(accentColor: settingsController.settings.accentColor),
           home: const SplashView(),
