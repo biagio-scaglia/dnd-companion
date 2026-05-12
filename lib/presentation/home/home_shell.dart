@@ -88,7 +88,7 @@ class _HomeShellState extends State<HomeShell> {
                 AppNavigation.instance.currentTab.value = index;
               },
               extended: screenWidth >= 1000,
-              destinations: const [
+              destinations: [
                 NavigationRailDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Book.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Book.png', width: 24, height: 24),
@@ -148,7 +148,7 @@ class _HomeShellState extends State<HomeShell> {
               onDestinationSelected: (index) {
                 AppNavigation.instance.currentTab.value = index;
               },
-              destinations: const [
+              destinations: [
                 NavigationDestination(
                   icon: Image.asset('lib/assets/icone/Misc/Book.png', width: 24, height: 24),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Book.png', width: 24, height: 24),

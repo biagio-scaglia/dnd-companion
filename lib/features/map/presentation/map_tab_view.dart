@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
+import '../../../presentation/widgets/dnd_empty_state.dart';
 import 'controllers/map_editor_controller.dart';
 import '../game/map_editor_game.dart';
 import 'widgets/layer_panel.dart';
