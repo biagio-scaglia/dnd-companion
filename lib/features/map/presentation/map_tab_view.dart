@@ -242,28 +242,13 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
           }
 
           if (controller.openMaps.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.map_outlined, size: 64, color: AppColors.textSecondary),
-                  const SizedBox(height: 16),
-                  const Text('Nessuna mappa aperta', style: TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  const Text('Tocca il + in alto o il pulsante qui sotto per crearne una.', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-                  const SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () => controller.createNewMap('Nuova Mappa', 30, 30),
-                    icon: const Icon(Icons.add_rounded),
-                    label: const Text('Crea Nuova Mappa'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.magicAccent,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    ),
-                  ),
-                ],
-              ),
+            return DndEmptyState(
+              imagePath: 'lib/assets/icone/Misc/Map.png',
+              message: 'Nessuna mappa aperta',
+              subMessage: 'Tocca il + in alto o il pulsante qui sotto per crearne una.',
+              actionLabel: 'Crea Nuova Mappa',
+              onAction: () => controller.createNewMap('Nuova Mappa', 30, 30),
+              accentColor: AppColors.magicAccent,
             );
           }
 
