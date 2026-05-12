@@ -4,6 +4,15 @@ import 'package:flutter/material.dart';
 class HomeController extends ChangeNotifier {
   final Random _random = Random();
 
+  String _currentLanguage = 'it';
+  String get currentLanguage => _currentLanguage;
+
+  void setLanguage(String lang) {
+    if (_currentLanguage == lang) return;
+    _currentLanguage = lang;
+    notifyListeners();
+  }
+
   String _lastRollResult = 'Tocca un dado per lanciare';
   String get lastRollResult => _lastRollResult;
 

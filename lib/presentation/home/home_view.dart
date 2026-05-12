@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/localization/app_strings.dart';
 import '../../features/notes/presentation/notes_controller.dart';
 import '../../features/map/presentation/controllers/map_editor_controller.dart';
 import 'home_controller.dart';
@@ -61,36 +62,52 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       child: SlideTransition(
         position: _slideAnimation,
         child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            children: [
-              // ── Header ──────────────────────────────────────────────
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          child: Consumer<HomeController>(
+            builder: (context, homeController, child) {
+              final lang = homeController.currentLanguage;
+              return ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                 children: [
-                  Text(
-                    'VELLUM',
-                    style: AppTypography.label.copyWith(
-                      color: AppColors.highlight,
-                      letterSpacing: 3,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Bentornato, Viaggiatore',
-                    style: AppTypography.display.copyWith(
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                ],
-              ).slideIn(delay: const Duration(milliseconds: 100)),
+                  // ── Header ──────────────────────────────────────────────
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppStrings.get('app_title', lang),
+                            style: AppTypography.label.copyWith(
+                              color: AppColors.highlight,
+                              letterSpacing: 3,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            AppStrings.get('welcome', lang),
+                            style: AppTypography.display.copyWith(
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Switch lingua
+                      Row(
+                        children: [
+                          _buildLanguageButton(context, 'IT', lang == 'it', () => homeController.setLanguage('it')),
+                          const SizedBox(width: 8),
+                          _buildLanguageButton(context, 'EN', lang == 'en', () => homeController.setLanguage('en')),
+                        ],
+                      ),
+                    ],
+                  ).slideIn(delay: const Duration(milliseconds: 100)),
               const DndOrnamentalDivider(space: 32),
 
               // ── Lancio Dadi ─────────────────────────────────────────
-              const DndSectionHeader(
-                title: 'Lancio Dadi',
-                subtitle: 'Tira i dadi per le tue prove',
+              DndSectionHeader(
+                title: AppStrings.get('dice_roll', lang),
+                subtitle: AppStrings.get('dice_roll_sub', lang),
                 accentColor: AppColors.highlight,
               ).slideIn(delay: const Duration(milliseconds: 200)),
               const SizedBox(height: AppSpacing.m),
@@ -105,9 +122,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const DndSectionHeader(
-                        title: 'Mappe',
-                        subtitle: 'Esplora e modifica i tuoi mondi',
+                      DndSectionHeader(
+                        title: AppStrings.get('maps', lang),
+                        subtitle: AppStrings.get('maps_sub', lang),
                         accentColor: AppColors.magicAccent,
                       ),
                       const SizedBox(height: AppSpacing.m),
@@ -128,7 +145,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'ULTIMA MAPPA ATTIVA',
+                                    AppStrings.get('last_map', lang),
                                     style: AppTypography.sectionLabel(color: AppColors.magicAccent),
                                   ),
                                   const SizedBox(height: 4),
@@ -147,9 +164,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               const SizedBox(height: AppSpacing.xl),
 
               // ── Dal Compendio ────────────────────────────────────────
-              const DndSectionHeader(
-                title: 'Dal Compendio',
-                subtitle: 'Ultimi segreti scoperti',
+              DndSectionHeader(
+                title: AppStrings.get('compendium', lang),
+                subtitle: AppStrings.get('compendium_sub', lang),
                 accentColor: AppColors.magicAccent,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -158,9 +175,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               const SizedBox(height: AppSpacing.xl),
 
               // ── Generatore Bottino ────────────────────────────────────
-              const DndSectionHeader(
-                title: 'Generatore Rapido',
-                subtitle: 'Strumenti per il Dungeon Master',
+              DndSectionHeader(
+                title: AppStrings.get('generator', lang),
+                subtitle: AppStrings.get('generator_sub', lang),
                 accentColor: AppColors.naturalAccent,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -182,7 +199,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'BOTTINO CASUALE',
+                            AppStrings.get('loot', lang),
                             style: AppTypography.sectionLabel(color: AppColors.naturalAccent),
                           ),
                           const SizedBox(height: 4),
@@ -192,7 +209,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     ),
                     const SizedBox(width: 12),
                     DndButton(
-                      text: 'Genera',
+                      text: AppStrings.get('generate', lang),
                       onPressed: () => context.read<HomeController>().generateLoot(),
                       backgroundColor: AppColors.naturalAccent,
                       foregroundColor: AppColors.background,
@@ -204,9 +221,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               const SizedBox(height: AppSpacing.xl),
 
               // ── I Tuoi Contenuti ──────────────────────────────────────
-              const DndSectionHeader(
-                title: 'I Tuoi Contenuti',
-                subtitle: 'Riepilogo delle tue risorse',
+              DndSectionHeader(
+                title: AppStrings.get('contents', lang),
+                subtitle: AppStrings.get('contents_sub', lang),
                 accentColor: AppColors.textSecondary,
               ),
               const SizedBox(height: AppSpacing.m),
@@ -218,10 +235,10 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   final charCount = notesController.characters.length;
 
                   if (noteCount == 0 && sessionCount == 0 && charCount == 0) {
-                    return const DndEmptyState(
+                    return DndEmptyState(
                       icon: Icons.book_outlined,
-                      message: 'Nessun contenuto ancora',
-                      subMessage: 'Aggiungi note, sessioni o personaggi dalla tab Appunti',
+                      message: AppStrings.get('no_content', lang),
+                      subMessage: AppStrings.get('add_content', lang),
                       accentColor: AppColors.highlight,
                       isCompact: true,
                     );
@@ -231,7 +248,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                     children: [
                       Expanded(
                         child: DndStatCard(
-                          label: 'Note',
+                          label: AppStrings.get('notes', lang),
                           value: noteCount.toString(),
                           imagePath: 'lib/assets/icone/Misc/Scroll.png',
                           accentColor: AppColors.highlight,
@@ -240,7 +257,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       const SizedBox(width: AppSpacing.m),
                       Expanded(
                         child: DndStatCard(
-                          label: 'Sessioni',
+                          label: AppStrings.get('sessions', lang),
                           value: sessionCount.toString(),
                           imagePath: 'lib/assets/icone/Misc/Book 2.png',
                           accentColor: AppColors.magicAccent,
@@ -249,7 +266,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       const SizedBox(width: AppSpacing.m),
                       Expanded(
                         child: DndStatCard(
-                          label: 'Personaggi',
+                          label: AppStrings.get('characters', lang),
                           value: charCount.toString(),
                           imagePath: 'lib/assets/icone/Equipment/Helm.png',
                           accentColor: AppColors.naturalAccent,
@@ -270,9 +287,35 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
               ),
               const SizedBox(height: AppSpacing.m),
             ],
-          ),
+          );
+        },
+      ),
+    ),
+  );
+}
+
+Widget _buildLanguageButton(BuildContext context, String label, bool isSelected, VoidCallback onTap) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: isSelected ? AppColors.highlight.withValues(alpha: 0.2) : AppColors.surfaceSecondary,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+          color: isSelected ? AppColors.highlight : AppColors.surfaceSecondary,
+          width: 1,
         ),
       ),
-    );
-  }
+      child: Text(
+        label,
+        style: AppTypography.label.copyWith(
+          color: isSelected ? AppColors.highlight : AppColors.textSecondary,
+          fontSize: 12,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+    ),
+  );
+}
 }
