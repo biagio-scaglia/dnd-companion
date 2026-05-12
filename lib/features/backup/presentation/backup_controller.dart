@@ -60,8 +60,13 @@ class BackupController extends ChangeNotifier {
           outputFile += '.comp';
         }
 
-        final file = File(outputFile);
-        await file.writeAsBytes(bytes);
+        if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+          // Su Android e iOS, FilePicker.saveFile salva già il file se passiamo i bytes.
+          // Inoltre il path restituito potrebbe essere un URI non gestibile direttamente da File().
+        } else {
+          final file = File(outputFile);
+          await file.writeAsBytes(bytes);
+        }
         _lastResult = BackupResult(success: true, message: 'Backup creato con successo!');
       }
     } catch (e) {

@@ -138,6 +138,7 @@ class NotesView extends StatelessWidget {
                               context,
                               MaterialPageRoute(builder: (_) => CharacterEditView(character: c)),
                             ),
+                            onDeleteAttachment: (attachmentId) => notesController.deleteAttachment(attachmentId),
                           ),
                         );
                       },
@@ -200,6 +201,7 @@ class NotesView extends StatelessWidget {
                               context,
                               MaterialPageRoute(builder: (_) => SessionEditView(session: s)),
                             ),
+                            onDeleteAttachment: (attachmentId) => notesController.deleteAttachment(attachmentId),
                           ),
                         );
                       },
@@ -252,6 +254,7 @@ class NotesView extends StatelessWidget {
                               context,
                               MaterialPageRoute(builder: (_) => NoteEditView(note: n)),
                             ),
+                            onDeleteAttachment: (attachmentId) => notesController.deleteAttachment(attachmentId),
                           ),
                         );
                       },
@@ -280,36 +283,38 @@ class NotesView extends StatelessWidget {
                 ),
               ),
 
-              if (notesController.attachments.isEmpty)
-                const SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  sliver: SliverToBoxAdapter(
-                    child: DndEmptyState(
-                      imagePath: 'lib/assets/icone/Misc/Chest.png',
-                      message: 'Nessun reperto',
-                      accentColor: AppColors.textSecondary,
+                final globalAttachments = notesController.attachments.where((a) => a.linkedEntityId == 'global').toList();
+                
+                if (globalAttachments.isEmpty)
+                  const SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    sliver: SliverToBoxAdapter(
+                      child: DndEmptyState(
+                        imagePath: 'lib/assets/icone/Misc/Chest.png',
+                        message: 'Nessun reperto',
+                        accentColor: AppColors.textSecondary,
+                      ),
+                    ),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final a = globalAttachments[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: AttachmentCard(
+                              attachment: a,
+                              onDelete: () => notesController.deleteAttachment(a.id),
+                            ),
+                          );
+                        },
+                        childCount: globalAttachments.length,
+                      ),
                     ),
                   ),
-                )
-              else
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final a = notesController.attachments[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: AttachmentCard(
-                            attachment: a,
-                            onDelete: () => notesController.deleteAttachment(a.id),
-                          ),
-                        );
-                      },
-                      childCount: notesController.attachments.length,
-                    ),
-                  ),
-                ),
 
               const SliverToBoxAdapter(
                 child: SizedBox(height: AppSpacing.xxl),

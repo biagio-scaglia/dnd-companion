@@ -13,6 +13,7 @@ class CharacterCard extends StatelessWidget {
   final List<Attachment> attachments;
   final VoidCallback onDelete;
   final VoidCallback onTap;
+  final Function(String) onDeleteAttachment;
 
   const CharacterCard({
     super.key,
@@ -20,6 +21,7 @@ class CharacterCard extends StatelessWidget {
     required this.attachments,
     required this.onDelete,
     required this.onTap,
+    required this.onDeleteAttachment,
   });
 
   IconData _getIconForType(String type) {
@@ -91,22 +93,47 @@ class CharacterCard extends StatelessWidget {
                     final isImage = a.sourceType == 'image';
                     return Padding(
                       padding: const EdgeInsets.only(right: 8.0),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceSecondary,
-                          borderRadius: BorderRadius.circular(4),
-                          image: isImage ? DecorationImage(
-                            image: FileImage(File(a.storedPath)),
-                            fit: BoxFit.cover,
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              backgroundColor: AppColors.surface,
+                              title: Text(a.name, style: AppTypography.h3),
+                              content: const Text('Vuoi eliminare questo allegato?', style: AppTypography.bodySmall),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    onDeleteAttachment(a.id);
+                                  },
+                                  child: const Text('Elimina', style: TextStyle(color: Colors.red)),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceSecondary,
+                            borderRadius: BorderRadius.circular(4),
+                            image: isImage ? DecorationImage(
+                              image: FileImage(File(a.storedPath)),
+                              fit: BoxFit.cover,
+                            ) : null,
+                          ),
+                          child: !isImage ? Icon(
+                            _getIconForType(a.sourceType),
+                            color: AppColors.magicAccent,
+                            size: 20,
                           ) : null,
                         ),
-                        child: !isImage ? Icon(
-                          _getIconForType(a.sourceType),
-                          color: AppColors.magicAccent,
-                          size: 20,
-                        ) : null,
                       ),
                     );
                   },
