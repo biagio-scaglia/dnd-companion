@@ -69,7 +69,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'D&D COMPANION',
+                    'VELLUM',
                     style: AppTypography.label.copyWith(
                       color: AppColors.highlight,
                       letterSpacing: 3,
