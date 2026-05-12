@@ -104,6 +104,12 @@ flutter:
     - lib/assets/icone/Potion/
     - "lib/assets/icone/Weapon & Tool/"
     - lib/assets/dices/
+    - lib/assets/dadi/D4/
+    - lib/assets/dadi/D6/
+    - lib/assets/dadi/D8/
+    - lib/assets/dadi/D10/
+    - lib/assets/dadi/D12/
+    - lib/assets/dadi/D20/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 
 class DiceRollerDialog extends StatefulWidget {
-  const DiceRollerDialog({super.key});
+  final int? initialDice;
+  const DiceRollerDialog({super.key, this.initialDice});
 
   @override
   State<DiceRollerDialog> createState() => _DiceRollerDialogState();
@@ -11,6 +12,7 @@ class DiceRollerDialog extends StatefulWidget {
 
 class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerProviderStateMixin {
   int? _result;
+  int? _currentRoll;
   int? _lastDice;
   int _modifier = 0;
   final List<String> _history = [];
@@ -21,8 +23,14 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
     super.initState();
     _shakeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 400),
     );
+
+    if (widget.initialDice != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _rollDice(widget.initialDice!);
+      });
+    }
   }
 
   @override
@@ -35,6 +43,7 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
     _shakeController.forward(from: 0.0);
     setState(() {
       final roll = Random().nextInt(max) + 1;
+      _currentRoll = roll;
       _result = roll + _modifier;
       _lastDice = max;
       
@@ -53,7 +62,7 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
-    final dice = [4, 6, 8, 10, 12, 20, 100];
+    final dice = [4, 6, 8, 10, 12, 20]; // Rimosso 100!
     
     return AlertDialog(
       backgroundColor: AppColors.surface,
@@ -70,11 +79,12 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (_result != null)
+          if (_result != null && _currentRoll != null)
             AnimatedBuilder(
               animation: _shakeController,
               builder: (context, child) {
-                final shakeOffset = sin(_shakeController.value * pi * 4) * 5;
+                // Animazione di scossa più accentuata
+                final shakeOffset = sin(_shakeController.value * pi * 6) * 8;
                 return Transform.translate(
                   offset: Offset(shakeOffset, 0),
                   child: child,
@@ -82,32 +92,52 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
               },
               child: Container(
                 margin: const EdgeInsets.only(bottom: 24, top: 8),
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.magicAccent.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.magicAccent.withValues(alpha: 0.5), width: 2),
+                  color: AppColors.magicAccent.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.magicAccent.withValues(alpha: 0.3), width: 1),
                 ),
                 child: Column(
                   children: [
                     Text(
                       'D$_lastDice${_modifier != 0 ? (_modifier > 0 ? ' +$_modifier' : ' $_modifier') : ''}', 
                       style: const TextStyle(
-                        color: AppColors.magicAccent, 
-                        fontSize: 14,
+                        color: AppColors.textSecondary, 
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                       )
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '$_result',
-                      style: const TextStyle(
-                        fontSize: 54,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                        height: 1,
-                      ),
+                    const SizedBox(height: 12),
+                    // Immagine del dado con il risultato!
+                    Image.asset(
+                      'lib/assets/dadi/D$_lastDice/d${_lastDice}_yellow_$_currentRoll.png',
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        // Fallback se l'immagine non esiste!
+                        return Text(
+                          '$_currentRoll',
+                          style: const TextStyle(
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        );
+                      },
                     ),
+                    if (_modifier != 0) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        'Risultato: $_result',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.magicAccent,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),

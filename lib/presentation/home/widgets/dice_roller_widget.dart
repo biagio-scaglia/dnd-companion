@@ -4,14 +4,13 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../widgets/dnd_card.dart';
 import '../home_controller.dart';
+import 'dice_roller_dialog.dart';
 
 class DiceRollerWidget extends StatelessWidget {
   const DiceRollerWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<HomeController>();
-
     return DndCard(
       variant: DndCardVariant.featured,
       accentColor: AppColors.highlight,
@@ -19,28 +18,15 @@ class DiceRollerWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Risultato
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.25),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.surfaceSecondary),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.casino_rounded, color: AppColors.highlight, size: 22),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    controller.lastRollResult,
-                    style: AppTypography.h3,
-                  ),
-                ),
-              ],
+          const Text(
+            'Tira Dadi',
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -59,7 +45,12 @@ class DiceRollerWidget extends StatelessWidget {
 
   Widget _buildDiceButton(BuildContext context, String label, int sides) {
     return GestureDetector(
-      onTap: () => context.read<HomeController>().rollDice(sides),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => DiceRollerDialog(initialDice: sides),
+        );
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
