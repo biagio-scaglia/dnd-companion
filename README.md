@@ -1,5 +1,9 @@
-# <img src="lib/assets/logo/logo.png" width="40" height="40" valign="middle"> Vellum
-*L'archivio delle tue cronache.*
+<div align="center">
+  <img src="lib/assets/logo/logo.png" width="300" alt="Vellum Logo">
+  <br>
+  <i>L'archivio delle tue cronache.</i>
+  <br><br>
+</div>
 
 Vellum è una companion app offline-first per campagne fantasy e giochi di ruolo tabletop (TTRPG). Progettata con un'estetica dark fantasy moderna ed elegante, Vellum è il compagno silenzioso che ti aiuta a tracciare la storia del tuo mondo senza distrazioni.
 
@@ -27,10 +31,15 @@ Vellum è una companion app offline-first per campagne fantasy e giochi di ruolo
 - **Animazione di Scossa**: Quando lanci un dado, l'interfaccia subisce una scossa realistica.
 - **Risultato Visivo**: Il risultato viene mostrato direttamente sulla faccia del dado corrispondente grazie al pack grafico integrato.
 
+### <img src="lib/assets/icone/Misc/Map.png" width="24" height="24" valign="middle"> 6. Cartografia (Editor Mappe)
+- **Editor Interattivo**: Crea e modifica mappe per le tue sessioni con motore grafico Flame.
+- **Libreria di Icone**: Centinaia di icone dal pack di Cainos da usare come marker sulla mappa.
+
 ---
 
 ## 🛠️ Stack Tecnologico
 - **Framework**: Flutter
+- **Engine Grafico**: Flame (per l'editor mappe)
 - **Gestione Stato**: Provider
 - **Persistenza**: SharedPreferences (JSON compresso) e File System locale.
 - **Formato Archivio**: Package `archive` per la manipolazione dello ZIP.
