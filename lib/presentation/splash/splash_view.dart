@@ -169,11 +169,11 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                           ),
                         ],
                       ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.auto_awesome_rounded,
-                          color: AppColors.magicAccent,
-                          size: 50,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Image.asset(
+                          'lib/assets/logo/logo.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
