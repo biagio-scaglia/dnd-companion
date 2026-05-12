@@ -47,159 +47,236 @@ class NotesView extends StatelessWidget {
             return const DndLoadingIndicator(message: 'Caricamento appunti...');
           }
 
-          return ListView(
+          final sortedNotes = List<Note>.from(notesController.notes)
+            ..sort((a, b) {
+              if (a.isImportant != b.isImportant) {
+                return a.isImportant ? -1 : 1;
+              }
+              return b.date.compareTo(a.date);
+            });
+
+          return CustomScrollView(
             key: const PageStorageKey('notes_list'),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            children: [
+            slivers: [
               // ── Personaggi ───────────────────────────────────────────
-              DndSectionHeader(
-                title: 'I Tuoi Personaggi',
-                accentColor: AppColors.highlight,
-                trailing: IconButton(
-                  icon: const Icon(Icons.add_rounded, color: AppColors.highlight, size: 20),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const CharacterEditView()),
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.m),
-
-              if (notesController.characters.isEmpty)
-                DndEmptyState(
-                  icon: Icons.person_outline_rounded,
-                  message: 'Nessun personaggio',
-                  subMessage: 'Aggiungi il tuo primo eroe',
-                  actionLabel: 'Crea Eroe',
-                  onAction: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const CharacterEditView()),
-                  ),
-                  accentColor: AppColors.highlight,
-                )
-              else
-                ...notesController.characters.map((c) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: CharacterCard(
-                    character: c,
-                    onDelete: () => notesController.deleteCharacter(c.id),
-                  ),
-                )),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // ── Sessioni ─────────────────────────────────────────────
-              DndSectionHeader(
-                title: 'Sessioni',
-                accentColor: AppColors.magicAccent,
-                trailing: IconButton(
-                  icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent, size: 20),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const SessionEditView()),
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.m),
-
-              if (notesController.sessions.isEmpty)
-                DndEmptyState(
-                  icon: Icons.menu_book_outlined,
-                  message: 'Nessuna sessione',
-                  subMessage: 'Inizia a documentare le tue avventure',
-                  actionLabel: 'Nuova Sessione',
-                  onAction: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const SessionEditView()),
-                  ),
-                  accentColor: AppColors.magicAccent,
-                )
-              else
-                ...notesController.sessions.map((s) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: SessionCard(
-                    session: s,
-                    onDelete: () => notesController.deleteSession(s.id),
-                  ),
-                )),
-
-              const SizedBox(height: AppSpacing.xl),
-
-              // ── Appunti ──────────────────────────────────────────────
-              DndSectionHeader(
-                title: 'Appunti Recenti',
-                accentColor: AppColors.naturalAccent,
-              ),
-              const SizedBox(height: AppSpacing.m),
-
-              if (notesController.notes.isEmpty)
-                DndEmptyState(
-                  icon: Icons.note_outlined,
-                  message: 'Nessun appunto',
-                  subMessage: 'Inizia a scrivere le tue cronache',
-                  actionLabel: 'Scrivi Appunto',
-                  onAction: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const NoteEditView()),
-                  ),
-                  accentColor: AppColors.naturalAccent,
-                )
-              else
-                ...(List<Note>.from(notesController.notes)
-                  ..sort((a, b) {
-                    if (a.isImportant != b.isImportant) {
-                      return a.isImportant ? -1 : 1;
-                    }
-                    return b.date.compareTo(a.date);
-                  }))
-                .map((n) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: NoteCard(
-                    note: n,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => NoteEditView(note: n)),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                sliver: SliverToBoxAdapter(
+                  child: DndSectionHeader(
+                    title: 'I Tuoi Personaggi',
+                    accentColor: AppColors.highlight,
+                    trailing: IconButton(
+                      icon: const Icon(Icons.add_rounded, color: AppColors.highlight, size: 20),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const CharacterEditView()),
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
                     ),
                   ),
-                )),
-              const SizedBox(height: AppSpacing.xl),
-
-              // ── Allegati ─────────────────────────────────────────────
-              DndSectionHeader(
-                title: 'Allegati',
-                accentColor: AppColors.textSecondary,
-                trailing: IconButton(
-                  icon: const Icon(Icons.attach_file_rounded, color: AppColors.textSecondary, size: 20),
-                  onPressed: () => notesController.pickAndAddAttachment(
-                    linkedEntityId: 'global',
-                    linkedEntityType: 'global',
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
                 ),
               ),
-              const SizedBox(height: AppSpacing.m),
 
-              if (notesController.attachments.isEmpty)
-                const DndEmptyState(
-                  icon: Icons.attach_file_outlined,
-                  message: 'Nessun allegato',
-                  accentColor: AppColors.textSecondary,
+              if (notesController.characters.isEmpty)
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  sliver: SliverToBoxAdapter(
+                    child: DndEmptyState(
+                      icon: Icons.person_outline_rounded,
+                      message: 'Nessun personaggio',
+                      subMessage: 'Aggiungi il tuo primo eroe',
+                      actionLabel: 'Crea Eroe',
+                      onAction: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const CharacterEditView()),
+                      ),
+                      accentColor: AppColors.highlight,
+                    ),
+                  ),
                 )
               else
-                ...notesController.attachments.map((a) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: AttachmentCard(
-                    attachment: a,
-                    onDelete: () => notesController.deleteAttachment(a.id),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final c = notesController.characters[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: CharacterCard(
+                            character: c,
+                            onDelete: () => notesController.deleteCharacter(c.id),
+                          ),
+                        );
+                      },
+                      childCount: notesController.characters.length,
+                    ),
                   ),
-                )),
+                ),
 
-              const SizedBox(height: AppSpacing.xxl),
+              // ── Sessioni ─────────────────────────────────────────────
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+                sliver: SliverToBoxAdapter(
+                  child: DndSectionHeader(
+                    title: 'Sessioni',
+                    accentColor: AppColors.magicAccent,
+                    trailing: IconButton(
+                      icon: const Icon(Icons.add_rounded, color: AppColors.magicAccent, size: 20),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SessionEditView()),
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ),
+                ),
+              ),
+
+              if (notesController.sessions.isEmpty)
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  sliver: SliverToBoxAdapter(
+                    child: DndEmptyState(
+                      icon: Icons.menu_book_outlined,
+                      message: 'Nessuna sessione',
+                      subMessage: 'Inizia a documentare le tue avventure',
+                      actionLabel: 'Nuova Sessione',
+                      onAction: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SessionEditView()),
+                      ),
+                      accentColor: AppColors.magicAccent,
+                    ),
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final s = notesController.sessions[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: SessionCard(
+                            session: s,
+                            onDelete: () => notesController.deleteSession(s.id),
+                          ),
+                        );
+                      },
+                      childCount: notesController.sessions.length,
+                    ),
+                  ),
+                ),
+
+              // ── Appunti ──────────────────────────────────────────────
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+                sliver: SliverToBoxAdapter(
+                  child: DndSectionHeader(
+                    title: 'Appunti Recenti',
+                    accentColor: AppColors.naturalAccent,
+                  ),
+                ),
+              ),
+
+              if (notesController.notes.isEmpty)
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  sliver: SliverToBoxAdapter(
+                    child: DndEmptyState(
+                      icon: Icons.note_outlined,
+                      message: 'Nessun appunto',
+                      subMessage: 'Inizia a scrivere le tue cronache',
+                      actionLabel: 'Scrivi Appunto',
+                      onAction: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const NoteEditView()),
+                      ),
+                      accentColor: AppColors.naturalAccent,
+                    ),
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final n = sortedNotes[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: NoteCard(
+                            note: n,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => NoteEditView(note: n)),
+                            ),
+                          ),
+                        );
+                      },
+                      childCount: sortedNotes.length,
+                    ),
+                  ),
+                ),
+
+              // ── Allegati ─────────────────────────────────────────────
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+                sliver: SliverToBoxAdapter(
+                  child: DndSectionHeader(
+                    title: 'Allegati',
+                    accentColor: AppColors.textSecondary,
+                    trailing: IconButton(
+                      icon: const Icon(Icons.attach_file_rounded, color: AppColors.textSecondary, size: 20),
+                      onPressed: () => notesController.pickAndAddAttachment(
+                        linkedEntityId: 'global',
+                        linkedEntityType: 'global',
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ),
+                ),
+              ),
+
+              if (notesController.attachments.isEmpty)
+                const SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  sliver: SliverToBoxAdapter(
+                    child: DndEmptyState(
+                      icon: Icons.attach_file_outlined,
+                      message: 'Nessun allegato',
+                      accentColor: AppColors.textSecondary,
+                    ),
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final a = notesController.attachments[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: AttachmentCard(
+                            attachment: a,
+                            onDelete: () => notesController.deleteAttachment(a.id),
+                          ),
+                        );
+                      },
+                      childCount: notesController.attachments.length,
+                    ),
+                  ),
+                ),
+
+              const SliverToBoxAdapter(
+                child: SizedBox(height: AppSpacing.xxl),
+              ),
             ],
           );
         },
