@@ -1268,6 +1268,12 @@ abstract class AppLocalizations {
   /// **'New'**
   String get newTag;
 
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
   /// No description provided for @newMap.
   ///
   /// In en, this message translates to:

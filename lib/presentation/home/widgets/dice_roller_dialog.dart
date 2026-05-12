@@ -183,7 +183,7 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
               children: [
                 _buildModifierChip(-1),
                 const SizedBox(width: 8),
-                _buildModifierChip(0, label: 'Reset'),
+                _buildModifierChip(0, label: AppLocalizations.of(context)!.reset),
                 const SizedBox(width: 8),
                 _buildModifierChip(1),
                 const SizedBox(width: 8),

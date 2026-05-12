@@ -602,6 +602,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newTag => 'New';
 
   @override
+  String get reset => 'Reset';
+
+  @override
   String get newMap => 'New Map';
 
   @override

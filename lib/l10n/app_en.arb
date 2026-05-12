@@ -198,6 +198,7 @@
   "noSessions": "No sessions recorded.",
   "nothingLost": "Nothing is lost between sessions",
   "newTag": "New",
+  "reset": "Reset",
   "newMap": "New Map",
   "storagePermissionDenied": "Storage permission denied!",
   "webSaveNotImplemented": "Saving on Web not implemented directly. Use screenshot!",

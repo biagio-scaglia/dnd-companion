@@ -603,6 +603,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get newTag => 'Nuovo';
 
   @override
+  String get reset => 'Azzera';
+
+  @override
   String get newMap => 'Nuova Mappa';
 
   @override
