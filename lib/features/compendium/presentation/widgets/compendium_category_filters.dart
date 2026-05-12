@@ -36,7 +36,7 @@ class CompendiumCategoryFilters extends StatelessWidget {
           const SizedBox(width: 8),
           DndChip(
             label: 'Mostri',
-            icon: Icons.pets_rounded,
+            imagePath: 'lib/assets/icone/Monster Part/Skull.png',
             isSelected: selectedCategory == CompendiumItemType.monster,
             onTap: () => onCategoryTapped(CompendiumItemType.monster),
             accentColor: selectedCategory == CompendiumItemType.monster ? AppColors.magicAccent : AppColors.highlight,
@@ -44,7 +44,7 @@ class CompendiumCategoryFilters extends StatelessWidget {
           const SizedBox(width: 8),
           DndChip(
             label: 'Incantesimi',
-            icon: Icons.auto_awesome_rounded,
+            imagePath: 'lib/assets/icone/Misc/Scroll.png',
             isSelected: selectedCategory == CompendiumItemType.spell,
             onTap: () => onCategoryTapped(CompendiumItemType.spell),
             accentColor: selectedCategory == CompendiumItemType.spell ? AppColors.magicAccent : AppColors.highlight,
@@ -52,7 +52,7 @@ class CompendiumCategoryFilters extends StatelessWidget {
           const SizedBox(width: 8),
           DndChip(
             label: 'Oggetti',
-            icon: Icons.shield_rounded,
+            imagePath: 'lib/assets/icone/Equipment/Iron Armor.png',
             isSelected: selectedCategory == CompendiumItemType.item,
             onTap: () => onCategoryTapped(CompendiumItemType.item),
             accentColor: selectedCategory == CompendiumItemType.item ? AppColors.naturalAccent : AppColors.highlight,

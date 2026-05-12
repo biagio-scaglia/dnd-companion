@@ -109,7 +109,7 @@ class NotesView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
-                      icon: Icons.person_outline_rounded,
+                      imagePath: 'lib/assets/icone/Equipment/Helm.png',
                       message: 'Nessun eroe',
                       subMessage: 'L\'elenco dei personaggi è vuoto.',
                       actionLabel: 'Genera Eroe',
@@ -166,7 +166,7 @@ class NotesView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
-                      icon: Icons.menu_book_outlined,
+                      imagePath: 'lib/assets/icone/Misc/Book.png',
                       message: 'Nessun capitolo',
                       subMessage: 'Le pagine delle cronache sono vuote.',
                       actionLabel: 'Scrivi Capitolo',
@@ -214,7 +214,7 @@ class NotesView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
-                      icon: Icons.note_outlined,
+                      imagePath: 'lib/assets/icone/Misc/Scroll.png',
                       message: 'Nessuna memoria',
                       subMessage: 'Le pagine sono ancora bianche.',
                       actionLabel: 'Trascrivi',
@@ -274,7 +274,7 @@ class NotesView extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   sliver: SliverToBoxAdapter(
                     child: DndEmptyState(
-                      icon: Icons.attach_file_outlined,
+                      imagePath: 'lib/assets/icone/Misc/Chest.png',
                       message: 'Nessun reperto',
                       accentColor: AppColors.textSecondary,
                     ),

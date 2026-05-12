@@ -95,6 +95,14 @@ flutter:
           style: italic
   assets:
     - lib/assets/logo/logo.png
+    - lib/assets/icone/Equipment/
+    - lib/assets/icone/Food/
+    - lib/assets/icone/Material/
+    - lib/assets/icone/Misc/
+    - "lib/assets/icone/Monster Part/"
+    - "lib/assets/icone/Ore & Gem/"
+    - lib/assets/icone/Potion/
+    - "lib/assets/icone/Weapon & Tool/"
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

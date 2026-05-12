@@ -10,6 +10,7 @@ class DndChip extends StatelessWidget {
   final VoidCallback? onTap;
   final Color accentColor;
   final IconData? icon;
+  final String? imagePath;
 
   const DndChip({
     super.key,
@@ -18,6 +19,7 @@ class DndChip extends StatelessWidget {
     this.onTap,
     this.accentColor = AppColors.magicAccent,
     this.icon,
+    this.imagePath,
   });
 
   @override
@@ -28,7 +30,7 @@ class DndChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOut,
         padding: EdgeInsets.symmetric(
-          horizontal: icon != null ? 10 : 14,
+          horizontal: (icon != null || imagePath != null) ? 10 : 14,
           vertical: 7,
         ),
         decoration: BoxDecoration(
@@ -44,7 +46,15 @@ class DndChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null) ...[
+            if (imagePath != null) ...[
+              Image.asset(
+                imagePath!,
+                width: 14,
+                height: 14,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(width: 5),
+            ] else if (icon != null) ...[
               Icon(
                 icon,
                 size: 14,

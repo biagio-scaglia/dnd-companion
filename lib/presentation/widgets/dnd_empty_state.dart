@@ -7,7 +7,8 @@ import 'dnd_button.dart';
 /// Stato vuoto elegante e coerente.
 /// Usare in ogni lista vuota dell'app.
 class DndEmptyState extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final String message;
   final String? subMessage;
   final String? actionLabel;
@@ -17,14 +18,15 @@ class DndEmptyState extends StatelessWidget {
 
   const DndEmptyState({
     super.key,
-    required this.icon,
+    this.icon,
+    this.imagePath,
     required this.message,
     this.subMessage,
     this.actionLabel,
     this.onAction,
     this.accentColor = AppColors.magicAccent,
     this.isCompact = false,
-  });
+  }) : assert(icon != null || imagePath != null, 'Devi fornire un icona o un percorso immagine');
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,12 @@ class DndEmptyState extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: accentColor.withValues(alpha: 0.15), width: 1.5),
               ),
-              child: Icon(icon, color: accentColor.withValues(alpha: 0.6), size: isCompact ? 24 : 32),
+              child: imagePath != null
+                  ? Padding(
+                      padding: EdgeInsets.all(isCompact ? 10.0 : 16.0),
+                      child: Image.asset(imagePath!, fit: BoxFit.contain),
+                    )
+                  : Icon(icon, color: accentColor.withValues(alpha: 0.6), size: isCompact ? 24 : 32),
             ),
             const SizedBox(height: AppSpacing.m),
             Text(
