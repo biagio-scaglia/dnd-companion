@@ -3,7 +3,7 @@ import 'package:archive/archive.dart';
 import 'package:path/path.dart' as p;
 
 class ArchiveService {
-  /// Crea un archivio ZIP (.dndc) da una directory.
+  /// Crea un archivio ZIP (.comp) da una directory.
   Future<void> createArchive(Directory sourceDir, File outputFile) async {
     final archive = Archive();
 

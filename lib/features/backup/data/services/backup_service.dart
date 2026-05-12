@@ -19,7 +19,7 @@ class BackupService {
     required this.archiveService,
   });
 
-  /// Esporta tutti i dati in un file .dndc
+  /// Esporta tutti i dati in un file .comp
   Future<BackupResult> exportBackup(File targetFile) async {
     try {
       final tempDir = await Directory.systemTemp.createTemp('dnd_backup_');
@@ -101,7 +101,7 @@ class BackupService {
     }
   }
 
-  /// Importa i dati da un file .dndc
+  /// Importa i dati da un file .comp
   Future<BackupResult> importBackup(File zipFile, {bool overwrite = false}) async {
     try {
       final tempDir = await Directory.systemTemp.createTemp('dnd_import_');

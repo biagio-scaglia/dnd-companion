@@ -34,7 +34,7 @@ class BackupController extends ChangeNotifier {
     try {
       String? outputFile = await FilePicker.platform.saveFile(
         dialogTitle: 'Salva Backup',
-        fileName: 'Dnd_Backup_${DateTime.now().millisecondsSinceEpoch}.dndc',
+        fileName: 'Dnd_Backup_${DateTime.now().millisecondsSinceEpoch}.comp',
         type: FileType.any,
       );
 
@@ -43,8 +43,8 @@ class BackupController extends ChangeNotifier {
         return;
       }
 
-      if (!outputFile.endsWith('.dndc')) {
-        outputFile += '.dndc';
+      if (!outputFile.endsWith('.comp')) {
+        outputFile += '.comp';
       }
 
       final file = File(outputFile);
@@ -76,8 +76,8 @@ class BackupController extends ChangeNotifier {
 
       final file = File(result.files.single.path!);
       
-      if (!file.path.endsWith('.dndc')) {
-        _lastResult = BackupResult(success: false, message: 'Il file selezionato non è un backup .dndc valido.');
+      if (!file.path.endsWith('.comp')) {
+        _lastResult = BackupResult(success: false, message: 'Il file selezionato non è un backup .comp valido.');
         _setLoading(false);
         return;
       }

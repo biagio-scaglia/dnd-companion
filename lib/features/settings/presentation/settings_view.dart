@@ -134,11 +134,11 @@ class SettingsView extends StatelessWidget {
                             ),
                           )
                         else ...[
-                          _actionRow(context, Icons.cloud_upload_outlined, 'Esporta Dati (.dndc)', () {
+                          _actionRow(context, Icons.cloud_upload_outlined, 'Esporta Dati (.comp)', () {
                             backupController.exportBackup();
                           }),
                           const Divider(height: 24),
-                          _actionRow(context, Icons.cloud_download_outlined, 'Ripristina Dati (.dndc)', () async {
+                          _actionRow(context, Icons.cloud_download_outlined, 'Ripristina Dati (.comp)', () async {
                             await backupController.pickAndPreviewBackup();
                             if (backupController.preview != null) {
                               _showImportOptionsDialog(context, backupController);
