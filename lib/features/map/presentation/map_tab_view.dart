@@ -8,6 +8,7 @@ import 'dart:io' show Platform;
 import 'package:provider/provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
+import 'package:flutter/gestures.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
 import '../../../presentation/widgets/dnd_empty_state.dart';
@@ -267,7 +268,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
                 key: _screenshotKey,
                 child: Listener(
                   onPointerSignal: (pointerSignal) {
-                    if (pointerSignal is ui.PointerScrollEvent) {
+                    if (pointerSignal is PointerScrollEvent) {
                       final controller = context.read<MapEditorController>();
                       // Permettiamo lo zoom con la rotella solo quando è selezionata la "Mano" (Pan)
                       if (controller.selectedTool == MapEditorTool.pan) {
