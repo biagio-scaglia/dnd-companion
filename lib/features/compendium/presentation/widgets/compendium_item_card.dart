@@ -53,12 +53,32 @@ class CompendiumItemCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DndMysticIconCircle(
-                  icon: typeIcon,
-                  imagePath: imagePath,
-                  accentColor: typeColor,
-                  size: 44,
-                  showGlow: false,
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF120B07), // Sfondo scuro e profondo
+                    borderRadius: BorderRadius.circular(8), // Angoli leggermente smussati
+                    border: Border.all(
+                      color: const Color(0xFF5C4033), // Bordo marrone scuro/legno
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2), // Ombra sotto
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: imagePath != null ? Image.asset(
+                      imagePath,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.none, // Per pixel art pulita
+                    ) : Icon(typeIcon, color: typeColor, size: 24),
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(

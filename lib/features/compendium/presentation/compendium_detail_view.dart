@@ -88,14 +88,36 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  width: 64,
+                  height: 64,
                   decoration: BoxDecoration(
-                    color: typeColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(16),
+                    color: const Color(0xFF120B07), // Sfondo scuro e profondo
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: const Color(0xFF5C4033), // Bordo marrone scuro/legno
+                      width: 2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                   ),
-                  child: imagePath != null
-                      ? Image.asset(imagePath, width: 32, height: 32, fit: BoxFit.contain)
-                      : Icon(Icons.help_outline_rounded, color: typeColor, size: 32),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: imagePath != null
+                          ? Image.asset(
+                              imagePath,
+                              fit: BoxFit.contain,
+                              filterQuality: FilterQuality.none, // Per pixel art pulita
+                            )
+                          : Icon(Icons.help_outline_rounded, color: typeColor, size: 32),
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
