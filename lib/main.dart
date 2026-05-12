@@ -10,6 +10,9 @@ import 'features/settings/presentation/settings_controller.dart';
 import 'features/map/data/map_repository_impl.dart';
 import 'features/map/presentation/controllers/map_editor_controller.dart';
 import 'presentation/home/home_controller.dart';
+import 'features/backup/presentation/backup_controller.dart';
+import 'features/backup/data/services/backup_service.dart';
+import 'features/backup/data/services/archive_service.dart';
 
 void main() {
   runApp(
@@ -24,6 +27,14 @@ void main() {
 
         ChangeNotifierProvider(
           create: (_) => SettingsController(repository: SettingsRepositoryImpl()),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => BackupController(
+            backupService: BackupService(
+              repository: NotesRepositoryImpl(),
+              archiveService: ArchiveService(),
+            ),
+          ),
         ),
         ChangeNotifierProvider(
           create: (_) {

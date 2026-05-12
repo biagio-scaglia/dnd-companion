@@ -8,6 +8,7 @@ import '../../../presentation/widgets/dnd_card.dart';
 import '../../../presentation/widgets/dnd_mystic_icon_circle.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
+import '../../backup/presentation/backup_controller.dart';
 import 'settings_controller.dart';
 
 class SettingsView extends StatelessWidget {
@@ -90,6 +91,66 @@ class SettingsView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.m),
+              
+              // Backup e Ripristino
+              const DndSectionHeader(
+                title: 'Backup e Ripristino',
+                accentColor: AppColors.highlight,
+              ),
+              const SizedBox(height: AppSpacing.s),
+              Consumer<BackupController>(
+                builder: (context, backupController, child) {
+                  // Ascolta i risultati per mostrare feedback
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (backupController.lastResult != null) {
+                      final result = backupController.lastResult!;
+                      backupController.clearLastResult();
+                      
+                      String msg = result.message;
+                      if (result.mergeDetails != null) {
+                        final d = result.mergeDetails!;
+                        msg += '\n(Ignorati: ${d['ignored']}, Duplicati: ${d['duplicated']})';
+                      }
+                      
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(msg),
+                          backgroundColor: result.success ? AppColors.naturalAccent : AppColors.danger,
+                        ),
+                      );
+                    }
+                  });
+
+                  return DndCard(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (backupController.isLoading)
+                          const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(color: AppColors.magicAccent),
+                            ),
+                          )
+                        else ...[
+                          _actionRow(context, Icons.cloud_upload_outlined, 'Esporta Dati (.dndc)', () {
+                            backupController.exportBackup();
+                          }),
+                          const Divider(height: 24),
+                          _actionRow(context, Icons.cloud_download_outlined, 'Ripristina Dati (.dndc)', () async {
+                            await backupController.pickAndPreviewBackup();
+                            if (backupController.preview != null) {
+                              _showImportOptionsDialog(context, backupController);
+                            }
+                          }),
+                        ],
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: AppSpacing.m),
               const DndSectionHeader(
                 title: 'Permessi',
                 accentColor: AppColors.highlight,
@@ -167,6 +228,75 @@ class SettingsView extends StatelessWidget {
         const Spacer(),
         Text(value, style: AppTypography.body.copyWith(fontWeight: FontWeight.bold)),
       ],
+    );
+  }
+
+  void _showImportOptionsDialog(BuildContext context, BackupController controller) {
+    final preview = controller.preview!;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text('Rituale di Ripristino', style: AppTypography.h3),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Trovati nel file:', style: AppTypography.body),
+            const SizedBox(height: 8),
+            Text('• ${preview.characterCount} Personaggi', style: AppTypography.bodySmall),
+            Text('• ${preview.sessionCount} Sessioni', style: AppTypography.bodySmall),
+            Text('• ${preview.noteCount} Note', style: AppTypography.bodySmall),
+            Text('• ${preview.attachmentCount} Allegati', style: AppTypography.bodySmall),
+            const SizedBox(height: 16),
+            const Text('Scegli come procedere:', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              controller.executeImport(overwrite: false);
+            },
+            child: const Text('Unisci', style: TextStyle(color: AppColors.magicAccent)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _showConfirmOverwriteDialog(context, controller);
+            },
+            child: const Text('Sovrascrivi', style: TextStyle(color: AppColors.danger)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showConfirmOverwriteDialog(BuildContext context, BackupController controller) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: const Text('Attenzione!', style: TextStyle(color: AppColors.danger, fontWeight: FontWeight.bold)),
+        content: const Text('Questa operazione CANCELLERÀ tutti i dati attuali dell\'app e li sostituirà con quelli del backup. Sei sicuro?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              controller.executeImport(overwrite: true);
+            },
+            child: const Text('Sì, Sovrascrivi', style: TextStyle(color: AppColors.danger)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annulla', style: TextStyle(color: AppColors.textSecondary)),
+          ),
+        ],
+      ),
     );
   }
 }
