@@ -162,6 +162,45 @@ class AppLocalizationsIt extends AppLocalizations {
   String get items => 'Oggetti';
 
   @override
+  String get tapToLoadDetails => 'Tocca per caricare i dettagli.';
+
+  @override
+  String get classes => 'Classi';
+
+  @override
+  String get races => 'Razze';
+
+  @override
+  String get hitDie => 'Dadi Vita';
+
+  @override
+  String get proficiencies => 'Competenze';
+
+  @override
+  String get savingThrows => 'Tiri Salvezza';
+
+  @override
+  String get startingEquipment => 'Equipaggiamento Iniziale';
+
+  @override
+  String get subclasses => 'Sottoclassi';
+
+  @override
+  String get speed => 'Velocità';
+
+  @override
+  String get size => 'Taglia';
+
+  @override
+  String get traits => 'Tratti';
+
+  @override
+  String get languages => 'Lingue';
+
+  @override
+  String get subraces => 'Sottorazze';
+
+  @override
   String get noResults => 'Nessun risultato trovato...';
 
   @override

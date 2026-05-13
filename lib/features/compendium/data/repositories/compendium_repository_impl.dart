@@ -8,30 +8,54 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
   final DndApiClient _apiClient = DndApiClient();
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
 
+  static const _ttlDays = 7;
+
   @override
   Future<void> syncWithApi() async {
-    try {
-      // Evita di ricaricare il compendio se ci sono già dati nel DB
-      final existingItems = await _dbHelper.queryAllItems();
-      if (existingItems.isNotEmpty) {
-        print('Compendio già popolato, salto la sincronizzazione iniziale.');
-        return;
-      }
+    await _syncAll(force: false);
+  }
 
-      final items = await _apiClient.fetchAllItems();
+  @override
+  Future<void> forceSync() async {
+    await _syncAll(force: true);
+  }
+
+  Future<void> _syncAll({required bool force}) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final ttlMillis = _ttlDays * 24 * 60 * 60 * 1000;
+
+    try {
+      final isStale = await _isStale('compendium_data', now, ttlMillis);
       
-      // Salva gli elementi nel DB (rimpiazza quelli esistenti per aggiornare)
-      for (var item in items) {
-        // Preserva i favoriti se l'elemento è già nel DB
-        final existing = await getItemById(item.id);
-        final toInsert = existing != null ? item.copyWith(isFavorite: existing.isFavorite) : item;
+      if (force || isStale) {
+        print('Inizio sincronizzazione compendio...');
+        final items = await _apiClient.fetchAllItems();
         
-        await _dbHelper.insertItem(toInsert.toMap());
+        // Salva gli elementi nel DB (rimpiazza quelli esistenti per aggiornare)
+        for (var item in items) {
+          final existing = await getItemById(item.id);
+          final toInsert = existing != null ? item.copyWith(isFavorite: existing.isFavorite) : item;
+          await _dbHelper.insertItem(toInsert.toMap());
+        }
+        
+        await _dbHelper.setLastSync('compendium_data', now);
+        // Prepariamo le chiavi separate per il futuro
+        await _dbHelper.setLastSync('classes', now);
+        await _dbHelper.setLastSync('races', now);
+        print('Sincronizzazione completata.');
+      } else {
+        print('Cache valida, salto il sync.');
       }
     } catch (e) {
       print('Errore durante la sincronizzazione con l\'API: $e');
       // In offline-first, l'errore di sync viene ignorato e usiamo la cache
     }
+  }
+
+  Future<bool> _isStale(String dataset, int now, int ttlMillis) async {
+    final lastSync = await _dbHelper.getLastSync(dataset);
+    if (lastSync == null) return true;
+    return (now - lastSync) > ttlMillis;
   }
 
   @override

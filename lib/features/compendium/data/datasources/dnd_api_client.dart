@@ -10,15 +10,15 @@ class DndApiClient {
 
     try {
       final graphqlUrl = Uri.parse('https://www.dnd5eapi.co/graphql');
-      final response = await http.post(
+      final response = await _post(
         graphqlUrl,
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'query': '''
           { 
-            spells(limit: 500) { index name desc } 
+            spells(limit: 500) { index name desc school { name } } 
             magicItems(limit: 500) { index name desc }
-            monsters(limit: 500) { index name size type alignment hit_points }
+            monsters(limit: 500) { index name size type alignment hit_points armor_class { value } }
           }
           '''
         }),
@@ -35,6 +35,9 @@ class DndApiClient {
           allItems.addAll(items.map((i) => _parseGraphqlItem(i, CompendiumItemType.item)));
           allItems.addAll(monsters.map((m) => _parseGraphqlItem(m, CompendiumItemType.monster)));
         }
+        
+        // Fetch classi e razze tramite REST
+        await _fetchClassesAndRacesRest(allItems);
       }
     } catch (e) {
       print('Errore fetch GraphQL: $e');
@@ -42,7 +45,7 @@ class DndApiClient {
       // Fallback su REST API standard se GraphQL fallisce
       try {
         // 1. Spells
-        final spellsResp = await http.get(Uri.parse('https://www.dnd5eapi.co/api/spells'));
+        final spellsResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/spells'));
         if (spellsResp.statusCode == 200) {
           final data = json.decode(spellsResp.body);
           final results = data['results'] as List<dynamic>? ?? [];
@@ -59,7 +62,7 @@ class DndApiClient {
         }
 
         // 2. Monsters
-        final monstersResp = await http.get(Uri.parse('https://www.dnd5eapi.co/api/monsters'));
+        final monstersResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/monsters'));
         if (monstersResp.statusCode == 200) {
           final data = json.decode(monstersResp.body);
           final results = data['results'] as List<dynamic>? ?? [];
@@ -68,15 +71,15 @@ class DndApiClient {
               id: r['index'],
               name: r['name'],
               type: CompendiumItemType.monster,
-              shortDescription: 'Tocca per caricare i dettagli.',
-              description: 'Tocca per caricare i dettagli.',
+              shortDescription: '__TAP_TO_LOAD_DETAILS__',
+              description: '__TAP_TO_LOAD_DETAILS__',
               metaInfo: 'Mostro',
             ));
           }
         }
 
         // 3. Magic Items
-        final itemsResp = await http.get(Uri.parse('https://www.dnd5eapi.co/api/magic-items'));
+        final itemsResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/magic-items'));
         if (itemsResp.statusCode == 200) {
           final data = json.decode(itemsResp.body);
           final results = data['results'] as List<dynamic>? ?? [];
@@ -85,18 +88,93 @@ class DndApiClient {
               id: r['index'],
               name: r['name'],
               type: CompendiumItemType.item,
-              shortDescription: 'Tocca per caricare i dettagli.',
-              description: 'Tocca per caricare i dettagli.',
+              shortDescription: '__TAP_TO_LOAD_DETAILS__',
+              description: '__TAP_TO_LOAD_DETAILS__',
               metaInfo: 'Oggetto',
             ));
           }
         }
+
+        // Fetch classi e razze tramite REST
+        await _fetchClassesAndRacesRest(allItems);
       } catch (e2) {
         print('Errore fallback REST: $e2');
       }
     }
 
     return allItems;
+  }
+
+  Future<void> _fetchClassesAndRacesRest(List<CompendiumItem> allItems) async {
+    try {
+      // 4. Classes
+      final classesResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/classes'));
+      if (classesResp.statusCode == 200) {
+        final data = json.decode(classesResp.body);
+        final results = data['results'] as List<dynamic>? ?? [];
+        for (var r in results) {
+          String shortDesc = '';
+          String fullDesc = '__TAP_TO_LOAD_DETAILS__';
+          
+          try {
+            final detailResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/classes/${r['index']}'));
+            if (detailResp.statusCode == 200) {
+              final detailData = json.decode(detailResp.body);
+              fullDesc = _formatClassDetails(detailData);
+              final hitDie = detailData['hit_die'];
+              final saves = (detailData['saving_throws'] as List?)?.map((e) => e['name']).join(', ') ?? '';
+              shortDesc = 'Hit Die: d$hitDie. Saving Throws: $saves.';
+            }
+          } catch (e) {
+            print('Errore fetch dettaglio classe ${r['index']}: $e');
+          }
+
+          allItems.add(CompendiumItem(
+            id: r['index'],
+            name: r['name'],
+            type: CompendiumItemType.characterClass,
+            shortDescription: shortDesc.isNotEmpty ? shortDesc : '__TAP_TO_LOAD_DETAILS__',
+            description: fullDesc,
+            metaInfo: 'Classe',
+          ));
+        }
+      }
+
+      // 5. Races
+      final racesResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/races'));
+      if (racesResp.statusCode == 200) {
+        final data = json.decode(racesResp.body);
+        final results = data['results'] as List<dynamic>? ?? [];
+        for (var r in results) {
+          String shortDesc = '';
+          String fullDesc = '__TAP_TO_LOAD_DETAILS__';
+          
+          try {
+            final detailResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/races/${r['index']}'));
+            if (detailResp.statusCode == 200) {
+              final detailData = json.decode(detailResp.body);
+              fullDesc = _formatRaceDetails(detailData);
+              final speed = detailData['speed'];
+              final size = detailData['size'];
+              shortDesc = 'Speed: $speed ft. Size: $size.';
+            }
+          } catch (e) {
+            print('Errore fetch dettaglio razza ${r['index']}: $e');
+          }
+
+          allItems.add(CompendiumItem(
+            id: r['index'],
+            name: r['name'],
+            type: CompendiumItemType.race,
+            shortDescription: shortDesc.isNotEmpty ? shortDesc : '__TAP_TO_LOAD_DETAILS__',
+            description: fullDesc,
+            metaInfo: 'Razza',
+          ));
+        }
+      }
+    } catch (e) {
+      print('Errore fetch classi/razze: $e');
+    }
   }
 
   CompendiumItem _parseGraphqlItem(dynamic item, CompendiumItemType type) {
@@ -108,8 +186,10 @@ class DndApiClient {
       final mType = item['type'] ?? '';
       final alignment = item['alignment'] ?? '';
       final hp = item['hit_points']?.toString() ?? '?';
+      final acList = item['armor_class'] as List?;
+      final ac = acList != null && acList.isNotEmpty ? acList[0]['value']?.toString() ?? '?' : '?';
       
-      shortDesc = '$size $mType, $alignment. HP: $hp';
+      shortDesc = '$size $mType, $alignment. HP: $hp. AC: $ac';
       fullDesc = '__DETAILS_NOT_AVAILABLE_OFFLINE__\n\n$shortDesc';
     } else {
       if (item['desc'] != null) {
@@ -134,7 +214,11 @@ class DndApiClient {
       type: type,
       shortDescription: shortDesc.isEmpty ? 'Nessuna anteprima.' : shortDesc,
       description: fullDesc,
-      metaInfo: type == CompendiumItemType.spell ? 'Incantesimo' : (type == CompendiumItemType.monster ? 'Mostro' : 'Oggetto'),
+      metaInfo: type == CompendiumItemType.spell 
+          ? 'Incantesimo (${item['school']?['name'] ?? ''})' 
+          : (type == CompendiumItemType.monster ? 'Mostro' : 
+            (type == CompendiumItemType.item ? 'Oggetto' : 
+            (type == CompendiumItemType.characterClass ? 'Classe' : 'Razza'))),
     );
   }
 
@@ -144,14 +228,22 @@ class DndApiClient {
       case CompendiumItemType.spell: category = 'spells'; break;
       case CompendiumItemType.monster: category = 'monsters'; break;
       case CompendiumItemType.item: category = 'magic-items'; break;
+      case CompendiumItemType.characterClass: category = 'classes'; break;
+      case CompendiumItemType.race: category = 'races'; break;
     }
 
-    final response = await http.get(Uri.parse('$baseUrl/$category/$id'));
+    final response = await _get(Uri.parse('$baseUrl/$category/$id'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       
       if (type == CompendiumItemType.monster) {
         return _formatMonsterDetails(data);
+      }
+      if (type == CompendiumItemType.characterClass) {
+        return _formatClassDetails(data);
+      }
+      if (type == CompendiumItemType.race) {
+        return _formatRaceDetails(data);
       }
 
       if (data['desc'] != null) {
@@ -196,6 +288,101 @@ class DndApiClient {
     }
 
     return buffer.toString();
+  }
+
+  String _formatClassDetails(Map<String, dynamic> data) {
+    final buffer = StringBuffer();
+    
+    buffer.writeln('HIT DIE: d${data['hit_die']}');
+    buffer.writeln('');
+    
+    if (data['proficiency_choices'] != null) {
+      buffer.writeln('PROFICIENCY CHOICES');
+      for (var choice in data['proficiency_choices']) {
+        final choose = choice['choose'];
+        final fromObj = choice['from'];
+        String from = '';
+        if (fromObj != null && fromObj['options'] != null) {
+          final options = fromObj['options'] as List;
+          from = options.map((e) => e['item']?['name'] ?? '').where((e) => e.isNotEmpty).join(', ');
+        }
+        buffer.writeln('• Choose $choose from: $from');
+      }
+      buffer.writeln('');
+    }
+    
+    if (data['proficiencies'] != null) {
+      buffer.writeln('PROFICIENCIES');
+      final profs = (data['proficiencies'] as List).map((e) => e['name']).join(', ');
+      buffer.writeln('• $profs');
+      buffer.writeln('');
+    }
+    
+    if (data['saving_throws'] != null) {
+      buffer.writeln('SAVING THROWS');
+      final saves = (data['saving_throws'] as List).map((e) => e['name']).join(', ');
+      buffer.writeln('• $saves');
+      buffer.writeln('');
+    }
+    
+    if (data['subclasses'] != null) {
+      buffer.writeln('SUBCLASSES');
+      final subs = (data['subclasses'] as List).map((e) => e['name']).join(', ');
+      buffer.writeln('• $subs');
+      buffer.writeln('');
+    }
+    
+    return buffer.toString();
+  }
+
+  String _formatRaceDetails(Map<String, dynamic> data) {
+    final buffer = StringBuffer();
+    
+    buffer.writeln('SPEED: ${data['speed']} ft');
+    buffer.writeln('SIZE: ${data['size']}');
+    buffer.writeln('SIZE DESCRIPTION: ${data['size_description']}');
+    buffer.writeln('');
+    
+    if (data['ability_bonuses'] != null) {
+      buffer.writeln('ABILITY BONUSES');
+      for (var bonus in data['ability_bonuses']) {
+        final score = bonus['ability_score']?['name'] ?? '?';
+        final val = bonus['bonus'];
+        buffer.writeln('• $score: +$val');
+      }
+      buffer.writeln('');
+    }
+    
+    if (data['traits'] != null) {
+      buffer.writeln('TRAITS');
+      final traits = (data['traits'] as List).map((e) => e['name']).join(', ');
+      buffer.writeln('• $traits');
+      buffer.writeln('');
+    }
+    
+    if (data['languages'] != null) {
+      buffer.writeln('LANGUAGES');
+      final langs = (data['languages'] as List).map((e) => e['name']).join(', ');
+      buffer.writeln('• $langs');
+      buffer.writeln('');
+    }
+    
+    if (data['subraces'] != null) {
+      buffer.writeln('SUBRACES');
+      final subs = (data['subraces'] as List).map((e) => e['name']).join(', ');
+      buffer.writeln('• $subs');
+      buffer.writeln('');
+    }
+    
+    return buffer.toString();
+  }
+
+  Future<http.Response> _get(Uri url) {
+    return http.get(url).timeout(const Duration(seconds: 10));
+  }
+
+  Future<http.Response> _post(Uri url, {Map<String, String>? headers, Object? body}) {
+    return http.post(url, headers: headers, body: body).timeout(const Duration(seconds: 10));
   }
 }
 

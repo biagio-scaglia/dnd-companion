@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/app_navigation.dart';
 import '../data/repositories/compendium_repository_impl.dart';
 import 'compendium_controller.dart';
@@ -170,10 +171,20 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
   }
 
   Widget _buildBody() {
-    if (_controller.isLoading) {
+    if (_controller.state == CompendiumState.loadingFirstTime) {
       return Center(
         key: const ValueKey('loading'),
         child: DndLoadingIndicator(message: AppLocalizations.of(context)!.loadingCompendium),
+      );
+    }
+
+    if (_controller.state == CompendiumState.hardError && _controller.items.isEmpty) {
+      return Center(
+        key: const ValueKey('error'),
+        child: Text(
+          'Errore di connessione. Impossibile caricare i dati.',
+          style: AppTypography.bodySmall,
+        ),
       );
     }
 
@@ -187,27 +198,46 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
       );
     }
 
-    return ListView.builder(
-      key: const ValueKey('list'),
-      physics: const BouncingScrollPhysics(),
-      itemCount: _controller.items.length,
-      itemBuilder: (context, index) {
-        final item = _controller.items[index];
-        return CompendiumItemCard(
-          key: ValueKey(item.id),
-          item: item,
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => CompendiumDetailView(item: item),
-              ),
-            );
-          },
-          onFavoriteToggle: () {
-            _controller.toggleFavoriteStatus(item.id);
-          },
-        );
-      },
+    return Column(
+      children: [
+        if (_controller.state == CompendiumState.refreshingInBackground)
+          const Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
+            child: LinearProgressIndicator(
+              backgroundColor: Colors.transparent,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+            ),
+          ),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () => _controller.refresh(),
+            color: AppColors.primary,
+            backgroundColor: const Color(0xFF1A1A1A),
+            child: ListView.builder(
+              key: const ValueKey('list'),
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              itemCount: _controller.items.length,
+              itemBuilder: (context, index) {
+                final item = _controller.items[index];
+                return CompendiumItemCard(
+                  key: ValueKey(item.id),
+                  item: item,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => CompendiumDetailView(item: item),
+                      ),
+                    );
+                  },
+                  onFavoriteToggle: () {
+                    _controller.toggleFavoriteStatus(item.id);
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

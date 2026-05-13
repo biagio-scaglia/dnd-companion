@@ -1,4 +1,4 @@
-enum CompendiumItemType { monster, spell, item }
+enum CompendiumItemType { monster, spell, item, characterClass, race }
 
 class CompendiumItem {
   final String id;

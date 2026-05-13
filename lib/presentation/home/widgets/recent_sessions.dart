@@ -71,6 +71,7 @@ class RecentSessions extends StatelessWidget {
               ...sessions.take(2).map((session) => Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
                 child: _buildSessionTile(
+                  context,
                   title: session.title,
                   date: '${session.realDate.day}/${session.realDate.month}/${session.realDate.year}',
                   description: session.shortRecap,
@@ -94,7 +95,8 @@ class RecentSessions extends StatelessWidget {
     );
   }
 
-  Widget _buildSessionTile({
+  Widget _buildSessionTile(
+    BuildContext context, {
     required String title,
     required String date,
     required String description,

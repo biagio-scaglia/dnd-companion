@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dnd/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -22,9 +23,14 @@ class CompendiumItemCard extends StatelessWidget {
 
   String _translateMetaInfo(BuildContext context, String metaInfo) {
     final l10n = AppLocalizations.of(context)!;
-    if (metaInfo == 'Incantesimo') return l10n.spell;
+    if (metaInfo.startsWith('Incantesimo')) {
+      final school = metaInfo.replaceAll('Incantesimo', '').trim();
+      return '${l10n.spell} $school'.trim();
+    }
     if (metaInfo == 'Mostro') return l10n.monster;
     if (metaInfo == 'Oggetto') return l10n.item;
+    if (metaInfo == 'Classe') return l10n.classes;
+    if (metaInfo == 'Razza') return l10n.races;
     return metaInfo;
   }
 
@@ -34,18 +40,71 @@ class CompendiumItemCard extends StatelessWidget {
     IconData? typeIcon;
     Color typeColor;
 
+    final knownMonsterIcons = ['aberration', 'beast', 'celestial', 'construct', 'dragon', 'elemental', 'fae', 'fiend', 'giant', 'humanoid', 'monstrosity', 'ooze', 'plant', 'undead'];
+    final knownSpellIcons = ['abjuration', 'conjuration', 'divination', 'enchantment', 'evocation', 'illusion', 'necromancy', 'transmutation'];
+    final knownClassIcons = ['artificer', 'barbarian', 'bard', 'cleric', 'druid', 'fighter', 'monk', 'paladin', 'ranger', 'rogue', 'sorcerer', 'warlock', 'wizard'];
+
     switch (item.type) {
       case CompendiumItemType.monster:
-        imagePath = 'lib/assets/icone/Monster Part/Skull.png';
+        final desc = item.shortDescription;
+        final typeMatch = RegExp(r'(aberration|beast|celestial|construct|dragon|elemental|fae|fiend|giant|humanoid|monstrosity|ooze|plant|undead)', caseSensitive: false).firstMatch(desc);
+        if (typeMatch != null) {
+          final mType = typeMatch.group(0)!.toLowerCase();
+          if (knownMonsterIcons.contains(mType)) {
+            imagePath = 'lib/assets/monster/$mType.svg';
+          } else {
+            imagePath = 'lib/assets/icone/Monster Part/Skull.png';
+          }
+        } else {
+          imagePath = 'lib/assets/icone/Monster Part/Skull.png';
+        }
         typeColor = AppColors.danger;
         break;
       case CompendiumItemType.spell:
-        imagePath = 'lib/assets/icone/Misc/Scroll.png';
+        final meta = item.metaInfo ?? '';
+        final schoolMatch = RegExp(r'\((.*?)\)').firstMatch(meta);
+        if (schoolMatch != null) {
+          final school = schoolMatch.group(1)!.toLowerCase();
+          if (knownSpellIcons.contains(school)) {
+            imagePath = 'lib/assets/spell/$school.svg';
+          } else {
+            imagePath = 'lib/assets/icone/Misc/Scroll.png';
+          }
+        } else {
+          imagePath = 'lib/assets/icone/Misc/Scroll.png';
+        }
         typeColor = AppColors.magicAccent;
         break;
       case CompendiumItemType.item:
-        imagePath = 'lib/assets/icone/Equipment/Iron Armor.png';
+        if (item.name.toLowerCase().contains('sword') || 
+            item.name.toLowerCase().contains('blade')) {
+          imagePath = 'lib/assets/weapon/sword.svg';
+        } else if (item.name.toLowerCase().contains('dagger')) {
+          imagePath = 'lib/assets/weapon/dagger.svg';
+        } else if (item.name.toLowerCase().contains('axe')) {
+          imagePath = 'lib/assets/weapon/battleaxe.svg';
+        } else if (item.name.toLowerCase().contains('bow')) {
+          imagePath = 'lib/assets/weapon/bow.svg';
+        } else if (item.name.toLowerCase().contains('staff')) {
+          imagePath = 'lib/assets/weapon/staff.svg';
+        } else {
+          imagePath = 'lib/assets/icone/Equipment/Iron Armor.png';
+        }
         typeColor = AppColors.highlight;
+        break;
+      case CompendiumItemType.characterClass:
+        if (knownClassIcons.contains(item.id.toLowerCase())) {
+          imagePath = 'lib/assets/class/${item.id}.svg';
+        } else {
+          imagePath = null;
+          typeIcon = Icons.book;
+        }
+        typeColor = AppColors.magicAccent;
+        break;
+      case CompendiumItemType.race:
+        imagePath = null;
+        typeIcon = Icons.people;
+        typeColor = AppColors.naturalAccent;
         break;
     }
 
@@ -82,11 +141,22 @@ class CompendiumItemCard extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(6),
-                    child: imagePath != null ? Image.asset(
-                      imagePath,
-                      fit: BoxFit.contain,
-                      filterQuality: FilterQuality.none, // Per pixel art pulita
-                    ) : Icon(typeIcon, color: typeColor, size: 24),
+                    child: imagePath != null 
+                        ? (imagePath!.endsWith('.svg')
+                            ? SvgPicture.asset(
+                                imagePath!,
+                                fit: BoxFit.contain,
+                                colorFilter: ColorFilter.mode(typeColor, BlendMode.srcIn),
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(typeIcon ?? Icons.help_outline_rounded, color: typeColor, size: 24);
+                                },
+                              )
+                            : Image.asset(
+                                imagePath!,
+                                fit: BoxFit.contain,
+                                filterQuality: FilterQuality.none,
+                              ))
+                        : Icon(typeIcon, color: typeColor, size: 24),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -119,12 +189,79 @@ class CompendiumItemCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Text(
-              item.shortDescription,
-              style: AppTypography.bodySmall,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+            () {
+              if (item.shortDescription == '__TAP_TO_LOAD_DETAILS__') {
+                return Text(
+                  AppLocalizations.of(context)!.tapToLoadDetails,
+                  style: AppTypography.bodySmall,
+                );
+              }
+              
+              final hpMatch = RegExp(r'(.*?)HP:\s*(\d+)').firstMatch(item.shortDescription);
+              final acMatch = RegExp(r'AC:\s*(\d+)').firstMatch(item.shortDescription);
+              
+              if (hpMatch != null) {
+                final beforeHp = hpMatch.group(1)!.trim();
+                final hpValue = hpMatch.group(2)!;
+                final acValue = acMatch != null ? acMatch.group(1)! : null;
+                
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (beforeHp.isNotEmpty)
+                      Text(
+                        beforeHp.endsWith('.') ? beforeHp.substring(0, beforeHp.length - 1) : beforeHp,
+                        style: AppTypography.bodySmall,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Image.asset(
+                          'lib/assets/icone/Misc/Heart.png',
+                          width: 14,
+                          height: 14,
+                          filterQuality: FilterQuality.none,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '$hpValue',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.danger,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        if (acValue != null) ...[
+                          const SizedBox(width: 12),
+                          Image.asset(
+                            'lib/assets/icone/Weapon & Tool/Iron Shield.png',
+                            width: 14,
+                            height: 14,
+                            filterQuality: FilterQuality.none,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '$acValue',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.highlight,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                );
+              }
+              
+              return Text(
+                item.shortDescription,
+                style: AppTypography.bodySmall,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              );
+            }(),
           ],
         ),
       ),

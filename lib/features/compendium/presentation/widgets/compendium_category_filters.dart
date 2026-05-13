@@ -59,6 +59,22 @@ class CompendiumCategoryFilters extends StatelessWidget {
             onTap: () => onCategoryTapped(CompendiumItemType.item),
             accentColor: selectedCategory == CompendiumItemType.item ? AppColors.naturalAccent : AppColors.highlight,
           ),
+          const SizedBox(width: 8),
+          DndChip(
+            label: l10n.classes,
+            icon: Icons.book,
+            isSelected: selectedCategory == CompendiumItemType.characterClass,
+            onTap: () => onCategoryTapped(CompendiumItemType.characterClass),
+            accentColor: selectedCategory == CompendiumItemType.characterClass ? AppColors.magicAccent : AppColors.highlight,
+          ),
+          const SizedBox(width: 8),
+          DndChip(
+            label: l10n.races,
+            icon: Icons.people,
+            isSelected: selectedCategory == CompendiumItemType.race,
+            onTap: () => onCategoryTapped(CompendiumItemType.race),
+            accentColor: selectedCategory == CompendiumItemType.race ? AppColors.naturalAccent : AppColors.highlight,
+          ),
         ],
       ),
     );

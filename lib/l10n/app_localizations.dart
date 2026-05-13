@@ -398,6 +398,84 @@ abstract class AppLocalizations {
   /// **'Items'**
   String get items;
 
+  /// No description provided for @tapToLoadDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to load details.'**
+  String get tapToLoadDetails;
+
+  /// No description provided for @classes.
+  ///
+  /// In en, this message translates to:
+  /// **'Classes'**
+  String get classes;
+
+  /// No description provided for @races.
+  ///
+  /// In en, this message translates to:
+  /// **'Races'**
+  String get races;
+
+  /// No description provided for @hitDie.
+  ///
+  /// In en, this message translates to:
+  /// **'Hit Die'**
+  String get hitDie;
+
+  /// No description provided for @proficiencies.
+  ///
+  /// In en, this message translates to:
+  /// **'Proficiencies'**
+  String get proficiencies;
+
+  /// No description provided for @savingThrows.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving Throws'**
+  String get savingThrows;
+
+  /// No description provided for @startingEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting Equipment'**
+  String get startingEquipment;
+
+  /// No description provided for @subclasses.
+  ///
+  /// In en, this message translates to:
+  /// **'Subclasses'**
+  String get subclasses;
+
+  /// No description provided for @speed.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get speed;
+
+  /// No description provided for @size.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get size;
+
+  /// No description provided for @traits.
+  ///
+  /// In en, this message translates to:
+  /// **'Traits'**
+  String get traits;
+
+  /// No description provided for @languages.
+  ///
+  /// In en, this message translates to:
+  /// **'Languages'**
+  String get languages;
+
+  /// No description provided for @subraces.
+  ///
+  /// In en, this message translates to:
+  /// **'Subraces'**
+  String get subraces;
+
   /// No description provided for @noResults.
   ///
   /// In en, this message translates to:

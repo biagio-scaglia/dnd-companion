@@ -162,6 +162,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get items => 'Items';
 
   @override
+  String get tapToLoadDetails => 'Tap to load details.';
+
+  @override
+  String get classes => 'Classes';
+
+  @override
+  String get races => 'Races';
+
+  @override
+  String get hitDie => 'Hit Die';
+
+  @override
+  String get proficiencies => 'Proficiencies';
+
+  @override
+  String get savingThrows => 'Saving Throws';
+
+  @override
+  String get startingEquipment => 'Starting Equipment';
+
+  @override
+  String get subclasses => 'Subclasses';
+
+  @override
+  String get speed => 'Speed';
+
+  @override
+  String get size => 'Size';
+
+  @override
+  String get traits => 'Traits';
+
+  @override
+  String get languages => 'Languages';
+
+  @override
+  String get subraces => 'Subraces';
+
+  @override
   String get noResults => 'No results found...';
 
   @override

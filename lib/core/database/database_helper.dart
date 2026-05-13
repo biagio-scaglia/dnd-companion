@@ -6,9 +6,10 @@ import '../../features/compendium/domain/models/compendium_item.dart';
 
 class DatabaseHelper {
   static const _databaseName = "dnd_companion.db";
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
 
   static const tableCompendium = 'compendium_items';
+  static const tableSyncInfo = 'sync_info';
 
   static const columnId = 'id';
   static const columnName = 'name';
@@ -19,6 +20,10 @@ class DatabaseHelper {
   static const columnIsFavorite = 'isFavorite';
   static const columnIsCustom = 'isCustom';
 
+  // Sync Info Columns
+  static const columnDatasetName = 'dataset_name';
+  static const columnLastSyncTimestamp = 'last_sync_timestamp';
+
   // Singleton instance
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -27,6 +32,7 @@ class DatabaseHelper {
   
   // RAM Cache for Web
   final List<Map<String, dynamic>> _webCache = [];
+  final Map<String, int> _webSyncInfo = {};
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -41,6 +47,7 @@ class DatabaseHelper {
       path,
       version: _databaseVersion,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -57,6 +64,24 @@ class DatabaseHelper {
         $columnIsCustom INTEGER NOT NULL DEFAULT 0
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE $tableSyncInfo (
+        $columnDatasetName TEXT PRIMARY KEY,
+        $columnLastSyncTimestamp INTEGER NOT NULL
+      )
+    ''');
+  }
+
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+        CREATE TABLE $tableSyncInfo (
+          $columnDatasetName TEXT PRIMARY KEY,
+          $columnLastSyncTimestamp INTEGER NOT NULL
+        )
+      ''');
+    }
   }
 
   // Helper methods
@@ -117,5 +142,29 @@ class DatabaseHelper {
     
     Database db = await instance.database;
     await db.delete(tableCompendium, where: '$columnIsCustom = ?', whereArgs: [0]);
+  }
+
+  Future<void> setLastSync(String dataset, int timestamp) async {
+    if (kIsWeb) {
+      _webSyncInfo[dataset] = timestamp;
+      return;
+    }
+    Database db = await instance.database;
+    await db.insert(tableSyncInfo, {
+      columnDatasetName: dataset,
+      columnLastSyncTimestamp: timestamp
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<int?> getLastSync(String dataset) async {
+    if (kIsWeb) {
+      return _webSyncInfo[dataset];
+    }
+    Database db = await instance.database;
+    final res = await db.query(tableSyncInfo, where: '$columnDatasetName = ?', whereArgs: [dataset]);
+    if (res.isNotEmpty) {
+      return res.first[columnLastSyncTimestamp] as int?;
+    }
+    return null;
   }
 }

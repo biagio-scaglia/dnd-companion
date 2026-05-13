@@ -3,6 +3,14 @@ import '../domain/models/compendium_item.dart';
 import '../domain/models/compendium_filter.dart';
 import '../domain/repositories/compendium_repository.dart';
 
+enum CompendiumState {
+  loadingFirstTime,
+  showingCached,
+  refreshingInBackground,
+  hardError,
+  loaded
+}
+
 class CompendiumController extends ChangeNotifier {
   final CompendiumRepository repository;
 
@@ -11,16 +19,51 @@ class CompendiumController extends ChangeNotifier {
   }
 
   Future<void> _initializeData() async {
-    await repository.syncWithApi();
-    _fetchItems();
+    // 1. Carica subito i dati locali
+    _state = CompendiumState.loadingFirstTime;
+    notifyListeners();
+    
+    await _fetchItemsSilently();
+    
+    if (_items.isEmpty) {
+      _state = CompendiumState.loadingFirstTime;
+    } else {
+      _state = CompendiumState.showingCached;
+    }
+    notifyListeners();
+
+    // 2. Avvia il sync in background
+    try {
+      if (_items.isNotEmpty) {
+        _state = CompendiumState.refreshingInBackground;
+        notifyListeners();
+      }
+      
+      await repository.syncWithApi();
+      
+      // Ricarica i dati dopo il sync
+      await _fetchItemsSilently();
+      _state = CompendiumState.loaded;
+    } catch (e) {
+      print('Errore sync in background: $e');
+      if (_items.isEmpty) {
+        _state = CompendiumState.hardError;
+      } else {
+        _state = CompendiumState.showingCached; // Resta su cached se il sync fallisce
+      }
+    } finally {
+      notifyListeners();
+    }
   }
 
   // Stato interno
   List<CompendiumItem> _items = [];
   List<CompendiumItem> get items => _items;
 
-  bool _isLoading = true;
-  bool get isLoading => _isLoading;
+  CompendiumState _state = CompendiumState.loadingFirstTime;
+  CompendiumState get state => _state;
+
+  bool get isLoading => _state == CompendiumState.loadingFirstTime;
 
   CompendiumFilter _filter = const CompendiumFilter();
   CompendiumFilter get filter => _filter;
@@ -72,19 +115,42 @@ class CompendiumController extends ChangeNotifier {
     }
   }
 
-  Future<void> _fetchItems() async {
-    _isLoading = true;
+  Future<void> refresh() async {
+    _state = CompendiumState.refreshingInBackground;
     notifyListeners();
-
     try {
-      // Recupera dal DB (la sincronizzazione avviene solo all'avvio)
+      await repository.forceSync();
+      await _fetchItemsSilently();
+      _state = CompendiumState.loaded;
+    } catch (e) {
+      print('Errore durante il refresh: $e');
+      _state = CompendiumState.showingCached;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> _fetchItems() async {
+    // Non cambiamo lo stato se stiamo già mostrando la cache o rinfrescando
+    if (_state != CompendiumState.showingCached && _state != CompendiumState.refreshingInBackground) {
+      _state = CompendiumState.loadingFirstTime;
+      notifyListeners();
+    }
+
+    await _fetchItemsSilently();
+    
+    if (_state == CompendiumState.loadingFirstTime) {
+      _state = _items.isEmpty ? CompendiumState.loadingFirstTime : CompendiumState.loaded;
+    }
+    notifyListeners();
+  }
+
+  Future<void> _fetchItemsSilently() async {
+    try {
       _items = await repository.fetchItems(_filter);
     } catch (e) {
       print('Errore fetch items da controller: $e');
       _items = [];
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
 

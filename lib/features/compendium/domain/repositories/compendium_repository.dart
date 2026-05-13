@@ -7,4 +7,5 @@ abstract class CompendiumRepository {
   Future<CompendiumItem?> getItemById(String id);
   Future<void> addCustomItem(CompendiumItem item);
   Future<void> syncWithApi();
+  Future<void> forceSync();
 }
