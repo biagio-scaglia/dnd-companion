@@ -24,6 +24,8 @@ class DndApiClient {
             CompendiumItemType type = CompendiumItemType.item;
             if (typeStr == 'spell') type = CompendiumItemType.spell;
             if (typeStr == 'monster') type = CompendiumItemType.monster;
+            if (typeStr == 'class') type = CompendiumItemType.characterClass;
+            if (typeStr == 'race') type = CompendiumItemType.race;
             
             allItems.add(CompendiumItem(
               id: r['id'],
@@ -37,8 +39,7 @@ class DndApiClient {
         }
       }
 
-      // 2. Classes & Races (continuano a usare l'API ufficiale perché il backend non le gestisce)
-      await _fetchClassesAndRacesRest(allItems);
+      // Rimosso fetchClassesAndRacesRest perché ora arrivano dal backend!
     } catch (e) {
       print('Errore fetch REST all items: $e');
     }
