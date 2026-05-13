@@ -174,7 +174,11 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
     if (_controller.state == CompendiumState.loadingFirstTime || _controller.state == CompendiumState.refreshingInBackground) {
       return Center(
         key: const ValueKey('loading'),
-        child: DndLoadingIndicator(message: AppLocalizations.of(context)!.loadingCompendium),
+        child: DndLoadingIndicator(
+          message: Localizations.localeOf(context).languageCode == 'it'
+              ? 'Consultando gli antichi tomi del Compendio...'
+              : 'Consulting the ancient tomes of the Compendium...',
+        ),
       );
     }
 
