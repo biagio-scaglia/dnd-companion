@@ -114,7 +114,7 @@ class DndApiClient {
     }
   }
 
-  Future<String> fetchItemDescription(CompendiumItemType type, String id) async {
+  Future<Map<String, String>> fetchItemDescription(CompendiumItemType type, String id) async {
     String category = '';
     switch (type) {
       case CompendiumItemType.spell: category = 'spells'; break;
@@ -128,22 +128,50 @@ class DndApiClient {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       
+      String description = '';
+      String shortDescription = 'Tocca per caricare i dettagli.';
+      String metaInfo = '';
+
       if (type == CompendiumItemType.monster) {
-        return _formatMonsterDetails(data);
-      }
-      if (type == CompendiumItemType.characterClass) {
-        return _formatClassDetails(data);
-      }
-      if (type == CompendiumItemType.race) {
-        return _formatRaceDetails(data);
+        final size = data['size'] ?? '';
+        final mType = data['type'] ?? '';
+        final alignment = data['alignment'] ?? '';
+        final hp = data['hit_points']?.toString() ?? '?';
+        final acList = data['armor_class'] as List?;
+        final ac = acList != null && acList.isNotEmpty ? acList[0]['value']?.toString() ?? '?' : '?';
+        
+        shortDescription = '$size $mType, $alignment. HP: $hp. AC: $ac';
+        description = _formatMonsterDetails(data);
+        metaInfo = 'Mostro ($mType)';
+      } else if (type == CompendiumItemType.spell) {
+        final school = data['school']?['name'] ?? 'Unknown';
+        description = data['desc'] != null ? (data['desc'] is List ? (data['desc'] as List).join('\n\n') : data['desc'].toString()) : 'Nessuna descrizione.';
+        shortDescription = 'School: $school.';
+        metaInfo = 'Spell ($school)';
+      } else if (type == CompendiumItemType.characterClass) {
+        description = _formatClassDetails(data);
+        shortDescription = 'Tocca per caricare i dettagli.';
+        metaInfo = 'Classe';
+      } else if (type == CompendiumItemType.race) {
+        description = _formatRaceDetails(data);
+        shortDescription = 'Tocca per caricare i dettagli.';
+        metaInfo = 'Razza';
+      } else {
+        if (data['desc'] != null) {
+          if (data['desc'] is List) description = (data['desc'] as List).join('\n\n');
+          else description = data['desc'].toString();
+        } else {
+          description = 'Nessuna descrizione dettagliata trovata.';
+        }
+        shortDescription = 'Tocca per caricare i dettagli.';
+        metaInfo = 'Oggetto';
       }
 
-      if (data['desc'] != null) {
-        if (data['desc'] is List) return (data['desc'] as List).join('\n\n');
-        return data['desc'].toString();
-      }
-
-      return 'Nessuna descrizione dettagliata trovata.';
+      return {
+        'description': description,
+        'shortDescription': shortDescription,
+        'metaInfo': metaInfo,
+      };
     } else {
       throw Exception('Failed to fetch details');
     }

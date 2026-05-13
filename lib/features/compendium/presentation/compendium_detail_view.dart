@@ -59,10 +59,14 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
       setState(() => _isLoadingDesc = true);
       try {
         final client = DndApiClient();
-        final desc = await client.fetchItemDescription(_item.type, _item.id);
+        final result = await client.fetchItemDescription(_item.type, _item.id);
         
         setState(() {
-          _item = _item.copyWith(description: desc);
+          _item = _item.copyWith(
+            description: result['description'] ?? '',
+            shortDescription: result['shortDescription'] ?? _item.shortDescription,
+            metaInfo: result['metaInfo'] ?? _item.metaInfo,
+          );
           _isLoadingDesc = false;
         });
 
