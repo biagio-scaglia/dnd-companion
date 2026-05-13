@@ -123,47 +123,57 @@ class CompendiumItemCard extends StatelessWidget {
                 Container(
                   width: 44,
                   height: 44,
+                  padding: const EdgeInsets.all(8), // Spazio interno per l'icona
                   decoration: BoxDecoration(
-                    color: const Color(0xFF120B07), // Sfondo scuro e profondo
-                    borderRadius: BorderRadius.circular(8), // Angoli leggermente smussati
+                    color: const Color(0xFF0F0906), // Fondo scurissimo per far risaltare il bordo
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: const Color(0xFF5C4033), // Bordo marrone scuro/legno
+                      color: typeColor.withValues(alpha: 0.6), // Bordo dinamico colorato
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2), // Ombra sotto
+                        color: Colors.black.withValues(alpha: 0.4),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: imagePath != null 
-                        ? (imagePath!.endsWith('.svg')
-                            ? SvgPicture.asset(
-                                imagePath!,
-                                fit: BoxFit.contain,
-                                colorFilter: ColorFilter.mode(typeColor, BlendMode.srcIn),
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Icon(typeIcon ?? Icons.help_outline_rounded, color: typeColor, size: 24);
-                                },
-                              )
-                            : Image.asset(
-                                imagePath!,
-                                fit: BoxFit.contain,
-                                filterQuality: FilterQuality.none,
-                              ))
-                        : Icon(typeIcon, color: typeColor, size: 24),
-                  ),
+                  child: imagePath != null 
+                      ? (imagePath!.endsWith('.svg')
+                          ? SvgPicture.asset(
+                              imagePath!,
+                              fit: BoxFit.contain,
+                              colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.help_outline_rounded, color: Colors.white, size: 20);
+                              },
+                            )
+                          : Image.asset(
+                              imagePath!,
+                              fit: BoxFit.contain,
+                              color: Colors.white, // Forza il bianco anche sui PNG se possibile
+                              filterQuality: FilterQuality.none,
+                            ))
+                      : Icon(typeIcon, color: Colors.white, size: 20),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item.name, style: AppTypography.h3),
+                      Text(
+                        item.name, 
+                        style: AppTypography.h3.copyWith(
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withValues(alpha: 0.5),
+                              blurRadius: 4,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                      ),
                       if (item.metaInfo != null) ...[
                         const SizedBox(height: 6),
                         DndChip(
