@@ -28,10 +28,8 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
       final isStale = await _isStale('compendium_data', now, ttlMillis);
       
       if (force || isStale) {
-        print('Inizio sincronizzazione compendio...');
         final items = await _apiClient.fetchAllItems();
         
-        print('Scaricamento dettagli per tutti gli elementi (potrebbe metterci un minuto)...');
         for (var item in items) {
           final existing = await getItemById(item.id);
           
@@ -45,7 +43,6 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
                   shortDescription: result['shortDescription'] ?? item.shortDescription,
                   metaInfo: result['metaInfo'] ?? item.metaInfo,
                 );
-                print('Dettagli scaricati per ${item.name}');
               } catch (e) {
                 print('Errore fetch details per ${item.name}: $e');
               }
@@ -69,7 +66,6 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
         await _dbHelper.setLastSync('compendium_data', now);
         await _dbHelper.setLastSync('classes', now);
         await _dbHelper.setLastSync('races', now);
-        print('Sincronizzazione completata.');
       } else {
         print('Cache valida, salto il sync.');
       }
