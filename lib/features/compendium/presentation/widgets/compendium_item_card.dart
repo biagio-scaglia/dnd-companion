@@ -52,10 +52,10 @@ class CompendiumItemCard extends StatelessWidget {
           if (knownMonsterIcons.contains(mType)) {
             imagePath = 'lib/assets/monster/$mType.svg';
           } else {
-            imagePath = 'lib/assets/icone/Monster Part/Skull.png';
+            imagePath = 'lib/assets/monster/monstrosity.svg';
           }
         } else {
-          imagePath = 'lib/assets/icone/Monster Part/Skull.png';
+          imagePath = 'lib/assets/monster/monstrosity.svg';
         }
         typeColor = AppColors.danger;
         break;
@@ -67,27 +67,31 @@ class CompendiumItemCard extends StatelessWidget {
           if (knownSpellIcons.contains(school)) {
             imagePath = 'lib/assets/spell/$school.svg';
           } else {
-            imagePath = 'lib/assets/icone/Misc/Scroll.png';
+            typeIcon = Icons.auto_fix_high_rounded;
           }
         } else {
-          imagePath = 'lib/assets/icone/Misc/Scroll.png';
+          typeIcon = Icons.auto_fix_high_rounded;
         }
         typeColor = AppColors.magicAccent;
         break;
       case CompendiumItemType.item:
-        if (item.name.toLowerCase().contains('sword') || 
-            item.name.toLowerCase().contains('blade')) {
+        final name = item.name.toLowerCase();
+        if (name.contains('sword') || name.contains('blade') || name.contains('scimitar') || name.contains('rapier')) {
           imagePath = 'lib/assets/weapon/sword.svg';
-        } else if (item.name.toLowerCase().contains('dagger')) {
+        } else if (name.contains('dagger')) {
           imagePath = 'lib/assets/weapon/dagger.svg';
-        } else if (item.name.toLowerCase().contains('axe')) {
+        } else if (name.contains('axe')) {
           imagePath = 'lib/assets/weapon/battleaxe.svg';
-        } else if (item.name.toLowerCase().contains('bow')) {
+        } else if (name.contains('bow') || name.contains('crossbow')) {
           imagePath = 'lib/assets/weapon/bow.svg';
-        } else if (item.name.toLowerCase().contains('staff')) {
+        } else if (name.contains('staff') || name.contains('wand') || name.contains('rod')) {
           imagePath = 'lib/assets/weapon/staff.svg';
+        } else if (name.contains('mace') || name.contains('hammer') || name.contains('club') || name.contains('morningstar')) {
+          imagePath = 'lib/assets/weapon/hammer.svg';
+        } else if (name.contains('shield') || name.contains('armor') || name.contains('plate') || name.contains('mail') || name.contains('helm')) {
+          typeIcon = Icons.shield_rounded;
         } else {
-          imagePath = 'lib/assets/icone/Equipment/Iron Armor.png';
+          typeIcon = Icons.inventory_2_rounded;
         }
         typeColor = AppColors.highlight;
         break;
@@ -95,67 +99,50 @@ class CompendiumItemCard extends StatelessWidget {
         if (knownClassIcons.contains(item.id.toLowerCase())) {
           imagePath = 'lib/assets/class/${item.id}.svg';
         } else {
-          imagePath = null;
-          typeIcon = Icons.book;
+          typeIcon = Icons.auto_stories_rounded;
         }
         typeColor = AppColors.magicAccent;
         break;
       case CompendiumItemType.race:
-        imagePath = null;
-        typeIcon = Icons.people;
+        typeIcon = Icons.groups_rounded;
         typeColor = AppColors.naturalAccent;
         break;
     }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 16),
       child: DndCard(
         showGlow: item.isFavorite,
-        accentColor: AppColors.danger,
+        accentColor: typeColor,
+        borderColor: typeColor.withValues(alpha: 0.15),
         padding: const EdgeInsets.all(16),
         onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center, // Centra verticalmente rispetto all'icona
               children: [
                 Container(
-                  width: 44,
-                  height: 44,
-                  padding: const EdgeInsets.all(8), // Spazio interno per l'icona
+                  width: 48,
+                  height: 48,
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0F0906), // Fondo scurissimo per far risaltare il bordo
-                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xFF0F0906), 
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: typeColor.withValues(alpha: 0.6), // Bordo dinamico colorato
+                      color: typeColor.withValues(alpha: 0.5), 
                       width: 1.5,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.4),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
                   ),
                   child: imagePath != null 
-                      ? (imagePath!.endsWith('.svg')
-                          ? SvgPicture.asset(
-                              imagePath!,
-                              fit: BoxFit.contain,
-                              colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.help_outline_rounded, color: Colors.white, size: 20);
-                              },
-                            )
-                          : Image.asset(
-                              imagePath!,
-                              fit: BoxFit.contain,
-                              color: Colors.white, // Forza il bianco anche sui PNG se possibile
-                              filterQuality: FilterQuality.none,
-                            ))
-                      : Icon(typeIcon, color: Colors.white, size: 20),
+                      ? SvgPicture.asset(
+                          imagePath!,
+                          fit: BoxFit.contain,
+                          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                          errorBuilder: (context, error, stackTrace) => Icon(typeIcon ?? Icons.help_outline, color: Colors.white, size: 20),
+                        )
+                      : Icon(typeIcon ?? Icons.help_outline, color: Colors.white, size: 22),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -165,6 +152,7 @@ class CompendiumItemCard extends StatelessWidget {
                       Text(
                         item.name, 
                         style: AppTypography.h3.copyWith(
+                          fontSize: 17,
                           shadows: [
                             Shadow(
                               color: Colors.black.withValues(alpha: 0.5),
@@ -175,7 +163,7 @@ class CompendiumItemCard extends StatelessWidget {
                         ),
                       ),
                       if (item.metaInfo != null) ...[
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 4),
                         DndChip(
                           label: _translateMetaInfo(context, item.metaInfo!),
                           accentColor: typeColor,
@@ -187,17 +175,15 @@ class CompendiumItemCard extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: onFavoriteToggle,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                   icon: Icon(
                     item.isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                    color: item.isFavorite ? AppColors.danger : AppColors.textSecondary,
-                    size: 20,
+                    color: item.isFavorite ? AppColors.danger : AppColors.textSecondary.withValues(alpha: 0.3),
+                    size: 22,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             () {
               if (item.shortDescription == '__TAP_TO_LOAD_DETAILS__') {
                 return Text(
@@ -218,21 +204,18 @@ class CompendiumItemCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (beforeHp.isNotEmpty)
-                      Text(
-                        beforeHp.endsWith('.') ? beforeHp.substring(0, beforeHp.length - 1) : beforeHp,
-                        style: AppTypography.bodySmall,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 6.0),
+                        child: Text(
+                          beforeHp.endsWith('.') ? beforeHp.substring(0, beforeHp.length - 1) : beforeHp,
+                          style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    const SizedBox(height: 4),
                     Row(
                       children: [
-                        Image.asset(
-                          'lib/assets/icone/Misc/Heart.png',
-                          width: 14,
-                          height: 14,
-                          filterQuality: FilterQuality.none,
-                        ),
+                        const Icon(Icons.favorite_rounded, color: AppColors.danger, size: 14),
                         const SizedBox(width: 4),
                         Text(
                           '$hpValue',
@@ -242,13 +225,8 @@ class CompendiumItemCard extends StatelessWidget {
                           ),
                         ),
                         if (acValue != null) ...[
-                          const SizedBox(width: 12),
-                          Image.asset(
-                            'lib/assets/icone/Weapon & Tool/Iron Shield.png',
-                            width: 14,
-                            height: 14,
-                            filterQuality: FilterQuality.none,
-                          ),
+                          const SizedBox(width: 14),
+                          const Icon(Icons.shield_rounded, color: AppColors.highlight, size: 14),
                           const SizedBox(width: 4),
                           Text(
                             '$acValue',
@@ -266,7 +244,10 @@ class CompendiumItemCard extends StatelessWidget {
               
               return Text(
                 item.shortDescription,
-                style: AppTypography.bodySmall,
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.textSecondary.withValues(alpha: 0.7),
+                  fontStyle: FontStyle.italic,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               );
