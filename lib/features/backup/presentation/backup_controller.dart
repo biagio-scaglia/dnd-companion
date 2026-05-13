@@ -98,11 +98,8 @@ class BackupController extends ChangeNotifier {
 
       final fileName = result.files.single.name;
       
-      if (!fileName.endsWith('.comp')) {
-        _lastResult = BackupResult(success: false, message: 'invalidBackupFile');
-        _setLoading(false);
-        return;
-      }
+      // Rimosso il controllo rigido sull'estensione .comp perché su Android può dare problemi.
+      // Ci fideremo del contenuto del file (ZipDecoder fallirà se non è valido).
 
       if (kIsWeb) {
         final bytes = result.files.single.bytes;
