@@ -113,35 +113,16 @@ class DndApiClient {
         final data = json.decode(classesResp.body);
         final results = data['results'] as List<dynamic>? ?? [];
         
-        final futures = results.map((r) async {
-          String shortDesc = '';
-          String fullDesc = '__TAP_TO_LOAD_DETAILS__';
-          
-          try {
-            final detailResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/classes/${r['index']}'));
-            if (detailResp.statusCode == 200) {
-              final detailData = json.decode(detailResp.body);
-              fullDesc = _formatClassDetails(detailData);
-              final hitDie = detailData['hit_die'];
-              final saves = (detailData['saving_throws'] as List?)?.map((e) => e['name']).join(', ') ?? '';
-              shortDesc = 'Hit Die: d$hitDie. Saving Throws: $saves.';
-            }
-          } catch (e) {
-            print('Errore fetch dettaglio classe ${r['index']}: $e');
-          }
-
-          return CompendiumItem(
+        for (var r in results) {
+          allItems.add(CompendiumItem(
             id: r['index'],
             name: r['name'],
             type: CompendiumItemType.characterClass,
-            shortDescription: shortDesc.isNotEmpty ? shortDesc : '__TAP_TO_LOAD_DETAILS__',
-            description: fullDesc,
+            shortDescription: '__TAP_TO_LOAD_DETAILS__',
+            description: '__TAP_TO_LOAD_DETAILS__',
             metaInfo: 'Classe',
-          );
-        });
-        
-        final classItems = await Future.wait(futures);
-        allItems.addAll(classItems);
+          ));
+        }
       }
 
       // 5. Races
@@ -150,35 +131,16 @@ class DndApiClient {
         final data = json.decode(racesResp.body);
         final results = data['results'] as List<dynamic>? ?? [];
         
-        final futures = results.map((r) async {
-          String shortDesc = '';
-          String fullDesc = '__TAP_TO_LOAD_DETAILS__';
-          
-          try {
-            final detailResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/races/${r['index']}'));
-            if (detailResp.statusCode == 200) {
-              final detailData = json.decode(detailResp.body);
-              fullDesc = _formatRaceDetails(detailData);
-              final speed = detailData['speed'];
-              final size = detailData['size'];
-              shortDesc = 'Speed: $speed ft. Size: $size.';
-            }
-          } catch (e) {
-            print('Errore fetch dettaglio razza ${r['index']}: $e');
-          }
-
-          return CompendiumItem(
+        for (var r in results) {
+          allItems.add(CompendiumItem(
             id: r['index'],
             name: r['name'],
             type: CompendiumItemType.race,
-            shortDescription: shortDesc.isNotEmpty ? shortDesc : '__TAP_TO_LOAD_DETAILS__',
-            description: fullDesc,
+            shortDescription: '__TAP_TO_LOAD_DETAILS__',
+            description: '__TAP_TO_LOAD_DETAILS__',
             metaInfo: 'Razza',
-          );
-        });
-        
-        final raceItems = await Future.wait(futures);
-        allItems.addAll(raceItems);
+          ));
+        }
       }
     } catch (e) {
       print('Errore fetch classi/razze: $e');
