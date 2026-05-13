@@ -49,10 +49,10 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
         }
         
         await _dbHelper.setLastSync('compendium_data', now);
-        // Prepariamo le chiavi separate per il futuro
         await _dbHelper.setLastSync('classes', now);
         await _dbHelper.setLastSync('races', now);
         print('Sincronizzazione completata.');
+        _fetchMissingDetailsInBackground();
       } else {
         print('Cache valida, salto il sync.');
       }
@@ -66,6 +66,32 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
     final lastSync = await _dbHelper.getLastSync(dataset);
     if (lastSync == null) return true;
     return (now - lastSync) > ttlMillis;
+  }
+
+  void _fetchMissingDetailsInBackground() async {
+    final maps = await _dbHelper.queryAllItems();
+    final items = maps.map((map) => CompendiumItem.fromMap(map)).toList();
+    
+    print('Avvio caricamento dettagli in background...');
+    
+    for (var item in items) {
+      if (item.description == '__TAP_TO_LOAD_DETAILS__' || item.metaInfo == 'Spell' || item.metaInfo == 'Mostro') {
+        try {
+          final result = await _apiClient.fetchItemDescription(item.type, item.id);
+          final updatedItem = item.copyWith(
+            description: result['description'] ?? '',
+            shortDescription: result['shortDescription'] ?? item.shortDescription,
+            metaInfo: result['metaInfo'] ?? item.metaInfo,
+          );
+          await _dbHelper.updateItem(updatedItem.toMap());
+          print('Dettagli caricati in background per ${item.name}');
+        } catch (e) {
+          print('Errore fetch background per ${item.name}: $e');
+        }
+        await Future.delayed(const Duration(milliseconds: 300)); // Rate limiting
+      }
+    }
+    print('Caricamento dettagli in background completato.');
   }
 
   @override
