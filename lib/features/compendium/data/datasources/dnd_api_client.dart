@@ -6,9 +6,6 @@ class DndApiClient {
   static const String baseUrl = 'https://www.dnd5eapi.co/api';
 
   Future<List<CompendiumItem>> fetchAllItems() async {
-    final List<CompendiumItem> allItems = [];
-
-  Future<List<CompendiumItem>> fetchAllItems() async {
     final allItems = <CompendiumItem>[];
 
     try {
