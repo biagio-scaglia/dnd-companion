@@ -243,8 +243,26 @@ class BackupService {
       final backupJsonData = utf8.decode(dataFile.content);
       final backupData = jsonDecode(backupJsonData);
 
+      final docDir = await getApplicationDocumentsDirectory();
+      final attachmentsDir = Directory(p.join(docDir.path, 'attachments'));
+
       if (overwrite) {
         await repository.importData(backupJsonData);
+        
+        // Sostituisci allegati
+        if (await attachmentsDir.exists()) {
+          await attachmentsDir.delete(recursive: true);
+        }
+        await attachmentsDir.create(recursive: true);
+        
+        for (final file in archive) {
+          if (file.name.startsWith('attachments/') && file.isFile) {
+            final filename = p.basename(file.name);
+            final outFile = File(p.join(attachmentsDir.path, filename));
+            await outFile.writeAsBytes(file.content as List<int>);
+          }
+        }
+        
         return BackupResult(success: true, message: 'backupOverwritten');
       } else {
         final currentJsonData = await repository.exportData();
@@ -253,6 +271,18 @@ class BackupService {
         final mergeResult = _mergeData(currentData, backupData);
         
         await repository.importData(jsonEncode(mergeResult.mergedData));
+
+        // Unisci allegati (sovrascrive se duplicati)
+        if (!await attachmentsDir.exists()) {
+          await attachmentsDir.create(recursive: true);
+        }
+        for (final file in archive) {
+          if (file.name.startsWith('attachments/') && file.isFile) {
+            final filename = p.basename(file.name);
+            final outFile = File(p.join(attachmentsDir.path, filename));
+            await outFile.writeAsBytes(file.content as List<int>);
+          }
+        }
 
         return BackupResult(
           success: true, 

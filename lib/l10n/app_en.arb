@@ -199,6 +199,7 @@
   "nothingLost": "Nothing is lost between sessions",
   "newTag": "New",
   "reset": "Reset",
+  "detailsNotAvailableOffline": "Details not available offline for this item.",
   "newMap": "New Map",
   "storagePermissionDenied": "Storage permission denied!",
   "webSaveNotImplemented": "Saving on Web not implemented directly. Use screenshot!",

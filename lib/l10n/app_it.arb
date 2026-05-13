@@ -196,6 +196,7 @@
   "nothingLost": "Niente si perde tra una sessione e l'altra",
   "newTag": "Nuovo",
   "reset": "Azzera",
+  "detailsNotAvailableOffline": "Dettagli non disponibili offline per questo elemento.",
   "newMap": "Nuova Mappa",
   "storagePermissionDenied": "Permesso di archiviazione negato!",
   "webSaveNotImplemented": "Salvataggio su Web non implementato direttamente. Usa screenshot!",

@@ -110,7 +110,7 @@ class DndApiClient {
       final hp = item['hit_points']?.toString() ?? '?';
       
       shortDesc = '$size $mType, $alignment. HP: $hp';
-      fullDesc = 'Dettagli non disponibili offline per questo elemento.\n\n$shortDesc';
+      fullDesc = '__DETAILS_NOT_AVAILABLE_OFFLINE__\n\n$shortDesc';
     } else {
       if (item['desc'] != null) {
         if (item['desc'] is List) {

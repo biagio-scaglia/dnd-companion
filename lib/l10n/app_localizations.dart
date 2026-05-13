@@ -1274,6 +1274,12 @@ abstract class AppLocalizations {
   /// **'Reset'**
   String get reset;
 
+  /// No description provided for @detailsNotAvailableOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Details not available offline for this item.'**
+  String get detailsNotAvailableOffline;
+
   /// No description provided for @newMap.
   ///
   /// In en, this message translates to:

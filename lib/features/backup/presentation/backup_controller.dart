@@ -125,12 +125,18 @@ class BackupController extends ChangeNotifier {
           return;
         }
         final file = File(result.files.single.path!);
-        final preview = await backupService.generatePreview(file);
-        if (preview != null) {
-          _preview = preview;
-          _selectedFile = file;
-        } else {
-          _lastResult = BackupResult(success: false, message: 'cannotReadManifest');
+        try {
+          final bytes = await file.readAsBytes();
+          final preview = await backupService.generatePreviewFromBytes(bytes);
+          if (preview != null) {
+            _preview = preview;
+            _selectedBytes = bytes;
+            _selectedFile = file;
+          } else {
+            _lastResult = BackupResult(success: false, message: 'cannotReadManifest');
+          }
+        } catch (e) {
+          _lastResult = BackupResult(success: false, message: 'backupReadError|$e');
         }
       }
     } catch (e) {
@@ -146,7 +152,7 @@ class BackupController extends ChangeNotifier {
     
     try {
       final BackupResult result;
-      if (kIsWeb && _selectedBytes != null) {
+      if (_selectedBytes != null) {
         result = await backupService.importBackupFromBytes(_selectedBytes!, overwrite: overwrite);
       } else if (_selectedFile != null) {
         result = await backupService.importBackup(_selectedFile!, overwrite: overwrite);

@@ -190,7 +190,9 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
               const Center(child: CircularProgressIndicator(color: AppColors.highlight))
             else
               Text(
-                _item.description,
+                _item.description.startsWith('__DETAILS_NOT_AVAILABLE_OFFLINE__')
+                    ? _item.description.replaceFirst('__DETAILS_NOT_AVAILABLE_OFFLINE__', AppLocalizations.of(context)!.detailsNotAvailableOffline)
+                    : _item.description,
                 style: const TextStyle(
                   fontSize: 16,
                   color: AppColors.textSecondary,

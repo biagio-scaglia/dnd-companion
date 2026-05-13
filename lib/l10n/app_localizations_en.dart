@@ -605,6 +605,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reset => 'Reset';
 
   @override
+  String get detailsNotAvailableOffline =>
+      'Details not available offline for this item.';
+
+  @override
   String get newMap => 'New Map';
 
   @override
