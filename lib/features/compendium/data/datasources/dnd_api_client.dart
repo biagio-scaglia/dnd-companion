@@ -15,10 +15,10 @@ class DndApiClient {
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'query': '''
-          { 
-            spells { index name desc school { name } } 
-            magicItems { index name desc }
-            monsters { index name size type alignment hit_points armor_class { value type } }
+          query { 
+            spells { index name school { name } } 
+            magicItems { index name }
+            monsters { index name size type alignment hit_points armor_class { value } }
           }
           '''
         }),
@@ -170,11 +170,18 @@ class DndApiClient {
         } else {
           fullDesc = item['desc'].toString();
         }
-      }
-      
-      shortDesc = fullDesc.replaceAll('\n', ' ').trim();
-      if (shortDesc.length > 80) {
-        shortDesc = '${shortDesc.substring(0, 80)}...';
+        
+        shortDesc = fullDesc.replaceAll('\n', ' ').trim();
+        if (shortDesc.length > 80) {
+          shortDesc = '${shortDesc.substring(0, 80)}...';
+        }
+      } else if (type == CompendiumItemType.spell) {
+        final school = item['school']?['name'] ?? 'Unknown';
+        shortDesc = 'School: $school.';
+        fullDesc = '__TAP_TO_LOAD_DETAILS__';
+      } else {
+        shortDesc = 'Tocca per caricare i dettagli.';
+        fullDesc = '__TAP_TO_LOAD_DETAILS__';
       }
     }
 

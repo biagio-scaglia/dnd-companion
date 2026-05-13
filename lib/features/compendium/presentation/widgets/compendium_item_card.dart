@@ -24,11 +24,12 @@ class CompendiumItemCard extends StatelessWidget {
   String _translateMetaInfo(BuildContext context, String metaInfo) {
     final l10n = AppLocalizations.of(context)!;
     if (metaInfo.startsWith('Spell')) {
-      return metaInfo;
+      final school = metaInfo.replaceAll('Spell', '').trim();
+      return '${l10n.spell} $school'.trim();
     }
     if (metaInfo.startsWith('Incantesimo')) {
       final school = metaInfo.replaceAll('Incantesimo', '').trim();
-      return 'Spell $school'.trim();
+      return '${l10n.spell} $school'.trim();
     }
     if (metaInfo == 'Mostro') return l10n.monster;
     if (metaInfo == 'Oggetto') return l10n.item;
