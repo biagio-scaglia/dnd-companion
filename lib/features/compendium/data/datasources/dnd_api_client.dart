@@ -16,9 +16,9 @@ class DndApiClient {
         body: json.encode({
           'query': '''
           { 
-            spells(limit: 500) { index name desc school { name } } 
-            magicItems(limit: 500) { index name desc }
-            monsters(limit: 500) { index name size type alignment hit_points armor_class { value } }
+            spells { index name desc school { name } } 
+            magicItems { index name desc }
+            monsters { index name size type alignment hit_points armor_class { value type } }
           }
           '''
         }),
@@ -38,6 +38,8 @@ class DndApiClient {
         
         // Fetch classi e razze tramite REST
         await _fetchClassesAndRacesRest(allItems);
+      } else {
+        throw Exception('GraphQL error: ${response.statusCode}');
       }
     } catch (e) {
       print('Errore fetch GraphQL: $e');
