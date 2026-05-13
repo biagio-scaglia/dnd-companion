@@ -155,7 +155,7 @@ class CompendiumController extends ChangeNotifier {
   }
 
   Future<void> addCustomItem(CompendiumItem item) async {
-    _isLoading = true;
+    _state = CompendiumState.loadingFirstTime;
     notifyListeners();
     
     try {
@@ -163,8 +163,11 @@ class CompendiumController extends ChangeNotifier {
       await _fetchItems();
     } catch (e) {
       print('Errore aggiunta elemento custom: $e');
+      _state = CompendiumState.hardError;
     } finally {
-      _isLoading = false;
+      if (_state != CompendiumState.hardError) {
+        _state = CompendiumState.loaded;
+      }
       notifyListeners();
     }
   }

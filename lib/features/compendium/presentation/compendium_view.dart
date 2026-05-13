@@ -205,13 +205,13 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
             padding: EdgeInsets.only(bottom: 8.0),
             child: LinearProgressIndicator(
               backgroundColor: Colors.transparent,
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.highlight),
             ),
           ),
         Expanded(
           child: RefreshIndicator(
             onRefresh: () => _controller.refresh(),
-            color: AppColors.primary,
+            color: AppColors.highlight,
             backgroundColor: const Color(0xFF1A1A1A),
             child: ListView.builder(
               key: const ValueKey('list'),
