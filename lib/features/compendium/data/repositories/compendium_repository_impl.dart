@@ -34,7 +34,17 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
         // Salva gli elementi nel DB (rimpiazza quelli esistenti per aggiornare)
         for (var item in items) {
           final existing = await getItemById(item.id);
-          final toInsert = existing != null ? item.copyWith(isFavorite: existing.isFavorite) : item;
+          final toInsert = existing != null 
+              ? item.copyWith(
+                  isFavorite: existing.isFavorite,
+                  description: (existing.description != '__TAP_TO_LOAD_DETAILS__' && existing.description.isNotEmpty) 
+                      ? existing.description 
+                      : item.description,
+                  metaInfo: (existing.metaInfo != null && existing.metaInfo!.isNotEmpty && existing.metaInfo != 'Spell' && existing.metaInfo != 'Mostro' && existing.metaInfo != 'Oggetto')
+                      ? existing.metaInfo
+                      : item.metaInfo,
+                ) 
+              : item;
           await _dbHelper.insertItem(toInsert.toMap());
         }
         

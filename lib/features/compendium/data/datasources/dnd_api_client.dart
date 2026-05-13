@@ -8,100 +8,65 @@ class DndApiClient {
   Future<List<CompendiumItem>> fetchAllItems() async {
     final List<CompendiumItem> allItems = [];
 
+  Future<List<CompendiumItem>> fetchAllItems() async {
+    final allItems = <CompendiumItem>[];
+
     try {
-      final graphqlUrl = Uri.parse('https://www.dnd5eapi.co/graphql');
-      final response = await _post(
-        graphqlUrl,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'query': '''
-          query { 
-            spells { index name school { name } } 
-            magicItems { index name }
-            monsters { index name size type alignment hit_points armor_class { value } }
-          }
-          '''
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['data'] != null) {
-          final spells = data['data']['spells'] as List<dynamic>? ?? [];
-          final items = data['data']['magicItems'] as List<dynamic>? ?? [];
-          final monsters = data['data']['monsters'] as List<dynamic>? ?? [];
-
-          allItems.addAll(spells.map((s) => _parseGraphqlItem(s, CompendiumItemType.spell)));
-          allItems.addAll(items.map((i) => _parseGraphqlItem(i, CompendiumItemType.item)));
-          allItems.addAll(monsters.map((m) => _parseGraphqlItem(m, CompendiumItemType.monster)));
+      // 1. Spells
+      final spellsResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/spells'));
+      if (spellsResp.statusCode == 200) {
+        final data = json.decode(spellsResp.body);
+        final results = data['results'] as List<dynamic>? ?? [];
+        for (var r in results) {
+          allItems.add(CompendiumItem(
+            id: r['index'],
+            name: r['name'],
+            type: CompendiumItemType.spell,
+            shortDescription: '__TAP_TO_LOAD_DETAILS__',
+            description: '__TAP_TO_LOAD_DETAILS__',
+            metaInfo: 'Spell',
+          ));
         }
-        
-        // Fetch classi e razze tramite REST
-        await _fetchClassesAndRacesRest(allItems);
-      } else {
-        throw Exception('GraphQL error: ${response.statusCode}');
       }
+
+      // 2. Magic Items
+      final itemsResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/magic-items'));
+      if (itemsResp.statusCode == 200) {
+        final data = json.decode(itemsResp.body);
+        final results = data['results'] as List<dynamic>? ?? [];
+        for (var r in results) {
+          allItems.add(CompendiumItem(
+            id: r['index'],
+            name: r['name'],
+            type: CompendiumItemType.item,
+            shortDescription: '__TAP_TO_LOAD_DETAILS__',
+            description: '__TAP_TO_LOAD_DETAILS__',
+            metaInfo: 'Oggetto',
+          ));
+        }
+      }
+
+      // 3. Monsters
+      final monstersResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/monsters'));
+      if (monstersResp.statusCode == 200) {
+        final data = json.decode(monstersResp.body);
+        final results = data['results'] as List<dynamic>? ?? [];
+        for (var r in results) {
+          allItems.add(CompendiumItem(
+            id: r['index'],
+            name: r['name'],
+            type: CompendiumItemType.monster,
+            shortDescription: '__TAP_TO_LOAD_DETAILS__',
+            description: '__TAP_TO_LOAD_DETAILS__',
+            metaInfo: 'Mostro',
+          ));
+        }
+      }
+
+      // 4. Classes & Races
+      await _fetchClassesAndRacesRest(allItems);
     } catch (e) {
-      print('Errore fetch GraphQL: $e');
-      
-      // Fallback su REST API standard se GraphQL fallisce
-      try {
-        // 1. Spells
-        final spellsResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/spells'));
-        if (spellsResp.statusCode == 200) {
-          final data = json.decode(spellsResp.body);
-          final results = data['results'] as List<dynamic>? ?? [];
-          for (var r in results) {
-            allItems.add(CompendiumItem(
-              id: r['index'],
-              name: r['name'],
-              type: CompendiumItemType.spell,
-              shortDescription: 'Tocca per caricare i dettagli.',
-              description: 'Tocca per caricare i dettagli.',
-              metaInfo: 'Incantesimo',
-            ));
-          }
-        }
-
-        // 2. Monsters
-        final monstersResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/monsters'));
-        if (monstersResp.statusCode == 200) {
-          final data = json.decode(monstersResp.body);
-          final results = data['results'] as List<dynamic>? ?? [];
-          for (var r in results) {
-            allItems.add(CompendiumItem(
-              id: r['index'],
-              name: r['name'],
-              type: CompendiumItemType.monster,
-              shortDescription: '__TAP_TO_LOAD_DETAILS__',
-              description: '__TAP_TO_LOAD_DETAILS__',
-              metaInfo: 'Mostro',
-            ));
-          }
-        }
-
-        // 3. Magic Items
-        final itemsResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/magic-items'));
-        if (itemsResp.statusCode == 200) {
-          final data = json.decode(itemsResp.body);
-          final results = data['results'] as List<dynamic>? ?? [];
-          for (var r in results) {
-            allItems.add(CompendiumItem(
-              id: r['index'],
-              name: r['name'],
-              type: CompendiumItemType.item,
-              shortDescription: '__TAP_TO_LOAD_DETAILS__',
-              description: '__TAP_TO_LOAD_DETAILS__',
-              metaInfo: 'Oggetto',
-            ));
-          }
-        }
-
-        // Fetch classi e razze tramite REST
-        await _fetchClassesAndRacesRest(allItems);
-      } catch (e2) {
-        print('Errore fallback REST: $e2');
-      }
+      print('Errore fetch REST all items: $e');
     }
 
     return allItems;
@@ -147,58 +112,6 @@ class DndApiClient {
     } catch (e) {
       print('Errore fetch classi/razze: $e');
     }
-  }
-
-  CompendiumItem _parseGraphqlItem(dynamic item, CompendiumItemType type) {
-    String fullDesc = '';
-    String shortDesc = '';
-
-    if (type == CompendiumItemType.monster) {
-      final size = item['size'] ?? '';
-      final mType = item['type'] ?? '';
-      final alignment = item['alignment'] ?? '';
-      final hp = item['hit_points']?.toString() ?? '?';
-      final acList = item['armor_class'] as List?;
-      final ac = acList != null && acList.isNotEmpty ? acList[0]['value']?.toString() ?? '?' : '?';
-      
-      shortDesc = '$size $mType, $alignment. HP: $hp. AC: $ac';
-      fullDesc = '__DETAILS_NOT_AVAILABLE_OFFLINE__\n\n$shortDesc';
-    } else {
-      if (item['desc'] != null) {
-        if (item['desc'] is List) {
-          fullDesc = (item['desc'] as List).join('\n\n');
-        } else {
-          fullDesc = item['desc'].toString();
-        }
-        
-        shortDesc = fullDesc.replaceAll('\n', ' ').trim();
-        if (shortDesc.length > 80) {
-          shortDesc = '${shortDesc.substring(0, 80)}...';
-        }
-      } else if (type == CompendiumItemType.spell) {
-        final school = item['school']?['name'] ?? 'Unknown';
-        shortDesc = 'School: $school.';
-        fullDesc = '__TAP_TO_LOAD_DETAILS__';
-      } else {
-        shortDesc = 'Tocca per caricare i dettagli.';
-        fullDesc = '__TAP_TO_LOAD_DETAILS__';
-      }
-    }
-
-    if (fullDesc.trim().isEmpty) fullDesc = 'Nessuna descrizione trovata.';
-
-    return CompendiumItem(
-      id: item['index'],
-      name: item['name'],
-      type: type,
-      shortDescription: shortDesc.isEmpty ? 'Nessuna anteprima.' : shortDesc,
-      description: fullDesc,
-      metaInfo: type == CompendiumItemType.spell 
-          ? 'Spell (${item['school']?['name'] ?? ''})' 
-          : (type == CompendiumItemType.monster ? 'Mostro' : 
-            (type == CompendiumItemType.item ? 'Oggetto' : 
-            (type == CompendiumItemType.characterClass ? 'Classe' : 'Razza'))),
-    );
   }
 
   Future<String> fetchItemDescription(CompendiumItemType type, String id) async {
