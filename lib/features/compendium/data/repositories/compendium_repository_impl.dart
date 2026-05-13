@@ -33,30 +33,9 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
         for (var item in items) {
           final existing = await getItemById(item.id);
           
-          // Scarichiamo i dettagli subito se mancano
-          if (item.type == CompendiumItemType.spell || item.type == CompendiumItemType.monster) {
-            if (existing == null || existing.description == '__TAP_TO_LOAD_DETAILS__' || existing.metaInfo == 'Spell' || existing.metaInfo == 'Mostro') {
-              try {
-                final result = await _apiClient.fetchItemDescription(item.type, item.id);
-                item = item.copyWith(
-                  description: result['description'] ?? '',
-                  shortDescription: result['shortDescription'] ?? item.shortDescription,
-                  metaInfo: result['metaInfo'] ?? item.metaInfo,
-                );
-              } catch (e) {
-                print('Errore fetch details per ${item.name}: $e');
-              }
-              // Piccola pausa per non intasare il server
-              await Future.delayed(const Duration(milliseconds: 50));
-            }
-          }
-          
           final toInsert = existing != null 
               ? item.copyWith(
                   isFavorite: existing.isFavorite,
-                  description: (item.description != '__TAP_TO_LOAD_DETAILS__') ? item.description : existing.description,
-                  metaInfo: (item.metaInfo != 'Spell' && item.metaInfo != 'Mostro' && item.metaInfo != 'Oggetto') ? item.metaInfo : existing.metaInfo,
-                  shortDescription: (item.shortDescription != 'Tocca per caricare i dettagli.') ? item.shortDescription : existing.shortDescription,
                 ) 
               : item;
               

@@ -9,58 +9,35 @@ class DndApiClient {
     final allItems = <CompendiumItem>[];
 
     try {
-      // 1. Spells
-      final spellsResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/spells'));
-      if (spellsResp.statusCode == 200) {
-        final data = json.decode(spellsResp.body);
-        final results = data['results'] as List<dynamic>? ?? [];
-        for (var r in results) {
-          allItems.add(CompendiumItem(
-            id: r['index'],
-            name: r['name'],
-            type: CompendiumItemType.spell,
-            shortDescription: '__TAP_TO_LOAD_DETAILS__',
-            description: '__TAP_TO_LOAD_DETAILS__',
-            metaInfo: 'Spell',
-          ));
+      // 1. Fetch Spells e Monsters dal nuovo Backend su Render
+      final response = await _get(Uri.parse('https://backend-vellum.onrender.com/api/compendium'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        
+        // Se il backend sta ancora sincronizzando
+        if (data is Map && data['status'] == 'syncing') {
+          print('Backend in fase di sincronizzazione. Riprova tra poco.');
+        } else {
+          final items = data['items'] as List<dynamic>? ?? [];
+          for (var r in items) {
+            final typeStr = r['type'];
+            CompendiumItemType type = CompendiumItemType.item;
+            if (typeStr == 'spell') type = CompendiumItemType.spell;
+            if (typeStr == 'monster') type = CompendiumItemType.monster;
+            
+            allItems.add(CompendiumItem(
+              id: r['id'],
+              name: r['name'],
+              type: type,
+              shortDescription: r['shortDescription'] ?? '',
+              description: r['description'] ?? '',
+              metaInfo: r['metaInfo'] ?? '',
+            ));
+          }
         }
       }
 
-      // 2. Magic Items
-      final itemsResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/magic-items'));
-      if (itemsResp.statusCode == 200) {
-        final data = json.decode(itemsResp.body);
-        final results = data['results'] as List<dynamic>? ?? [];
-        for (var r in results) {
-          allItems.add(CompendiumItem(
-            id: r['index'],
-            name: r['name'],
-            type: CompendiumItemType.item,
-            shortDescription: '__TAP_TO_LOAD_DETAILS__',
-            description: '__TAP_TO_LOAD_DETAILS__',
-            metaInfo: 'Oggetto',
-          ));
-        }
-      }
-
-      // 3. Monsters
-      final monstersResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/monsters'));
-      if (monstersResp.statusCode == 200) {
-        final data = json.decode(monstersResp.body);
-        final results = data['results'] as List<dynamic>? ?? [];
-        for (var r in results) {
-          allItems.add(CompendiumItem(
-            id: r['index'],
-            name: r['name'],
-            type: CompendiumItemType.monster,
-            shortDescription: '__TAP_TO_LOAD_DETAILS__',
-            description: '__TAP_TO_LOAD_DETAILS__',
-            metaInfo: 'Mostro',
-          ));
-        }
-      }
-
-      // 4. Classes & Races
+      // 2. Classes & Races (continuano a usare l'API ufficiale perché il backend non le gestisce)
       await _fetchClassesAndRacesRest(allItems);
     } catch (e) {
       print('Errore fetch REST all items: $e');
