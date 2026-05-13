@@ -31,20 +31,38 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
         print('Inizio sincronizzazione compendio...');
         final items = await _apiClient.fetchAllItems();
         
-        // Salva gli elementi nel DB (rimpiazza quelli esistenti per aggiornare)
+        print('Scaricamento dettagli per tutti gli elementi (potrebbe metterci un minuto)...');
         for (var item in items) {
           final existing = await getItemById(item.id);
+          
+          // Scarichiamo i dettagli subito se mancano
+          if (item.type == CompendiumItemType.spell || item.type == CompendiumItemType.monster) {
+            if (existing == null || existing.description == '__TAP_TO_LOAD_DETAILS__' || existing.metaInfo == 'Spell' || existing.metaInfo == 'Mostro') {
+              try {
+                final result = await _apiClient.fetchItemDescription(item.type, item.id);
+                item = item.copyWith(
+                  description: result['description'] ?? '',
+                  shortDescription: result['shortDescription'] ?? item.shortDescription,
+                  metaInfo: result['metaInfo'] ?? item.metaInfo,
+                );
+                print('Dettagli scaricati per ${item.name}');
+              } catch (e) {
+                print('Errore fetch details per ${item.name}: $e');
+              }
+              // Piccola pausa per non intasare il server
+              await Future.delayed(const Duration(milliseconds: 50));
+            }
+          }
+          
           final toInsert = existing != null 
               ? item.copyWith(
                   isFavorite: existing.isFavorite,
-                  description: (existing.description != '__TAP_TO_LOAD_DETAILS__' && existing.description.isNotEmpty) 
-                      ? existing.description 
-                      : item.description,
-                  metaInfo: (existing.metaInfo != null && existing.metaInfo!.isNotEmpty && existing.metaInfo != 'Spell' && existing.metaInfo != 'Mostro' && existing.metaInfo != 'Oggetto')
-                      ? existing.metaInfo
-                      : item.metaInfo,
+                  description: (item.description != '__TAP_TO_LOAD_DETAILS__') ? item.description : existing.description,
+                  metaInfo: (item.metaInfo != 'Spell' && item.metaInfo != 'Mostro' && item.metaInfo != 'Oggetto') ? item.metaInfo : existing.metaInfo,
+                  shortDescription: (item.shortDescription != 'Tocca per caricare i dettagli.') ? item.shortDescription : existing.shortDescription,
                 ) 
               : item;
+              
           await _dbHelper.insertItem(toInsert.toMap());
         }
         
@@ -52,7 +70,6 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
         await _dbHelper.setLastSync('classes', now);
         await _dbHelper.setLastSync('races', now);
         print('Sincronizzazione completata.');
-        _fetchMissingDetailsInBackground();
       } else {
         print('Cache valida, salto il sync.');
       }
@@ -68,31 +85,7 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
     return (now - lastSync) > ttlMillis;
   }
 
-  void _fetchMissingDetailsInBackground() async {
-    final maps = await _dbHelper.queryAllItems();
-    final items = maps.map((map) => CompendiumItem.fromMap(map)).toList();
-    
-    print('Avvio caricamento dettagli in background...');
-    
-    for (var item in items) {
-      if (item.description == '__TAP_TO_LOAD_DETAILS__' || item.metaInfo == 'Spell' || item.metaInfo == 'Mostro') {
-        try {
-          final result = await _apiClient.fetchItemDescription(item.type, item.id);
-          final updatedItem = item.copyWith(
-            description: result['description'] ?? '',
-            shortDescription: result['shortDescription'] ?? item.shortDescription,
-            metaInfo: result['metaInfo'] ?? item.metaInfo,
-          );
-          await _dbHelper.updateItem(updatedItem.toMap());
-          print('Dettagli caricati in background per ${item.name}');
-        } catch (e) {
-          print('Errore fetch background per ${item.name}: $e');
-        }
-        await Future.delayed(const Duration(milliseconds: 300)); // Rate limiting
-      }
-    }
-    print('Caricamento dettagli in background completato.');
-  }
+  @override
 
   @override
   Future<List<CompendiumItem>> fetchItems(CompendiumFilter filter) async {
