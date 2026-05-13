@@ -112,7 +112,8 @@ class DndApiClient {
       if (classesResp.statusCode == 200) {
         final data = json.decode(classesResp.body);
         final results = data['results'] as List<dynamic>? ?? [];
-        for (var r in results) {
+        
+        final futures = results.map((r) async {
           String shortDesc = '';
           String fullDesc = '__TAP_TO_LOAD_DETAILS__';
           
@@ -129,15 +130,18 @@ class DndApiClient {
             print('Errore fetch dettaglio classe ${r['index']}: $e');
           }
 
-          allItems.add(CompendiumItem(
+          return CompendiumItem(
             id: r['index'],
             name: r['name'],
             type: CompendiumItemType.characterClass,
             shortDescription: shortDesc.isNotEmpty ? shortDesc : '__TAP_TO_LOAD_DETAILS__',
             description: fullDesc,
             metaInfo: 'Classe',
-          ));
-        }
+          );
+        });
+        
+        final classItems = await Future.wait(futures);
+        allItems.addAll(classItems);
       }
 
       // 5. Races
@@ -145,7 +149,8 @@ class DndApiClient {
       if (racesResp.statusCode == 200) {
         final data = json.decode(racesResp.body);
         final results = data['results'] as List<dynamic>? ?? [];
-        for (var r in results) {
+        
+        final futures = results.map((r) async {
           String shortDesc = '';
           String fullDesc = '__TAP_TO_LOAD_DETAILS__';
           
@@ -162,15 +167,18 @@ class DndApiClient {
             print('Errore fetch dettaglio razza ${r['index']}: $e');
           }
 
-          allItems.add(CompendiumItem(
+          return CompendiumItem(
             id: r['index'],
             name: r['name'],
             type: CompendiumItemType.race,
             shortDescription: shortDesc.isNotEmpty ? shortDesc : '__TAP_TO_LOAD_DETAILS__',
             description: fullDesc,
             metaInfo: 'Razza',
-          ));
-        }
+          );
+        });
+        
+        final raceItems = await Future.wait(futures);
+        allItems.addAll(raceItems);
       }
     } catch (e) {
       print('Errore fetch classi/razze: $e');
@@ -215,7 +223,7 @@ class DndApiClient {
       shortDescription: shortDesc.isEmpty ? 'Nessuna anteprima.' : shortDesc,
       description: fullDesc,
       metaInfo: type == CompendiumItemType.spell 
-          ? 'Incantesimo (${item['school']?['name'] ?? ''})' 
+          ? 'Spell (${item['school']?['name'] ?? ''})' 
           : (type == CompendiumItemType.monster ? 'Mostro' : 
             (type == CompendiumItemType.item ? 'Oggetto' : 
             (type == CompendiumItemType.characterClass ? 'Classe' : 'Razza'))),
