@@ -406,7 +406,7 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
             ),
             const SizedBox(width: 12),
             IconButton(
-              icon: const Icon(Icons.backspace_rounded, size: 20),
+              icon: const Icon(Icons.cleaning_services_rounded, size: 20),
               color: controller.selectedTool == MapEditorTool.eraser ? AppColors.magicAccent : AppColors.textSecondary,
               onPressed: () => controller.selectTool(MapEditorTool.eraser),
               padding: EdgeInsets.zero,

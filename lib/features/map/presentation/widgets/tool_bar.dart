@@ -23,7 +23,7 @@ class ToolBar extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           _ToolButton(
-            icon: Icons.backspace_rounded,
+            icon: Icons.cleaning_services_rounded,
             isSelected: controller.selectedTool == MapEditorTool.eraser,
             onTap: () => controller.selectTool(MapEditorTool.eraser),
           ),

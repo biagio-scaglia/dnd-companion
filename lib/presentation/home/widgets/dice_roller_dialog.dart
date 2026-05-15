@@ -27,11 +27,14 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
       duration: const Duration(milliseconds: 400),
     );
 
+    // Rimosso l'lancio automatico per permettere all'utente di scegliere
+    /*
     if (widget.initialDice != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _rollDice(widget.initialDice!);
       });
     }
+    */
   }
 
   @override
@@ -232,9 +235,28 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
             // ── Storia dei Tiri ──────────────────────────────────────────
             if (_history.isNotEmpty) ...[
               const SizedBox(height: 24),
-              Text(
-                AppLocalizations.of(context)!.lastRolls, 
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, fontWeight: FontWeight.bold)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.lastRolls, 
+                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, fontWeight: FontWeight.bold)
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _history.clear();
+                        _result = null;
+                        _currentRoll = null;
+                        _lastDice = null;
+                      });
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.reset.toUpperCase(),
+                      style: const TextStyle(color: AppColors.danger, fontSize: 10, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Wrap(

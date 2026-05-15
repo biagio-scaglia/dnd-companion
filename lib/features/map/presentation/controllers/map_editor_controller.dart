@@ -238,7 +238,17 @@ class MapEditorController extends ChangeNotifier {
     final index = map.layers.indexWhere((l) => l.id == layerId);
     if (index != -1) {
       final layer = map.layers[index];
-      map.layers[index] = layer.copyWith(isVisible: !layer.isVisible);
+    map.layers[index] = layer.copyWith(isVisible: !layer.isVisible);
+      notifyListeners();
+    }
+  }
+
+  void clearActiveLayer() {
+    final map = currentMap;
+    if (map == null || _activeLayerId == null) return;
+    final index = map.layers.indexWhere((l) => l.id == _activeLayerId);
+    if (index != -1) {
+      map.layers[index].elements.clear();
       notifyListeners();
     }
   }

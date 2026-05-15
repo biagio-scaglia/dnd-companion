@@ -62,6 +62,14 @@ class LayerPanel extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
+                    icon: const Icon(Icons.cleaning_services_rounded, size: 16, color: AppColors.textSecondary),
+                    onPressed: () => _showClearConfirmDialog(context, controller, layer.id, layer.name),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    tooltip: AppLocalizations.of(context)!.reset,
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
                     icon: const Icon(Icons.edit_rounded, size: 16, color: AppColors.textSecondary),
                     onPressed: () => _showRenameDialog(context, controller, layer.id, layer.name),
                     padding: EdgeInsets.zero,
@@ -156,6 +164,31 @@ class LayerPanel extends StatelessWidget {
               Navigator.pop(context);
             },
             child: Text(AppLocalizations.of(context)!.add, style: const TextStyle(color: AppColors.magicAccent)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showClearConfirmDialog(BuildContext context, MapEditorController controller, String layerId, String layerName) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text(AppLocalizations.of(context)!.reset, style: AppTypography.h3),
+        content: Text("${AppLocalizations.of(context)!.deleteLayerConfirm(layerName).split('?')[0]}?", style: AppTypography.body),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () {
+              controller.setActiveLayer(layerId);
+              controller.clearActiveLayer();
+              Navigator.pop(context);
+            },
+            child: Text(AppLocalizations.of(context)!.reset, style: const TextStyle(color: AppColors.danger)),
           ),
         ],
       ),

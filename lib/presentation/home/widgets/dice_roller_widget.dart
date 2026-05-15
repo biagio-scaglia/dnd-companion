@@ -56,7 +56,7 @@ class _DiceRollerWidgetState extends State<DiceRollerWidget> {
         onTap: () {
           showDialog(
             context: context,
-            builder: (context) => DiceRollerDialog(initialDice: currentDice['sides']),
+            builder: (context) => const DiceRollerDialog(),
           );
         },
         borderRadius: BorderRadius.circular(16),
