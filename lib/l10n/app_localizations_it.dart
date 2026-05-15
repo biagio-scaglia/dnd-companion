@@ -782,7 +782,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get noAttachments => 'Nessun allegato per questa sezione';
 
   @override
-  String get tapToRoll => 'Tocca un dado per lanciare';
+  String get tapToRoll => 'Tocca per lanciare o scegliere';
 
   @override
   String get noMap => 'Nessuna mappa';

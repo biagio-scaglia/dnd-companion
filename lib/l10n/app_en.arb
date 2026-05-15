@@ -182,7 +182,7 @@
   "lore": "Lore",
   "memories": "Memories",
   "info": "Info",
-  "cartography": "Cartography",
+  "cartography": "Maps",
   "backupDownloadSuccess": "Backup downloaded successfully!",
   "backupCreateSuccess": "Backup created successfully!",
   "backupExportError": "Error during export",

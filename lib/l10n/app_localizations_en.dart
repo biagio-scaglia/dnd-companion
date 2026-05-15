@@ -781,7 +781,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noAttachments => 'No attachments for this section';
 
   @override
-  String get tapToRoll => 'Tap a die to roll';
+  String get tapToRoll => 'Tap to roll or choose';
 
   @override
   String get noMap => 'No map';

@@ -1619,7 +1619,7 @@ abstract class AppLocalizations {
   /// No description provided for @tapToRoll.
   ///
   /// In en, this message translates to:
-  /// **'Tap a die to roll'**
+  /// **'Tap to roll or choose'**
   String get tapToRoll;
 
   /// No description provided for @noMap.
