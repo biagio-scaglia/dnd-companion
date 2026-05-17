@@ -100,10 +100,7 @@ class GuideStepWidget extends StatelessWidget {
                     TextButton.icon(
                       onPressed: () => controller.previous(),
                       icon: const Icon(Icons.arrow_back, size: 18),
-                      label: Text(
-                        // Manca una stringa "Indietro" dedicata, quindi usiamo un fallback
-                        loc.skip, // in realta useremo solo l'icona
-                      ),
+                      label: Text(loc.back),
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.textSecondary,
                         minimumSize: const Size(44, 44),
