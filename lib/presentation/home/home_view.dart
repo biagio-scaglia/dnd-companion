@@ -21,7 +21,8 @@ import '../widgets/dnd_mystic_icon_circle.dart';
 import '../widgets/dnd_ornamental_divider.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  final VoidCallback? onShowGuide;
+  const HomeView({super.key, this.onShowGuide});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -133,6 +134,24 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                       ),
                     ],
                   ).slideIn(delay: const Duration(milliseconds: 100)),
+                  
+                  // Pulsante Guida manuale
+                  const SizedBox(height: 16),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: DndButton(
+                      text: AppLocalizations.of(context)!.guide,
+                      onPressed: () {
+                        if (widget.onShowGuide != null) {
+                          widget.onShowGuide!();
+                        }
+                      },
+                      backgroundColor: AppColors.surfaceSecondary,
+                      foregroundColor: AppColors.magicAccent,
+                      isSmall: true,
+                    ),
+                  ).slideIn(delay: const Duration(milliseconds: 150)),
+                  
               const DndOrnamentalDivider(space: 32),
 
               // ── Lancio Dadi ─────────────────────────────────────────

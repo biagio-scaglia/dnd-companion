@@ -26,47 +26,50 @@ class TilePalette extends StatelessWidget {
             style: AppTypography.label.copyWith(color: AppColors.highlight),
           ),
           const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceSecondary,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppColors.surfaceSecondary),
-            ),
-            child: DropdownButton<MapTileType>(
-              value: controller.selectedTileType == MapTileType.emoji ? null : controller.selectedTileType,
-              dropdownColor: AppColors.surface,
-              isExpanded: true,
-              underline: const SizedBox(),
-              hint: Text(AppLocalizations.of(context)!.selectTile, style: AppTypography.bodySmall),
-              items: MapTileType.values.where((e) => e != MapTileType.emoji).map((type) {
-                return DropdownMenuItem<MapTileType>(
-                  value: type,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          color: _getColorForType(type),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: type.isSolid 
-                          ? Center(child: Container(width: 4, height: 4, color: Colors.black45))
-                          : null,
+          InkWell(
+            onTap: () => _showTilePicker(context, controller),
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceSecondary,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.surfaceSecondary),
+              ),
+              child: Row(
+                children: [
+                  if (controller.selectedTileType != MapTileType.emoji) ...[
+                    Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: _getColorForType(controller.selectedTileType),
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                      const SizedBox(width: 12),
-                      Text(type.name.toUpperCase(), style: AppTypography.bodySmall),
-                    ],
-                  ),
-                );
-              }).toList(),
-              onChanged: (type) {
-                if (type != null) {
-                  controller.selectTool(MapEditorTool.brush);
-                  controller.selectTileType(type);
-                }
-              },
+                      child: controller.selectedTileType.isSolid 
+                        ? Center(child: Container(width: 4, height: 4, color: Colors.black45))
+                        : null,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        _getTileName(context, controller.selectedTileType).toUpperCase(),
+                        style: AppTypography.bodySmall,
+                      ),
+                    ),
+                  ] else ...[
+                    const Icon(Icons.category_rounded, size: 24, color: AppColors.textSecondary),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)!.selectTile,
+                        style: AppTypography.bodySmall,
+                      ),
+                    ),
+                  ],
+                  const Icon(Icons.arrow_drop_down, color: AppColors.textSecondary),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -265,5 +268,147 @@ class TilePalette extends StatelessWidget {
       case MapTileType.barrel: return const Color(0xFFA1887F);
       case MapTileType.emoji: return Colors.transparent;
     }
+  }
+
+  String _getTileName(BuildContext context, MapTileType type) {
+    final loc = AppLocalizations.of(context)!;
+    switch (type) {
+      case MapTileType.floorStone: return loc.tileFloorStone;
+      case MapTileType.floorWood: return loc.tileFloorWood;
+      case MapTileType.floorDirt: return loc.tileFloorDirt;
+      case MapTileType.floorGrass: return loc.tileFloorGrass;
+      case MapTileType.swamp: return loc.tileSwamp;
+      case MapTileType.wallStone: return loc.tileWallStone;
+      case MapTileType.wallWood: return loc.tileWallWood;
+      case MapTileType.water: return loc.tileWater;
+      case MapTileType.lava: return loc.tileLava;
+      case MapTileType.doorClosed: return loc.tileDoorClosed;
+      case MapTileType.doorOpen: return loc.tileDoorOpen;
+      case MapTileType.stairsUp: return loc.tileStairsUp;
+      case MapTileType.stairsDown: return loc.tileStairsDown;
+      case MapTileType.chest: return loc.tileChest;
+      case MapTileType.table: return loc.tileTable;
+      case MapTileType.barrel: return loc.tileBarrel;
+      case MapTileType.emoji: return loc.emoji;
+    }
+  }
+
+  void _showTilePicker(BuildContext context, MapEditorController controller) {
+    final loc = AppLocalizations.of(context)!;
+    
+    final Map<String, List<MapTileType>> categories = {
+      loc.terrain: [
+        MapTileType.floorGrass, MapTileType.floorDirt, MapTileType.floorStone, 
+        MapTileType.floorWood, MapTileType.swamp, MapTileType.water, MapTileType.lava
+      ],
+      loc.structures: [
+        MapTileType.wallStone, MapTileType.wallWood, MapTileType.doorClosed, 
+        MapTileType.doorOpen, MapTileType.stairsUp, MapTileType.stairsDown
+      ],
+      loc.special: [
+        MapTileType.chest, MapTileType.table, MapTileType.barrel
+      ],
+    };
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: DefaultTabController(
+            length: categories.length,
+            child: Column(
+              children: [
+                const SizedBox(height: 12),
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceSecondary,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TabBar(
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.center,
+                  labelColor: AppColors.magicAccent,
+                  unselectedLabelColor: AppColors.textSecondary,
+                  indicatorColor: AppColors.magicAccent,
+                  tabs: categories.keys.map((cat) => Tab(text: cat)).toList(),
+                ),
+                Expanded(
+                  child: TabBarView(
+                    children: categories.values.map((tiles) {
+                      return GridView.builder(
+                        padding: const EdgeInsets.all(16),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 1.0,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                        ),
+                        itemCount: tiles.length,
+                        itemBuilder: (context, index) {
+                          final type = tiles[index];
+                          final isSelected = controller.selectedTileType == type;
+                          return InkWell(
+                            onTap: () {
+                              controller.selectTool(MapEditorTool.brush);
+                              controller.selectTileType(type);
+                              Navigator.pop(context);
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceSecondary,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isSelected ? AppColors.magicAccent : Colors.transparent,
+                                  width: 2,
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      color: _getColorForType(type),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: type.isSolid 
+                                      ? Center(child: Container(width: 6, height: 6, color: Colors.black45))
+                                      : null,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    _getTileName(context, type),
+                                    style: AppTypography.caption,
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

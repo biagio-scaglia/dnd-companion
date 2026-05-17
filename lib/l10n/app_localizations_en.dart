@@ -551,7 +551,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get info => 'Info';
 
   @override
-  String get cartography => 'Cartography';
+  String get cartography => 'Maps';
 
   @override
   String get backupDownloadSuccess => 'Backup downloaded successfully!';
@@ -830,4 +830,118 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lastRolls => 'Last rolls:';
+
+  @override
+  String get guide => 'Guide';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get finish => 'Finish';
+
+  @override
+  String get guideTitleHome => 'Welcome to Vellum';
+
+  @override
+  String get guideDescHome =>
+      'From here you can roll dice, generate NPCs and random loot for your adventures.';
+
+  @override
+  String get guideTitleChronicles => 'Chronicles and Sessions';
+
+  @override
+  String get guideDescChronicles =>
+      'Note down everything that happens in your games, track NPCs and objectives.';
+
+  @override
+  String get guideTitleLore => 'Your Lore';
+
+  @override
+  String get guideDescLore =>
+      'Create characters, write down custom rules, and build your world.';
+
+  @override
+  String get guideTitleCompendium => 'Official Compendium';
+
+  @override
+  String get guideDescCompendium =>
+      'Browse and search through monsters, spells, classes, and races. Use filters to quickly find what you need.';
+
+  @override
+  String get guideTitleMaps => 'The Map Editor';
+
+  @override
+  String get guideDescMaps =>
+      'Build custom maps! Use the various tiles, organize layers, and save maps as images.';
+
+  @override
+  String get guideTitleSettings => 'Data and Backup';
+
+  @override
+  String get guideDescSettings =>
+      'The app saves everything offline. Remember to periodically create backups of your data so you don\'t lose it!';
+
+  @override
+  String get terrain => 'Terrain';
+
+  @override
+  String get structures => 'Structures';
+
+  @override
+  String get special => 'Special';
+
+  @override
+  String get emptyTile => 'Empty';
+
+  @override
+  String get tileFloorStone => 'Stone Floor';
+
+  @override
+  String get tileFloorWood => 'Wood Floor';
+
+  @override
+  String get tileFloorDirt => 'Dirt';
+
+  @override
+  String get tileFloorGrass => 'Grass';
+
+  @override
+  String get tileSwamp => 'Swamp';
+
+  @override
+  String get tileWallStone => 'Stone Wall';
+
+  @override
+  String get tileWallWood => 'Wood Wall';
+
+  @override
+  String get tileWater => 'Water';
+
+  @override
+  String get tileLava => 'Lava';
+
+  @override
+  String get tileDoorClosed => 'Closed Door';
+
+  @override
+  String get tileDoorOpen => 'Open Door';
+
+  @override
+  String get tileStairsUp => 'Stairs Up';
+
+  @override
+  String get tileStairsDown => 'Stairs Down';
+
+  @override
+  String get tileChest => 'Chest';
+
+  @override
+  String get tileTable => 'Table';
+
+  @override
+  String get tileBarrel => 'Barrel';
 }

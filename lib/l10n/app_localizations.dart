@@ -1175,7 +1175,7 @@ abstract class AppLocalizations {
   /// No description provided for @cartography.
   ///
   /// In en, this message translates to:
-  /// **'Cartography'**
+  /// **'Maps'**
   String get cartography;
 
   /// No description provided for @backupDownloadSuccess.
@@ -1711,6 +1711,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last rolls:'**
   String get lastRolls;
+
+  /// No description provided for @guide.
+  ///
+  /// In en, this message translates to:
+  /// **'Guide'**
+  String get guide;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get finish;
+
+  /// No description provided for @guideTitleHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Vellum'**
+  String get guideTitleHome;
+
+  /// No description provided for @guideDescHome.
+  ///
+  /// In en, this message translates to:
+  /// **'From here you can roll dice, generate NPCs and random loot for your adventures.'**
+  String get guideDescHome;
+
+  /// No description provided for @guideTitleChronicles.
+  ///
+  /// In en, this message translates to:
+  /// **'Chronicles and Sessions'**
+  String get guideTitleChronicles;
+
+  /// No description provided for @guideDescChronicles.
+  ///
+  /// In en, this message translates to:
+  /// **'Note down everything that happens in your games, track NPCs and objectives.'**
+  String get guideDescChronicles;
+
+  /// No description provided for @guideTitleLore.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Lore'**
+  String get guideTitleLore;
+
+  /// No description provided for @guideDescLore.
+  ///
+  /// In en, this message translates to:
+  /// **'Create characters, write down custom rules, and build your world.'**
+  String get guideDescLore;
+
+  /// No description provided for @guideTitleCompendium.
+  ///
+  /// In en, this message translates to:
+  /// **'Official Compendium'**
+  String get guideTitleCompendium;
+
+  /// No description provided for @guideDescCompendium.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse and search through monsters, spells, classes, and races. Use filters to quickly find what you need.'**
+  String get guideDescCompendium;
+
+  /// No description provided for @guideTitleMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'The Map Editor'**
+  String get guideTitleMaps;
+
+  /// No description provided for @guideDescMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Build custom maps! Use the various tiles, organize layers, and save maps as images.'**
+  String get guideDescMaps;
+
+  /// No description provided for @guideTitleSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Data and Backup'**
+  String get guideTitleSettings;
+
+  /// No description provided for @guideDescSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'The app saves everything offline. Remember to periodically create backups of your data so you don\'t lose it!'**
+  String get guideDescSettings;
+
+  /// No description provided for @terrain.
+  ///
+  /// In en, this message translates to:
+  /// **'Terrain'**
+  String get terrain;
+
+  /// No description provided for @structures.
+  ///
+  /// In en, this message translates to:
+  /// **'Structures'**
+  String get structures;
+
+  /// No description provided for @special.
+  ///
+  /// In en, this message translates to:
+  /// **'Special'**
+  String get special;
+
+  /// No description provided for @emptyTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get emptyTile;
+
+  /// No description provided for @tileFloorStone.
+  ///
+  /// In en, this message translates to:
+  /// **'Stone Floor'**
+  String get tileFloorStone;
+
+  /// No description provided for @tileFloorWood.
+  ///
+  /// In en, this message translates to:
+  /// **'Wood Floor'**
+  String get tileFloorWood;
+
+  /// No description provided for @tileFloorDirt.
+  ///
+  /// In en, this message translates to:
+  /// **'Dirt'**
+  String get tileFloorDirt;
+
+  /// No description provided for @tileFloorGrass.
+  ///
+  /// In en, this message translates to:
+  /// **'Grass'**
+  String get tileFloorGrass;
+
+  /// No description provided for @tileSwamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Swamp'**
+  String get tileSwamp;
+
+  /// No description provided for @tileWallStone.
+  ///
+  /// In en, this message translates to:
+  /// **'Stone Wall'**
+  String get tileWallStone;
+
+  /// No description provided for @tileWallWood.
+  ///
+  /// In en, this message translates to:
+  /// **'Wood Wall'**
+  String get tileWallWood;
+
+  /// No description provided for @tileWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get tileWater;
+
+  /// No description provided for @tileLava.
+  ///
+  /// In en, this message translates to:
+  /// **'Lava'**
+  String get tileLava;
+
+  /// No description provided for @tileDoorClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed Door'**
+  String get tileDoorClosed;
+
+  /// No description provided for @tileDoorOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Door'**
+  String get tileDoorOpen;
+
+  /// No description provided for @tileStairsUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Stairs Up'**
+  String get tileStairsUp;
+
+  /// No description provided for @tileStairsDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Stairs Down'**
+  String get tileStairsDown;
+
+  /// No description provided for @tileChest.
+  ///
+  /// In en, this message translates to:
+  /// **'Chest'**
+  String get tileChest;
+
+  /// No description provided for @tileTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Table'**
+  String get tileTable;
+
+  /// No description provided for @tileBarrel.
+  ///
+  /// In en, this message translates to:
+  /// **'Barrel'**
+  String get tileBarrel;
 }
 
 class _AppLocalizationsDelegate
