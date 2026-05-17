@@ -40,6 +40,32 @@ class DatabaseHelper {
     return _database!;
   }
 
+  Future<void> checkpoint() async {
+    if (kIsWeb) return;
+    try {
+      final db = await database;
+      await db.rawQuery('PRAGMA wal_checkpoint(FULL);');
+      print('SQLite Checkpoint FULL completato con successo.');
+    } catch (e) {
+      print('Errore durante PRAGMA wal_checkpoint: $e');
+    }
+  }
+
+  Future<void> closeDatabase() async {
+    if (kIsWeb) return;
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
+      print('Connessione al database SQLite chiusa.');
+    }
+  }
+
+  Future<String> getDatabasePath() async {
+    if (kIsWeb) return '';
+    final documentsDirectory = await getApplicationDocumentsDirectory();
+    return join(documentsDirectory.path, _databaseName);
+  }
+
   Future<Database> _initDatabase() async {
     final documentsDirectory = await getApplicationDocumentsDirectory();
     final path = join(documentsDirectory.path, _databaseName);

@@ -833,6 +833,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get lastRolls => 'Ultimi tiri:';
 
   @override
+  String get back => 'Indietro';
+
+  @override
   String get guide => 'Guida';
 
   @override

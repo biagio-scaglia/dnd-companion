@@ -10,6 +10,7 @@ import '../../../presentation/widgets/dnd_mystic_icon_circle.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
 import '../../backup/presentation/backup_controller.dart';
+import '../../notes/presentation/notes_controller.dart';
 import 'settings_controller.dart';
 
 class SettingsView extends StatelessWidget {
@@ -364,7 +365,12 @@ class SettingsView extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              controller.executeImport(overwrite: false);
+              controller.executeImport(
+                overwrite: false,
+                onRestoreSuccess: () {
+                  Provider.of<NotesController>(context, listen: false).loadData();
+                },
+              );
             },
             child: Text(AppLocalizations.of(context)!.merge, style: const TextStyle(color: AppColors.magicAccent)),
           ),
@@ -395,7 +401,12 @@ class SettingsView extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              controller.executeImport(overwrite: true);
+              controller.executeImport(
+                overwrite: true,
+                onRestoreSuccess: () {
+                  Provider.of<NotesController>(context, listen: false).loadData();
+                },
+              );
             },
             child: Text(AppLocalizations.of(context)!.yesOverwrite, style: const TextStyle(color: AppColors.danger)),
           ),

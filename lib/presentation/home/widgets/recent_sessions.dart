@@ -58,8 +58,8 @@ class RecentSessions extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             if (sessions.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 24.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0),
                 child: Center(
                   child: Text(
                     AppLocalizations.of(context)!.noSessions,
@@ -79,7 +79,7 @@ class RecentSessions extends StatelessWidget {
                 ),
               )),
             const SizedBox(height: 16),
-            const Center(
+            Center(
               child: Text(
                 AppLocalizations.of(context)!.nothingLost,
                 style: const TextStyle(

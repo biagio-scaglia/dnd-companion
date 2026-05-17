@@ -16,6 +16,8 @@ import 'features/backup/data/services/backup_service.dart';
 import 'features/backup/data/services/archive_service.dart';
 
 void main() {
+  final notesRepository = NotesRepositoryImpl();
+
   runApp(
     MultiProvider(
       providers: [
@@ -23,7 +25,7 @@ void main() {
           create: (_) => HomeController(),
         ),
         ChangeNotifierProvider(
-          create: (_) => NotesController(repository: NotesRepositoryImpl()),
+          create: (_) => NotesController(repository: notesRepository),
         ),
 
         ChangeNotifierProvider(
@@ -32,7 +34,7 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => BackupController(
             backupService: BackupService(
-              repository: NotesRepositoryImpl(),
+              repository: notesRepository,
               archiveService: ArchiveService(),
             ),
           ),

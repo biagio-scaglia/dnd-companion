@@ -1712,6 +1712,12 @@ abstract class AppLocalizations {
   /// **'Last rolls:'**
   String get lastRolls;
 
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
   /// No description provided for @guide.
   ///
   /// In en, this message translates to:

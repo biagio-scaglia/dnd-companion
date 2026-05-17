@@ -143,8 +143,8 @@ class BackupController extends ChangeNotifier {
     }
   }
 
-  Future<void> executeImport({bool overwrite = false}) async {
-    if (_selectedFile == null && _selectedBytes == null) return;
+  Future<bool> executeImport({bool overwrite = false, VoidCallback? onRestoreSuccess}) async {
+    if (_selectedFile == null && _selectedBytes == null) return false;
     _setLoading(true);
     
     try {
@@ -155,14 +155,20 @@ class BackupController extends ChangeNotifier {
         result = await backupService.importBackup(_selectedFile!, overwrite: overwrite);
       } else {
         _setLoading(false);
-        return;
+        return false;
       }
       _lastResult = result;
       _preview = null;
       _selectedFile = null;
       _selectedBytes = null;
+      
+      if (result.success && onRestoreSuccess != null) {
+        onRestoreSuccess();
+      }
+      return result.success;
     } catch (e) {
       _lastResult = BackupResult(success: false, message: 'backupImportError|$e');
+      return false;
     } finally {
       _setLoading(false);
     }

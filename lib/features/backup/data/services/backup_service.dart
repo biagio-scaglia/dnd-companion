@@ -10,6 +10,8 @@ import '../../domain/models/backup_manifest.dart';
 import '../../domain/models/backup_result.dart';
 import '../../domain/models/import_preview.dart';
 import 'archive_service.dart';
+import 'package:dnd/core/database/database_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BackupService {
   final NotesRepository repository;
@@ -29,6 +31,36 @@ class BackupService {
     final jsonData = await repository.exportData();
     final jsonBytes = utf8.encode(jsonData);
     archive.addFile(ArchiveFile('data.json', jsonBytes.length, jsonBytes));
+
+    // 1.5 Copia database SQLite (se possibile e non Web)
+    if (!kIsWeb) {
+      try {
+        final dbHelper = DatabaseHelper.instance;
+        await dbHelper.checkpoint(); // Esegui checkpoint per svuotare WAL
+        final dbPath = await dbHelper.getDatabasePath();
+        final dbFile = File(dbPath);
+        if (await dbFile.exists()) {
+          final dbBytes = await dbFile.readAsBytes();
+          archive.addFile(ArchiveFile('dnd_companion.db', dbBytes.length, dbBytes));
+          print('Database SQLite inserito nel backup.');
+        }
+      } catch (e) {
+        print('Errore durante copia SQLite per backup: $e');
+      }
+    }
+
+    // 1.7 Copia Mappe SharedPreferences (se presenti)
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final mapsData = prefs.getString('dnd_maps_data');
+      if (mapsData != null) {
+        final mapsBytes = utf8.encode(mapsData);
+        archive.addFile(ArchiveFile('maps.json', mapsBytes.length, mapsBytes));
+        print('Mappe inserite nel backup.');
+      }
+    } catch (e) {
+      print('Errore durante export mappe: $e');
+    }
 
     // 2. Copia gli allegati (se possibile)
     try {
@@ -170,6 +202,31 @@ class BackupService {
         // Sostituisci tutto
         await repository.importData(backupJsonData);
         
+        // Sostituisci database SQLite (se non Web)
+        if (!kIsWeb) {
+          final tempDbFile = File(p.join(tempDir.path, 'dnd_companion.db'));
+          if (await tempDbFile.exists()) {
+            final dbHelper = DatabaseHelper.instance;
+            await dbHelper.closeDatabase(); // Chiudi connessione attiva!
+            final dbPath = await dbHelper.getDatabasePath();
+            await tempDbFile.copy(dbPath);
+            print('Database SQLite ripristinato con successo.');
+          }
+        }
+        
+        // Sostituisci mappe
+        try {
+          final tempMapsFile = File(p.join(tempDir.path, 'maps.json'));
+          if (await tempMapsFile.exists()) {
+            final mapsData = await tempMapsFile.readAsString();
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('dnd_maps_data', mapsData);
+            print('Mappe ripristinate con successo.');
+          }
+        } catch (e) {
+          print('Errore ripristino mappe in overwrite: $e');
+        }
+        
         // Sostituisci allegati
         if (await attachmentsDir.exists()) {
           await attachmentsDir.delete(recursive: true);
@@ -194,6 +251,40 @@ class BackupService {
         final mergeResult = _mergeData(currentData, backupData);
         
         await repository.importData(jsonEncode(mergeResult.mergedData));
+
+        // Unisci mappe
+        try {
+          final tempMapsFile = File(p.join(tempDir.path, 'maps.json'));
+          if (await tempMapsFile.exists()) {
+            final mapsData = await tempMapsFile.readAsString();
+            final List<dynamic> backupMaps = jsonDecode(mapsData);
+            
+            final prefs = await SharedPreferences.getInstance();
+            final currentMapsStr = prefs.getString('dnd_maps_data');
+            List<dynamic> currentMaps = [];
+            if (currentMapsStr != null) {
+              currentMaps = jsonDecode(currentMapsStr);
+            }
+            
+            final currentMapIds = {for (var m in currentMaps) m['id']};
+            for (final map in backupMaps) {
+              if (!currentMapIds.contains(map['id'])) {
+                currentMaps.add(map);
+              } else {
+                final newMap = Map<String, dynamic>.from(map);
+                newMap['id'] = _uuid.v4();
+                if (newMap.containsKey('name')) {
+                  newMap['name'] = '${newMap['name']} (Copia)';
+                }
+                currentMaps.add(newMap);
+              }
+            }
+            await prefs.setString('dnd_maps_data', jsonEncode(currentMaps));
+            print('Mappe unite con successo.');
+          }
+        } catch (e) {
+          print('Errore unione mappe: $e');
+        }
 
         // Copia allegati non esistenti
         await attachmentsDir.create(recursive: true);
@@ -249,6 +340,31 @@ class BackupService {
       if (overwrite) {
         await repository.importData(backupJsonData);
         
+        // Sostituisci database SQLite (se non Web)
+        if (!kIsWeb) {
+          final dbFileInArchive = archive.findFile('dnd_companion.db');
+          if (dbFileInArchive != null) {
+            final dbHelper = DatabaseHelper.instance;
+            await dbHelper.closeDatabase(); // Chiudi connessione attiva!
+            final dbPath = await dbHelper.getDatabasePath();
+            await File(dbPath).writeAsBytes(dbFileInArchive.content as List<int>);
+            print('Database SQLite ripristinato dai bytes con successo.');
+          }
+        }
+        
+        // Sostituisci mappe
+        try {
+          final mapsFileInArchive = archive.findFile('maps.json');
+          if (mapsFileInArchive != null) {
+            final mapsData = utf8.decode(mapsFileInArchive.content);
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('dnd_maps_data', mapsData);
+            print('Mappe ripristinate dai bytes con successo.');
+          }
+        } catch (e) {
+          print('Errore ripristino mappe dai bytes: $e');
+        }
+        
         // Sostituisci allegati
         if (await attachmentsDir.exists()) {
           await attachmentsDir.delete(recursive: true);
@@ -271,6 +387,40 @@ class BackupService {
         final mergeResult = _mergeData(currentData, backupData);
         
         await repository.importData(jsonEncode(mergeResult.mergedData));
+
+        // Unisci mappe
+        try {
+          final mapsFileInArchive = archive.findFile('maps.json');
+          if (mapsFileInArchive != null) {
+            final mapsData = utf8.decode(mapsFileInArchive.content);
+            final List<dynamic> backupMaps = jsonDecode(mapsData);
+            
+            final prefs = await SharedPreferences.getInstance();
+            final currentMapsStr = prefs.getString('dnd_maps_data');
+            List<dynamic> currentMaps = [];
+            if (currentMapsStr != null) {
+              currentMaps = jsonDecode(currentMapsStr);
+            }
+            
+            final currentMapIds = {for (var m in currentMaps) m['id']};
+            for (final map in backupMaps) {
+              if (!currentMapIds.contains(map['id'])) {
+                currentMaps.add(map);
+              } else {
+                final newMap = Map<String, dynamic>.from(map);
+                newMap['id'] = _uuid.v4();
+                if (newMap.containsKey('name')) {
+                  newMap['name'] = '${newMap['name']} (Copia)';
+                }
+                currentMaps.add(newMap);
+              }
+            }
+            await prefs.setString('dnd_maps_data', jsonEncode(currentMaps));
+            print('Mappe unite dai bytes con successo.');
+          }
+        } catch (e) {
+          print('Errore unione mappe dai bytes: $e');
+        }
 
         // Unisci allegati (sovrascrive se duplicati)
         if (!await attachmentsDir.exists()) {

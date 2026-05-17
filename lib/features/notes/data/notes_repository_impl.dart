@@ -219,7 +219,8 @@ class NotesRepositoryImpl implements NotesRepository {
   @override
   Future<void> importData(String json) async {
     await _init();
-    jsonDecode(json); // Valida che sia JSON valido
+    final parsed = jsonDecode(json); // Valida che sia JSON valido
     _jsonData = json;
+    await _saveData(parsed);
   }
 }
