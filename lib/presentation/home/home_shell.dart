@@ -43,9 +43,13 @@ class _HomeShellState extends State<HomeShell> {
   }
 
   void _showGuide() {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isMobile = screenWidth < 600;
+
     GuideService.showGuide(
       context: context,
       keys: [_homeKey, _compendiumKey, _notesKey, _settingsKey, _mapKey],
+      isMobile: isMobile,
     );
   }
 
@@ -112,28 +116,28 @@ class _HomeShellState extends State<HomeShell> {
               extended: screenWidth >= 1000,
               destinations: [
                 NavigationRailDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Lantern.png', key: _homeKey, width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24),
+                  icon: SizedBox(key: _currentIndex == 0 ? null : _homeKey, child: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24)),
+                  selectedIcon: SizedBox(key: _currentIndex == 0 ? _homeKey : null, child: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 24, height: 24)),
                   label: Text(AppLocalizations.of(context)!.chronicles),
                 ),
                 NavigationRailDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Book 2.png', key: _compendiumKey, width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 24, height: 24),
+                  icon: SizedBox(key: _currentIndex == 1 ? null : _compendiumKey, child: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 24, height: 24)),
+                  selectedIcon: SizedBox(key: _currentIndex == 1 ? _compendiumKey : null, child: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 24, height: 24)),
                   label: Text(AppLocalizations.of(context)!.lore),
                 ),
                 NavigationRailDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Scroll.png', key: _notesKey, width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 24, height: 24),
+                  icon: SizedBox(key: _currentIndex == 2 ? null : _notesKey, child: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 24, height: 24)),
+                  selectedIcon: SizedBox(key: _currentIndex == 2 ? _notesKey : null, child: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 24, height: 24)),
                   label: Text(AppLocalizations.of(context)!.memories),
                 ),
                 NavigationRailDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Gear.png', key: _settingsKey, width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 24, height: 24),
+                  icon: SizedBox(key: _currentIndex == 3 ? null : _settingsKey, child: Image.asset('lib/assets/icone/Misc/Gear.png', width: 24, height: 24)),
+                  selectedIcon: SizedBox(key: _currentIndex == 3 ? _settingsKey : null, child: Image.asset('lib/assets/icone/Misc/Gear.png', width: 24, height: 24)),
                   label: Text(AppLocalizations.of(context)!.info),
                 ),
                 NavigationRailDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Map.png', key: _mapKey, width: 24, height: 24),
-                  selectedIcon: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24),
+                  icon: SizedBox(key: _currentIndex == 4 ? null : _mapKey, child: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24)),
+                  selectedIcon: SizedBox(key: _currentIndex == 4 ? _mapKey : null, child: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24)),
                   label: Text(AppLocalizations.of(context)!.cartography ?? AppLocalizations.of(context)!.maps), // Fallback in case of cartography being removed
                 ),
               ],
@@ -172,27 +176,32 @@ class _HomeShellState extends State<HomeShell> {
               },
               destinations: [
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Lantern.png', key: _homeKey, width: 32, height: 32),
+                  key: _homeKey,
+                  icon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 32, height: 32),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Lantern.png', width: 32, height: 32),
                   label: AppLocalizations.of(context)!.chronicles,
                 ),
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Book 2.png', key: _compendiumKey, width: 32, height: 32),
+                  key: _compendiumKey,
+                  icon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 32, height: 32),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Book 2.png', width: 32, height: 32),
                   label: AppLocalizations.of(context)!.lore,
                 ),
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Scroll.png', key: _notesKey, width: 32, height: 32),
+                  key: _notesKey,
+                  icon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 32, height: 32),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Scroll.png', width: 32, height: 32),
                   label: AppLocalizations.of(context)!.memories,
                 ),
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Gear.png', key: _settingsKey, width: 32, height: 32),
+                  key: _settingsKey,
+                  icon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 32, height: 32),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Gear.png', width: 32, height: 32),
                   label: AppLocalizations.of(context)!.info,
                 ),
                 NavigationDestination(
-                  icon: Image.asset('lib/assets/icone/Misc/Map.png', key: _mapKey, width: 32, height: 32),
+                  key: _mapKey,
+                  icon: Image.asset('lib/assets/icone/Misc/Map.png', width: 32, height: 32),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Map.png', width: 32, height: 32),
                   label: AppLocalizations.of(context)!.cartography ?? AppLocalizations.of(context)!.maps, // Fallback
                 ),
