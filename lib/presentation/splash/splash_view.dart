@@ -18,7 +18,6 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   late Animation<double> _sigilOpacity;
   late Animation<double> _textOpacity;
   late Animation<double> _glowIntensity;
-  late Animation<double> _breathAnimation;
 
   bool _isNavigating = false;
 
@@ -55,14 +54,6 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.4, 0.8, curve: Curves.easeIn),
-      ),
-    );
-
-    // 3. Respiro: Pulsazione infinita dopo il secondo 0.8
-    _breathAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.4, 1.0, curve: Curves.easeInOut),
       ),
     );
 

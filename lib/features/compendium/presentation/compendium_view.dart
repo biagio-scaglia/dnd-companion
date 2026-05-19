@@ -5,7 +5,6 @@ import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/app_navigation.dart';
 import '../data/repositories/compendium_repository_impl.dart';
 import 'compendium_controller.dart';
-import 'widgets/compendium_search_bar.dart';
 import 'widgets/compendium_category_filters.dart';
 import 'widgets/compendium_item_card.dart';
 import 'widgets/compendium_empty_state.dart';

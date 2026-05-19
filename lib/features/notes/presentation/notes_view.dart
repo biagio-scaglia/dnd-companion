@@ -1,16 +1,11 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_radius.dart';
 import '../../../presentation/widgets/dnd_card.dart';
-import '../../../presentation/widgets/dnd_loading_indicator.dart';
 import '../../../presentation/widgets/dnd_section_header.dart';
 import '../../../presentation/widgets/dnd_empty_state.dart';
-import '../../../presentation/widgets/dnd_text_field.dart';
 import '../../../presentation/widgets/dnd_error_state.dart';
 import '../../../presentation/widgets/dnd_motion.dart';
 import 'notes_controller.dart';
@@ -19,11 +14,9 @@ import 'widgets/note_card.dart';
 import 'widgets/character_card.dart';
 import 'widgets/session_card.dart';
 import 'widgets/attachment_card.dart';
-import 'widgets/note_dialogs.dart';
 import 'note_edit_view.dart';
 import 'session_edit_view.dart';
 import 'character_edit_view.dart';
-import '../domain/models/character.dart';
 
 
 class NotesView extends StatelessWidget {

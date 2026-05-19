@@ -96,8 +96,6 @@ class BackupController extends ChangeNotifier {
         return;
       }
 
-      final fileName = result.files.single.name;
-      
       // Rimosso il controllo rigido sull'estensione .comp perché su Android può dare problemi.
       // Ci fideremo del contenuto del file (ZipDecoder fallirà se non è valido).
 

@@ -36,9 +36,9 @@ class CompendiumPreviewWidget extends StatelessWidget {
               width: 52,
               height: 52,
               decoration: BoxDecoration(
-                color: AppColors.magicAccent.withOpacity(0.12),
+                color: AppColors.magicAccent.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.magicAccent.withOpacity(0.3)),
+                border: Border.all(color: AppColors.magicAccent.withValues(alpha: 0.3)),
               ),
               child: Center(
                 child: Image.asset(
@@ -70,7 +70,7 @@ class CompendiumPreviewWidget extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right_rounded,
-              color: AppColors.textSecondary.withOpacity(0.5),
+              color: AppColors.textSecondary.withValues(alpha: 0.5),
             ),
           ],
         ),

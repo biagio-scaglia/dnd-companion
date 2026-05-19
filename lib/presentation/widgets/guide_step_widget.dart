@@ -34,10 +34,10 @@ class GuideStepWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.magicAccent.withOpacity(0.5), width: 1.5),
+            border: Border.all(color: AppColors.magicAccent.withValues(alpha: 0.5), width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha: 0.5),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),

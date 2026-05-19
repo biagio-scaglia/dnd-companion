@@ -109,8 +109,8 @@ class RecentSessions extends StatelessWidget {
           AppNavigation.instance.goToNotes();
         },
         borderRadius: BorderRadius.circular(16),
-        highlightColor: AppColors.surfaceSecondary.withOpacity(0.5),
-        splashColor: AppColors.highlight.withOpacity(0.1),
+        highlightColor: AppColors.surfaceSecondary.withValues(alpha: 0.5),
+        splashColor: AppColors.highlight.withValues(alpha: 0.1),
         child: Ink(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -144,7 +144,7 @@ class RecentSessions extends StatelessWidget {
                       margin: const EdgeInsets.only(left: 8),
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppColors.magicAccent.withOpacity(0.12),
+                        color: AppColors.magicAccent.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
-import '../../core/theme/app_radius.dart';
 
 /// Campo di testo uniformato al design system D&D.
 /// Usare al posto di TextFormField raw nelle view.

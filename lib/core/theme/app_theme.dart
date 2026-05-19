@@ -37,7 +37,7 @@ class AppTheme {
         primary: primaryColor,
         secondary: AppColors.naturalAccent,
         surface: AppColors.surface,
-        background: AppColors.background,
+        // FIX: 'background' deprecato → rimosso, 'surface' è il sostituto
         error: AppColors.danger,
         onPrimary: AppColors.background,
         onSurface: AppColors.textPrimary,
@@ -77,7 +77,9 @@ class AppTheme {
         fillColor: AppColors.surfaceSecondary,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         labelStyle: AppTypography.bodySmall,
-        hintStyle: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary.withOpacity(0.6)),
+        // FIX: withOpacity → withValues
+        hintStyle: AppTypography.bodySmall.copyWith(
+            color: AppColors.textSecondary.withValues(alpha: 0.6)),
         enabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.mBorderRadius,
           borderSide: const BorderSide(color: AppColors.surfaceSecondary, width: 1.5),
@@ -127,15 +129,17 @@ class AppTheme {
       // BottomNavigationBar / NavigationBar
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.surface,
-        indicatorColor: primaryColor.withOpacity(0.15),
-        iconTheme: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        // FIX: withOpacity → withValues
+        indicatorColor: primaryColor.withValues(alpha: 0.15),
+        // FIX: MaterialStateProperty → WidgetStateProperty, MaterialState → WidgetState
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return IconThemeData(color: primaryColor, size: 24);
           }
           return const IconThemeData(color: AppColors.textSecondary, size: 22);
         }),
-        labelTextStyle: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return TextStyle(
               fontFamily: 'Cinzel',
               color: primaryColor,
@@ -159,7 +163,8 @@ class AppTheme {
       // NavigationRail
       navigationRailTheme: NavigationRailThemeData(
         backgroundColor: AppColors.surface,
-        indicatorColor: primaryColor.withOpacity(0.15),
+        // FIX: withOpacity → withValues
+        indicatorColor: primaryColor.withValues(alpha: 0.15),
         selectedIconTheme: IconThemeData(color: primaryColor, size: 24),
         unselectedIconTheme: const IconThemeData(color: AppColors.textSecondary, size: 22),
         selectedLabelTextStyle: TextStyle(
@@ -188,13 +193,14 @@ class AppTheme {
       ),
 
       // Switch
+      // FIX: MaterialStateProperty → WidgetStateProperty, MaterialState → WidgetState
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return AppColors.background;
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return AppColors.background;
           return AppColors.textSecondary;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) return primaryColor;
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return primaryColor;
           return AppColors.surfaceSecondary;
         }),
       ),

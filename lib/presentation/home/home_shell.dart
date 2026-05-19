@@ -144,7 +144,7 @@ class _HomeShellState extends State<HomeShell> {
                 NavigationRailDestination(
                   icon: SizedBox(key: _currentIndex == 4 ? null : _mapKey, child: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24)),
                   selectedIcon: SizedBox(key: _currentIndex == 4 ? _mapKey : null, child: Image.asset('lib/assets/icone/Misc/Map.png', width: 24, height: 24)),
-                  label: Text(AppLocalizations.of(context)!.cartography ?? AppLocalizations.of(context)!.maps), // Fallback in case of cartography being removed
+                  label: Text(AppLocalizations.of(context)!.cartography),
                 ),
               ],
             ),
@@ -209,7 +209,7 @@ class _HomeShellState extends State<HomeShell> {
                   key: _mapKey,
                   icon: Image.asset('lib/assets/icone/Misc/Map.png', width: 32, height: 32),
                   selectedIcon: Image.asset('lib/assets/icone/Misc/Map.png', width: 32, height: 32),
-                  label: AppLocalizations.of(context)!.cartography ?? AppLocalizations.of(context)!.maps, // Fallback
+                  label: AppLocalizations.of(context)!.cartography,
                 ),
               ],
             )

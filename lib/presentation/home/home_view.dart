@@ -118,7 +118,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                           decoration: BoxDecoration(
                             color: AppColors.surfaceSecondary,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppColors.highlight.withOpacity(0.5)),
+                            border: Border.all(color: AppColors.highlight.withValues(alpha: 0.5)),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,

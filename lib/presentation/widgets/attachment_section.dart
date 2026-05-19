@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:dnd/l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
-import '../../core/theme/app_radius.dart';
 import '../../features/notes/domain/models/attachment.dart';
 import 'dnd_card.dart';
 

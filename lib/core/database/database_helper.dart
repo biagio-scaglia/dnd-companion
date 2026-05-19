@@ -3,7 +3,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
-import '../../features/compendium/domain/models/compendium_item.dart';
 
 class DatabaseHelper {
   static const _databaseName = "dnd_companion.db";
@@ -46,9 +45,9 @@ class DatabaseHelper {
     try {
       final db = await database;
       await db.rawQuery('PRAGMA wal_checkpoint(FULL);');
-      print('SQLite Checkpoint FULL completato con successo.');
+      debugPrint('SQLite Checkpoint FULL completato con successo.');
     } catch (e) {
-      print('Errore durante PRAGMA wal_checkpoint: $e');
+      debugPrint('Errore durante PRAGMA wal_checkpoint: $e');
     }
   }
 
@@ -57,7 +56,7 @@ class DatabaseHelper {
     if (_database != null) {
       await _database!.close();
       _database = null;
-      print('Connessione al database SQLite chiusa.');
+      debugPrint('Connessione al database SQLite chiusa.');
     }
   }
 

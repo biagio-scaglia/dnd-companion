@@ -3,9 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dnd/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../core/theme/app_radius.dart';
 import '../../../../presentation/widgets/dnd_card.dart';
-import '../../../../presentation/widgets/dnd_mystic_icon_circle.dart';
 import '../../../../presentation/widgets/dnd_chip.dart';
 import '../../domain/models/compendium_item.dart';
 

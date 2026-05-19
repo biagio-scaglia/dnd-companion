@@ -22,7 +22,7 @@ class AppStrings {
       'no_content': 'Nessun contenuto ancora',
       'add_content': 'Aggiungi note, sessioni o personaggi dalla tab Appunti',
       'empty_loot': 'Tocca "Genera" per un bottino',
-      'empty_roll': 'Tocca un dado per l'lancio',
+      'empty_roll': "Tocca un dado per l'lancio",
     },
     'en': {
       'app_title': 'VELLUM',
