@@ -86,24 +86,28 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
     
     if (!mounted) return;
 
-    // Controlla se i dati sono stati caricati
+    // BUG FIX 4: timeout massimo 8s — se isLoading non termina, naviga comunque
+    // Evita freeze/ANR infinito se il repository non si inizializza mai
     final notesController = Provider.of<NotesController>(context, listen: false);
     
     if (!notesController.isLoading) {
       _navigateToHome();
     } else {
-      // Se sta ancora caricando, riprova tra 200ms
-      _waitForLoading(notesController);
+      _waitForLoading(notesController, deadline: DateTime.now().add(const Duration(seconds: 8)));
     }
   }
 
-  void _waitForLoading(NotesController controller) {
+  void _waitForLoading(NotesController controller, {required DateTime deadline}) {
     Future.delayed(const Duration(milliseconds: 200), () {
       if (!mounted) return;
-      if (!controller.isLoading) {
+      // Se i dati sono pronti OPPURE abbiamo superato il timeout → naviga
+      if (!controller.isLoading || DateTime.now().isAfter(deadline)) {
+        if (DateTime.now().isAfter(deadline)) {
+          debugPrint('⚠️ [Splash] Timeout scattato, navigazione forzata alla Home.');
+        }
         _navigateToHome();
       } else {
-        _waitForLoading(controller);
+        _waitForLoading(controller, deadline: deadline);
       }
     });
   }

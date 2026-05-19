@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import '../../features/compendium/domain/models/compendium_item.dart';
 
 class DatabaseHelper {
@@ -69,12 +70,39 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     final documentsDirectory = await getApplicationDocumentsDirectory();
     final path = join(documentsDirectory.path, _databaseName);
-    return await openDatabase(
-      path,
-      version: _databaseVersion,
-      onCreate: _onCreate,
-      onUpgrade: _onUpgrade,
-    );
+    try {
+      return await openDatabase(
+        path,
+        version: _databaseVersion,
+        onCreate: _onCreate,
+        onUpgrade: _onUpgrade,
+      );
+    } catch (e) {
+      // BUG FIX 7: DB corrotto → cancella e ricrea pulito
+      debugPrint('🔴 [DB] Database corrotto o incompatibile: $e');
+      debugPrint('🔄 [DB] Tentativo di recovery: cancellazione e ricreazione...');
+      try {
+        final dbFile = File(path);
+        if (await dbFile.exists()) {
+          await dbFile.delete();
+          debugPrint('✅ [DB] File DB corrotto cancellato.');
+        }
+        // Cancella anche i file WAL e SHM se presenti
+        final walFile = File('$path-wal');
+        final shmFile = File('$path-shm');
+        if (await walFile.exists()) await walFile.delete();
+        if (await shmFile.exists()) await shmFile.delete();
+      } catch (deleteError) {
+        debugPrint('⚠️ [DB] Impossibile cancellare DB: $deleteError');
+      }
+      // Secondo tentativo dopo il recovery
+      return await openDatabase(
+        path,
+        version: _databaseVersion,
+        onCreate: _onCreate,
+        onUpgrade: _onUpgrade,
+      );
+    }
   }
 
   Future _onCreate(Database db, int version) async {

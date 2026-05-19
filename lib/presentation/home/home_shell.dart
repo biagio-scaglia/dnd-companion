@@ -27,10 +27,12 @@ class _HomeShellState extends State<HomeShell> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
-    AppNavigation.instance.currentTab.addListener(_onTabChanged);
-    AppNavigation.instance.currentTab.addListener(_onTabChanged);
-    _requestPermissions();
-    _checkGuide();
+    AppNavigation.instance.currentTab.addListener(_onTabChanged); // BUG FIX 5: rimosso il doppio addListener
+    // BUG FIX 5: delay permessi al post-frame per non bloccare il mount iniziale
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 500), _requestPermissions);
+      _checkGuide();
+    });
   }
 
   Future<void> _checkGuide() async {
@@ -61,10 +63,14 @@ class _HomeShellState extends State<HomeShell> {
 
   Future<void> _requestPermissions() async {
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      await [
-        Permission.storage,
-        Permission.photos,
-      ].request();
+      try {
+        await [
+          Permission.storage,
+          Permission.photos,
+        ].request();
+      } catch (e) {
+        debugPrint('⚠️ [HomeShell] Errore richiesta permessi: $e');
+      }
     }
   }
 
