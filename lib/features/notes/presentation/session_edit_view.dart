@@ -116,7 +116,9 @@ class _SessionEditViewState extends State<SessionEditView> {
               surface: AppColors.surface,
               onSurface: AppColors.textPrimary,
             ),
-            dialogBackgroundColor: AppColors.surface,
+            datePickerTheme: const DatePickerThemeData(
+              backgroundColor: AppColors.surface,
+            ),
           ),
           child: child!,
         );
@@ -183,13 +185,14 @@ class _SessionEditViewState extends State<SessionEditView> {
                   updatedAt: DateTime.now(),
                 );
 
+                final navigator = Navigator.of(context);
                 if (widget.session != null) {
                   await notesController.updateSession(session);
                 } else {
                   await notesController.createSession(session);
                 }
                 
-                if (mounted) Navigator.pop(context);
+                if (mounted) navigator.pop();
               }
             },
           ),
@@ -245,7 +248,7 @@ class _SessionEditViewState extends State<SessionEditView> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<SessionStatus>(
-              value: _status,
+              initialValue: _status,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.status,
                 labelStyle: const TextStyle(color: AppColors.textSecondary),
@@ -270,14 +273,14 @@ class _SessionEditViewState extends State<SessionEditView> {
                 Switch(
                   value: _isImportant,
                   onChanged: (val) => setState(() => _isImportant = val),
-                  activeColor: AppColors.magicAccent,
+                  activeThumbColor: AppColors.magicAccent,
                 ),
                 const Spacer(),
                 Text(AppLocalizations.of(context)!.pinned, style: const TextStyle(color: AppColors.textPrimary)),
                 Switch(
                   value: _isPinned,
                   onChanged: (val) => setState(() => _isPinned = val),
-                  activeColor: AppColors.highlight,
+                  activeThumbColor: AppColors.highlight,
                 ),
               ],
             ),
@@ -413,11 +416,13 @@ class _SessionEditViewState extends State<SessionEditView> {
                 linkedEntityType: 'session',
               ),
               onDelete: (attachment) async {
+                final messenger = ScaffoldMessenger.of(context);
+                final l10n = AppLocalizations.of(context)!;
                 await notesController.deleteAttachment(attachment.id);
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  messenger.showSnackBar(
                     SnackBar(
-                      content: Text(AppLocalizations.of(context)!.attachmentDeleted, style: const TextStyle(color: AppColors.textPrimary)),
+                      content: Text(l10n.attachmentDeleted, style: const TextStyle(color: AppColors.textPrimary)),
                       backgroundColor: AppColors.surfaceSecondary,
                       duration: const Duration(seconds: 2),
                     ),

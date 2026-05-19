@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flame/components.dart';
 import '../../domain/models/map_element.dart';
@@ -6,7 +5,7 @@ import '../../domain/models/map_tile_type.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../map_editor_game.dart';
 
-class TileComponent extends PositionComponent with HasGameRef<MapEditorGame> {
+class TileComponent extends PositionComponent with HasGameReference<MapEditorGame> {
   final MapElement element;
   final double tileSize;
 
@@ -34,7 +33,7 @@ class TileComponent extends PositionComponent with HasGameRef<MapEditorGame> {
             position: Vector2(tileSize / 2, tileSize / 2),
           ));
         } catch (e) {
-          print('Errore caricamento icona mappa: $e');
+          debugPrint('Errore caricamento icona mappa: $e');
           // Fallback su testo se l'immagine fallisce
           add(TextComponent(
             text: '?',

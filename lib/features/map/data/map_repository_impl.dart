@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/models/game_map.dart';
 import '../domain/repositories/map_repository.dart';
@@ -19,7 +20,7 @@ class MapRepositoryImpl implements MapRepository {
         final List<dynamic> decoded = jsonDecode(jsonStr);
         _cachedMaps = decoded.map((e) => GameMap.fromJson(e)).toList();
       } catch (e) {
-        print('Error decoding maps: $e');
+        debugPrint('Error decoding maps: $e');
         _cachedMaps = [];
       }
     }

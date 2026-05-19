@@ -338,30 +338,5 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       ),
     ),
   ));
-}
-
-Widget _buildLanguageButton(BuildContext context, String label, bool isSelected, VoidCallback onTap) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: isSelected ? AppColors.highlight.withValues(alpha: 0.2) : AppColors.surfaceSecondary,
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: isSelected ? AppColors.highlight : AppColors.surfaceSecondary,
-          width: 1,
-        ),
-      ),
-      child: Text(
-        label,
-        style: AppTypography.label.copyWith(
-          color: isSelected ? AppColors.highlight : AppColors.textSecondary,
-          fontSize: 12,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-        ),
-      ),
-    ),
-  );
-}
+  }
 }

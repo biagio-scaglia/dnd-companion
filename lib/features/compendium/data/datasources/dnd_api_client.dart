@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:http/http.dart' as http;
 import '../../domain/models/compendium_item.dart';
 
@@ -16,7 +17,7 @@ class DndApiClient {
         
         // Se il backend sta ancora sincronizzando
         if (data is Map && data['status'] == 'syncing') {
-          print('Backend in fase di sincronizzazione. Riprova tra poco.');
+          debugPrint('Backend in fase di sincronizzazione. Riprova tra poco.');
         } else {
           final items = data['items'] as List<dynamic>? ?? [];
           for (var r in items) {
@@ -41,52 +42,11 @@ class DndApiClient {
 
       // Rimosso fetchClassesAndRacesRest perché ora arrivano dal backend!
     } catch (e) {
-      print('Errore fetch REST all items: $e');
+      debugPrint('Errore fetch REST all items: $e');
     }
+
 
     return allItems;
-  }
-
-  Future<void> _fetchClassesAndRacesRest(List<CompendiumItem> allItems) async {
-    try {
-      // 4. Classes
-      final classesResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/classes'));
-      if (classesResp.statusCode == 200) {
-        final data = json.decode(classesResp.body);
-        final results = data['results'] as List<dynamic>? ?? [];
-        
-        for (var r in results) {
-          allItems.add(CompendiumItem(
-            id: r['index'],
-            name: r['name'],
-            type: CompendiumItemType.characterClass,
-            shortDescription: '__TAP_TO_LOAD_DETAILS__',
-            description: '__TAP_TO_LOAD_DETAILS__',
-            metaInfo: 'Classe',
-          ));
-        }
-      }
-
-      // 5. Races
-      final racesResp = await _get(Uri.parse('https://www.dnd5eapi.co/api/races'));
-      if (racesResp.statusCode == 200) {
-        final data = json.decode(racesResp.body);
-        final results = data['results'] as List<dynamic>? ?? [];
-        
-        for (var r in results) {
-          allItems.add(CompendiumItem(
-            id: r['index'],
-            name: r['name'],
-            type: CompendiumItemType.race,
-            shortDescription: '__TAP_TO_LOAD_DETAILS__',
-            description: '__TAP_TO_LOAD_DETAILS__',
-            metaInfo: 'Razza',
-          ));
-        }
-      }
-    } catch (e) {
-      print('Errore fetch classi/razze: $e');
-    }
   }
 
   Future<Map<String, String>> fetchItemDescription(CompendiumItemType type, String id) async {
@@ -133,8 +93,11 @@ class DndApiClient {
         metaInfo = 'Razza';
       } else {
         if (data['desc'] != null) {
-          if (data['desc'] is List) description = (data['desc'] as List).join('\n\n');
-          else description = data['desc'].toString();
+          if (data['desc'] is List) {
+            description = (data['desc'] as List).join('\n\n');
+          } else {
+            description = data['desc'].toString();
+          }
         } else {
           description = 'Nessuna descrizione dettagliata trovata.';
         }
@@ -274,10 +237,6 @@ class DndApiClient {
 
   Future<http.Response> _get(Uri url) {
     return http.get(url).timeout(const Duration(seconds: 10));
-  }
-
-  Future<http.Response> _post(Uri url, {Map<String, String>? headers, Object? body}) {
-    return http.post(url, headers: headers, body: body).timeout(const Duration(seconds: 10));
   }
 }
 

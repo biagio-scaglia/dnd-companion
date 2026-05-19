@@ -1,5 +1,4 @@
 import 'package:flame/game.dart';
-import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
@@ -53,6 +52,9 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
   }
 
   Future<void> _captureAndSaveImage() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
     try {
       // 1. Richiedi permessi (su mobile)
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
@@ -63,8 +65,8 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
           final result = await [Permission.storage, Permission.photos].request();
           if (result[Permission.storage] != PermissionStatus.granted && 
               result[Permission.photos] != PermissionStatus.granted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.of(context)!.storagePermissionDenied)),
+            messenger.showSnackBar(
+              SnackBar(content: Text(l10n.storagePermissionDenied)),
             );
             return;
           }
@@ -79,8 +81,8 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
 
       // 3. Salva nel dispositivo
       if (kIsWeb) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.webSaveNotImplemented)),
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.webSaveNotImplemented)),
         );
       } else {
         // Su mobile salviamo nella galleria usando image_gallery_saver_plus
@@ -91,18 +93,18 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
         );
         
         if (result != null && result['isSuccess'] == true) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context)!.mapSavedToGallery)),
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.mapSavedToGallery)),
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context)!.saveError)),
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.saveError)),
           );
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${AppLocalizations.of(context)!.errorPrefix}: $e')),
+      messenger.showSnackBar(
+        SnackBar(content: Text('${l10n.errorPrefix}: $e')),
       );
     }
   }

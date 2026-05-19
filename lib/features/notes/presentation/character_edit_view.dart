@@ -131,13 +131,14 @@ class _CharacterEditViewState extends State<CharacterEditView> {
                   updatedAt: DateTime.now(),
                 );
 
+                final navigator = Navigator.of(context);
                 if (widget.character != null) {
                   await notesController.updateCharacter(character);
                 } else {
                   await notesController.createCharacter(character);
                 }
                 
-                if (mounted) Navigator.pop(context);
+                if (mounted) navigator.pop();
               }
             },
           ),
@@ -207,7 +208,7 @@ class _CharacterEditViewState extends State<CharacterEditView> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<CharacterStatus>(
-              value: _status,
+              initialValue: _status,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.statusLabel,
                 labelStyle: const TextStyle(color: AppColors.textSecondary),
@@ -345,11 +346,13 @@ class _CharacterEditViewState extends State<CharacterEditView> {
                 linkedEntityType: 'character',
               ),
               onDelete: (attachment) async {
+                final messenger = ScaffoldMessenger.of(context);
+                final l10n = AppLocalizations.of(context)!;
                 await notesController.deleteAttachment(attachment.id);
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  messenger.showSnackBar(
                     SnackBar(
-                      content: Text(AppLocalizations.of(context)!.attachmentDeleted, style: const TextStyle(color: AppColors.textPrimary)),
+                      content: Text(l10n.attachmentDeleted, style: const TextStyle(color: AppColors.textPrimary)),
                       backgroundColor: AppColors.surfaceSecondary,
                       duration: const Duration(seconds: 2),
                     ),

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
@@ -33,7 +34,7 @@ class StorageService {
         await file.delete();
       }
     } catch (e) {
-      print('Errore durante l\'eliminazione del file: $e');
+      debugPrint('Errore durante l\'eliminazione del file: $e');
     }
   }
 

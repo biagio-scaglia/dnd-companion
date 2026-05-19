@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show debugPrint;
 
 class FilePickerService {
   /// Permette di selezionare un file generico o con estensioni specifiche.
@@ -14,7 +15,7 @@ class FilePickerService {
         return File(result.files.single.path!);
       }
     } catch (e) {
-      print('Errore durante la selezione del file: $e');
+      debugPrint('Errore durante la selezione del file: $e');
     }
     return null;
   }
@@ -30,7 +31,7 @@ class FilePickerService {
         return File(result.files.single.path!);
       }
     } catch (e) {
-      print('Errore durante la selezione dell\'immagine: $e');
+      debugPrint('Errore durante la selezione dell\'immagine: $e');
     }
     return null;
   }

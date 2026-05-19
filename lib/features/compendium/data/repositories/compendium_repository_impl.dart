@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show debugPrint;
 import '../../../../core/database/database_helper.dart';
 import '../../domain/models/compendium_filter.dart';
 import '../../domain/models/compendium_item.dart';
@@ -46,10 +47,10 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
         await _dbHelper.setLastSync('classes', now);
         await _dbHelper.setLastSync('races', now);
       } else {
-        print('Cache valida, salto il sync.');
+        debugPrint('Cache valida, salto il sync.');
       }
     } catch (e) {
-      print('Errore durante la sincronizzazione con l\'API: $e');
+      debugPrint('Errore durante la sincronizzazione con l\'API: $e');
       // In offline-first, l'errore di sync viene ignorato e usiamo la cache
     }
   }

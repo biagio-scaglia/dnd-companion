@@ -135,7 +135,7 @@ class CompendiumItemCard extends StatelessWidget {
                   ),
                   child: imagePath != null 
                       ? SvgPicture.asset(
-                          imagePath!,
+                          imagePath,
                           fit: BoxFit.contain,
                           colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                           errorBuilder: (context, error, stackTrace) => Icon(typeIcon ?? Icons.help_outline, color: Colors.white, size: 20),
@@ -196,7 +196,7 @@ class CompendiumItemCard extends StatelessWidget {
               if (hpMatch != null) {
                 final beforeHp = hpMatch.group(1)!.trim();
                 final hpValue = hpMatch.group(2)!;
-                final acValue = acMatch != null ? acMatch.group(1)! : null;
+                final acValue = acMatch?.group(1);
                 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,7 +216,7 @@ class CompendiumItemCard extends StatelessWidget {
                         const Icon(Icons.favorite_rounded, color: AppColors.danger, size: 14),
                         const SizedBox(width: 4),
                         Text(
-                          '$hpValue',
+                          hpValue,
                           style: AppTypography.bodySmall.copyWith(
                             color: AppColors.danger,
                             fontWeight: FontWeight.bold,
@@ -227,7 +227,7 @@ class CompendiumItemCard extends StatelessWidget {
                           const Icon(Icons.shield_rounded, color: AppColors.highlight, size: 14),
                           const SizedBox(width: 4),
                           Text(
-                            '$acValue',
+                            acValue,
                             style: AppTypography.bodySmall.copyWith(
                               color: AppColors.highlight,
                               fontWeight: FontWeight.bold,

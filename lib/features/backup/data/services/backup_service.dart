@@ -42,10 +42,10 @@ class BackupService {
         if (await dbFile.exists()) {
           final dbBytes = await dbFile.readAsBytes();
           archive.addFile(ArchiveFile('dnd_companion.db', dbBytes.length, dbBytes));
-          print('Database SQLite inserito nel backup.');
+          debugPrint('Database SQLite inserito nel backup.');
         }
       } catch (e) {
-        print('Errore durante copia SQLite per backup: $e');
+        debugPrint('Errore durante copia SQLite per backup: $e');
       }
     }
 
@@ -56,10 +56,10 @@ class BackupService {
       if (mapsData != null) {
         final mapsBytes = utf8.encode(mapsData);
         archive.addFile(ArchiveFile('maps.json', mapsBytes.length, mapsBytes));
-        print('Mappe inserite nel backup.');
+        debugPrint('Mappe inserite nel backup.');
       }
     } catch (e) {
-      print('Errore durante export mappe: $e');
+      debugPrint('Errore durante export mappe: $e');
     }
 
     // 2. Copia gli allegati (se possibile)
@@ -77,7 +77,7 @@ class BackupService {
         }
       }
     } catch (e) {
-      print('Info: Impossibile leggere allegati su questa piattaforma: $e');
+      debugPrint('Info: Impossibile leggere allegati su questa piattaforma: $e');
     }
 
     // 3. Crea il manifest
@@ -101,9 +101,6 @@ class BackupService {
     // 4. Crea lo ZIP
     final encoder = ZipEncoder();
     final zipBytes = encoder.encode(archive);
-    if (zipBytes == null) {
-      throw Exception('Failed to encode ZIP archive');
-    }
     return zipBytes;
   }
 
@@ -210,7 +207,7 @@ class BackupService {
             await dbHelper.closeDatabase(); // Chiudi connessione attiva!
             final dbPath = await dbHelper.getDatabasePath();
             await tempDbFile.copy(dbPath);
-            print('Database SQLite ripristinato con successo.');
+            debugPrint('Database SQLite ripristinato con successo.');
           }
         }
         
@@ -221,10 +218,10 @@ class BackupService {
             final mapsData = await tempMapsFile.readAsString();
             final prefs = await SharedPreferences.getInstance();
             await prefs.setString('dnd_maps_data', mapsData);
-            print('Mappe ripristinate con successo.');
+            debugPrint('Mappe ripristinate con successo.');
           }
         } catch (e) {
-          print('Errore ripristino mappe in overwrite: $e');
+          debugPrint('Errore ripristino mappe in overwrite: $e');
         }
         
         // Sostituisci allegati
@@ -280,10 +277,10 @@ class BackupService {
               }
             }
             await prefs.setString('dnd_maps_data', jsonEncode(currentMaps));
-            print('Mappe unite con successo.');
+            debugPrint('Mappe unite con successo.');
           }
         } catch (e) {
-          print('Errore unione mappe: $e');
+          debugPrint('Errore unione mappe: $e');
         }
 
         // Copia allegati non esistenti
@@ -348,7 +345,7 @@ class BackupService {
             await dbHelper.closeDatabase(); // Chiudi connessione attiva!
             final dbPath = await dbHelper.getDatabasePath();
             await File(dbPath).writeAsBytes(dbFileInArchive.content as List<int>);
-            print('Database SQLite ripristinato dai bytes con successo.');
+            debugPrint('Database SQLite ripristinato dai bytes con successo.');
           }
         }
         
@@ -359,10 +356,10 @@ class BackupService {
             final mapsData = utf8.decode(mapsFileInArchive.content);
             final prefs = await SharedPreferences.getInstance();
             await prefs.setString('dnd_maps_data', mapsData);
-            print('Mappe ripristinate dai bytes con successo.');
+            debugPrint('Mappe ripristinate dai bytes con successo.');
           }
         } catch (e) {
-          print('Errore ripristino mappe dai bytes: $e');
+          debugPrint('Errore ripristino mappe dai bytes: $e');
         }
         
         // Sostituisci allegati
@@ -416,10 +413,10 @@ class BackupService {
               }
             }
             await prefs.setString('dnd_maps_data', jsonEncode(currentMaps));
-            print('Mappe unite dai bytes con successo.');
+            debugPrint('Mappe unite dai bytes con successo.');
           }
         } catch (e) {
-          print('Errore unione mappe dai bytes: $e');
+          debugPrint('Errore unione mappe dai bytes: $e');
         }
 
         // Unisci allegati (sovrascrive se duplicati)

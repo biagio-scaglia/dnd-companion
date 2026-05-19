@@ -35,7 +35,7 @@ class _AddCustomItemDialogState extends State<AddCustomItemDialog> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<CompendiumItemType>(
-                value: _type,
+                initialValue: _type,
                 decoration: InputDecoration(labelText: l10n.category),
                 items: [
                   DropdownMenuItem(value: CompendiumItemType.item, child: Text(l10n.item)),

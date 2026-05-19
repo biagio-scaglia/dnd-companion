@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/models/settings_model.dart';
 import '../domain/repositories/settings_repository.dart';
@@ -14,7 +15,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       try {
         return SettingsModel.fromJson(jsonDecode(jsonStr));
       } catch (e) {
-        print('Errore parsing settings: $e');
+        debugPrint('Errore parsing settings: $e');
       }
     }
     return SettingsModel(); // Default

@@ -242,7 +242,7 @@ class SettingsView extends StatelessWidget {
                           const Divider(height: 24),
                            _actionRow(context, null, l10n.restoreData, () async {
                             await backupController.pickAndPreviewBackup();
-                            if (backupController.preview != null) {
+                            if (context.mounted && backupController.preview != null) {
                               _showImportOptionsDialog(context, backupController);
                             }
                           }, imagePath: 'lib/assets/icone/Misc/Crate.png'),

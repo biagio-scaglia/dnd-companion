@@ -17,11 +17,7 @@ class ArchiveService {
 
     final encoder = ZipEncoder();
     final zipBytes = encoder.encode(archive);
-    if (zipBytes != null) {
-      await outputFile.writeAsBytes(zipBytes);
-    } else {
-      throw Exception('Failed to encode ZIP archive');
-    }
+    await outputFile.writeAsBytes(zipBytes);
   }
 
   /// Estrae un archivio ZIP in una directory target.

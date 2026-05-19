@@ -76,7 +76,7 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
         setState(() {
           _isLoadingDesc = false;
         });
-        print('Errore fetch dettaglio: $e');
+        debugPrint('Errore fetch dettaglio: $e');
       }
     }
   }
@@ -195,7 +195,7 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: imagePath != null
-                          ? (imagePath!.endsWith('.svg')
+                          ? (imagePath.endsWith('.svg')
                               ? SvgPicture.asset(
                                   imagePath,
                                   fit: BoxFit.contain,
@@ -241,7 +241,7 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: typeColor.withOpacity(0.15),
+                            color: typeColor.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(

@@ -45,7 +45,7 @@ class CompendiumController extends ChangeNotifier {
       await _fetchItemsSilently();
       _state = CompendiumState.loaded;
     } catch (e) {
-      print('Errore sync in background: $e');
+      debugPrint('Errore sync in background: $e');
       if (_items.isEmpty) {
         _state = CompendiumState.hardError;
       } else {
@@ -123,7 +123,7 @@ class CompendiumController extends ChangeNotifier {
       await _fetchItemsSilently();
       _state = CompendiumState.loaded;
     } catch (e) {
-      print('Errore durante il refresh: $e');
+      debugPrint('Errore durante il refresh: $e');
       _state = CompendiumState.showingCached;
     } finally {
       notifyListeners();
@@ -149,7 +149,7 @@ class CompendiumController extends ChangeNotifier {
     try {
       _items = await repository.fetchItems(_filter);
     } catch (e) {
-      print('Errore fetch items da controller: $e');
+      debugPrint('Errore fetch items da controller: $e');
       _items = [];
     }
   }
@@ -162,7 +162,7 @@ class CompendiumController extends ChangeNotifier {
       await repository.addCustomItem(item);
       await _fetchItems();
     } catch (e) {
-      print('Errore aggiunta elemento custom: $e');
+      debugPrint('Errore aggiunta elemento custom: $e');
       _state = CompendiumState.hardError;
     } finally {
       if (_state != CompendiumState.hardError) {

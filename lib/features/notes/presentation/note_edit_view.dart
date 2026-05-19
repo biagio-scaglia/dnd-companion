@@ -66,6 +66,8 @@ class _NoteEditViewState extends State<NoteEditView> {
                     .where((e) => e.isNotEmpty)
                     .toList();
 
+                final navigator = Navigator.of(context);
+
                 if (widget.note == null) {
                   final note = Note(
                     id: _noteId,
@@ -91,7 +93,7 @@ class _NoteEditViewState extends State<NoteEditView> {
                   await notesController.repository.updateNote(updatedNote);
                   await notesController.loadData();
                 }
-                if (mounted) Navigator.pop(context);
+                if (mounted) navigator.pop();
               }
             },
           ),
@@ -172,14 +174,14 @@ class _NoteEditViewState extends State<NoteEditView> {
                   _isImportant = value;
                 });
               },
-              activeColor: AppColors.magicAccent,
+              activeThumbColor: AppColors.magicAccent,
               contentPadding: EdgeInsets.zero,
             ),
             const SizedBox(height: 24),
             Text(AppLocalizations.of(context)!.linkToSession, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _selectedSessionId != null && sessions.any((s) => s.id == _selectedSessionId) ? _selectedSessionId : null,
+              initialValue: _selectedSessionId != null && sessions.any((s) => s.id == _selectedSessionId) ? _selectedSessionId : null,
               dropdownColor: AppColors.surface,
               style: const TextStyle(color: AppColors.textPrimary),
               decoration: const InputDecoration(
@@ -212,11 +214,13 @@ class _NoteEditViewState extends State<NoteEditView> {
                 linkedEntityType: 'note',
               ),
               onDelete: (attachment) async {
+                final messenger = ScaffoldMessenger.of(context);
+                final l10n = AppLocalizations.of(context)!;
                 await notesController.deleteAttachment(attachment.id);
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  messenger.showSnackBar(
                     SnackBar(
-                      content: Text(AppLocalizations.of(context)!.attachmentDeleted, style: const TextStyle(color: AppColors.textPrimary)),
+                      content: Text(l10n.attachmentDeleted, style: const TextStyle(color: AppColors.textPrimary)),
                       backgroundColor: AppColors.surfaceSecondary,
                       duration: const Duration(seconds: 2),
                     ),
@@ -228,8 +232,9 @@ class _NoteEditViewState extends State<NoteEditView> {
             if (widget.note != null) ...[
               TextButton.icon(
                 onPressed: () async {
+                  final navigator = Navigator.of(context);
                   await notesController.deleteNote(widget.note!.id);
-                  if (mounted) Navigator.pop(context);
+                  if (mounted) navigator.pop();
                 },
                 icon: const Icon(Icons.delete_rounded, color: Colors.red),
                 label: Text(AppLocalizations.of(context)!.deleteNote, style: const TextStyle(color: Colors.red)),
