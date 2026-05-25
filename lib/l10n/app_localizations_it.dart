@@ -948,4 +948,28 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get tileBarrel => 'Barile';
+
+  @override
+  String get support => 'Supporto e Aiuto';
+
+  @override
+  String get rateVellum => 'Valuta Vellum';
+
+  @override
+  String get sendFeedback => 'Segnala Bug e Feedback';
+
+  @override
+  String get showTutorial => 'Mostra Guida Interattiva';
+
+  @override
+  String get positiveMomentRoll20 =>
+      'Un 20 naturale! Gli dei ti assistono! Ti andrebbe di valutare Vellum?';
+
+  @override
+  String get feedbackSubject => 'Feedback e Segnalazione Bug Vellum';
+
+  @override
+  String feedbackBody(String osVersion, String device) {
+    return 'Ciao Sviluppatore,\n\nEcco il mio feedback/segnalazione di bug:\n[Scrivi qui]\n\n---\nDettagli Sistema:\nVersione App: 1.0.0 (Build 4)\nVersione OS: $osVersion\nDispositivo: $device';
+  }
 }

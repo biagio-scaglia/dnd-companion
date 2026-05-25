@@ -88,6 +88,10 @@ class AppTheme {
           borderRadius: AppRadius.mBorderRadius,
           borderSide: BorderSide(color: primaryColor, width: 1.5),
         ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: AppRadius.mBorderRadius,
+          borderSide: BorderSide(color: AppColors.surfaceSecondary.withValues(alpha: 0.5), width: 1.5),
+        ),
         errorBorder: OutlineInputBorder(
           borderRadius: AppRadius.mBorderRadius,
           borderSide: const BorderSide(color: AppColors.danger, width: 1.5),
@@ -103,6 +107,8 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
           foregroundColor: AppColors.background,
+          disabledBackgroundColor: AppColors.surfaceSecondary,
+          disabledForegroundColor: AppColors.textMuted,
           textStyle: const TextStyle(fontFamily: 'Cinzel', fontWeight: FontWeight.bold, fontSize: 13),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.mBorderRadius),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -114,6 +120,7 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: primaryColor,
+          disabledForegroundColor: AppColors.textMuted.withValues(alpha: 0.5),
           textStyle: const TextStyle(fontFamily: 'Cinzel', fontWeight: FontWeight.bold, fontSize: 13),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.mBorderRadius),
         ),

@@ -96,6 +96,16 @@ class DndCompanionApp extends StatelessWidget {
           locale: Locale(settingsController.settings.locale),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
+          localeResolutionCallback: (locale, supportedLocales) {
+            if (locale != null) {
+              for (var supportedLocale in supportedLocales) {
+                if (supportedLocale.languageCode == locale.languageCode) {
+                  return supportedLocale;
+                }
+              }
+            }
+            return const Locale('en');
+          },
           home: const SplashView(),
           // Failsafe builder: impedisce schermata bianca se un widget crasha
           builder: (context, child) {

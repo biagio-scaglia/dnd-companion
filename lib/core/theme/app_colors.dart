@@ -8,7 +8,8 @@ class AppColors {
 
   // Text (Parchment White)
   static const Color textPrimary = Color(0xFFF4F1E8);
-  static const Color textSecondary = Color(0xFFB7B2A5);
+  static const Color textSecondary = Color(0xFFD4CFC5);
+  static const Color textMuted = Color(0xFF9E988A);
 
   // Accents (Giallo e Oro Luminosi)
   static const Color magicAccent = Color(0xFFFFD54F); // Giallo ambra acceso

@@ -14,7 +14,7 @@ class SettingsModel {
     this.hapticFeedback = true,
     this.confirmDestructiveActions = true,
     this.compactMode = false,
-    this.locale = 'it',
+    this.locale = 'en',
   });
 
   SettingsModel copyWith({
@@ -57,7 +57,7 @@ class SettingsModel {
       hapticFeedback: json['hapticFeedback'] ?? true,
       confirmDestructiveActions: json['confirmDestructiveActions'] ?? true,
       compactMode: json['compactMode'] ?? false,
-      locale: json['locale'] ?? 'it',
+      locale: json['locale'] ?? 'en',
     );
   }
 }

@@ -325,5 +325,22 @@
   "tileStairsDown": "Stairs Down",
   "tileChest": "Chest",
   "tileTable": "Table",
-  "tileBarrel": "Barrel"
+  "tileBarrel": "Barrel",
+  "support": "Support & Help",
+  "rateVellum": "Rate Vellum",
+  "sendFeedback": "Report Bug & Feedback",
+  "showTutorial": "Show Interactive Guide",
+  "positiveMomentRoll20": "A natural 20! The gods favor you! Would you like to rate Vellum?",
+  "feedbackSubject": "Vellum Feedback & Bug Report",
+  "feedbackBody": "Hi Developer,\n\nHere is my feedback/bug report:\n[Write here]\n\n---\nSystem Details:\nApp Version: 1.0.0 (Build 4)\nOS Version: {osVersion}\nDevice: {device}",
+  "@feedbackBody": {
+    "placeholders": {
+      "osVersion": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

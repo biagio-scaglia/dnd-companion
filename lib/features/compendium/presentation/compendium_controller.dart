@@ -19,6 +19,7 @@ class CompendiumController extends ChangeNotifier {
   }
 
   Future<void> _initializeData() async {
+    debugPrint('🚀 [CompendiumController] Inizializzazione dati Compendio...');
     // 1. Carica subito i dati locali
     _state = CompendiumState.loadingFirstTime;
     notifyListeners();
@@ -147,7 +148,9 @@ class CompendiumController extends ChangeNotifier {
 
   Future<void> _fetchItemsSilently() async {
     try {
+      debugPrint('🔍 [CompendiumController] Eseguo fetch degli elementi con filtro: letter=${_filter.selectedLetter}, category=${_filter.selectedCategory}, favoritesOnly=${_filter.showOnlyFavorites}');
       _items = await repository.fetchItems(_filter);
+      debugPrint('✅ [CompendiumController] Fetch completato. Trovati ${_items.length} elementi.');
     } catch (e) {
       debugPrint('Errore fetch items da controller: $e');
       _items = [];

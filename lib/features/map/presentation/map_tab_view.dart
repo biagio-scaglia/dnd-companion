@@ -13,6 +13,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../presentation/widgets/dnd_loading_indicator.dart';
 import '../../../presentation/widgets/dnd_empty_state.dart';
 import 'controllers/map_editor_controller.dart';
+import '../../../core/services/review_service.dart';
 import '../game/map_editor_game.dart';
 import 'widgets/layer_panel.dart';
 import 'widgets/tile_palette.dart';
@@ -96,6 +97,8 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
           messenger.showSnackBar(
             SnackBar(content: Text(l10n.mapSavedToGallery)),
           );
+          // Increment positive events to trigger in-app review
+          ReviewService.incrementPositiveEvents(context);
         } else {
           messenger.showSnackBar(
             SnackBar(content: Text(l10n.saveError)),

@@ -11,9 +11,13 @@ import '../../../presentation/widgets/dnd_loading_indicator.dart';
 import '../../backup/presentation/backup_controller.dart';
 import '../../notes/presentation/notes_controller.dart';
 import 'settings_controller.dart';
+import '../../../core/services/review_service.dart';
+import '../../../core/services/feedback_service.dart';
+import '../../../core/utils/app_navigation.dart';
 
 class SettingsView extends StatelessWidget {
-  const SettingsView({super.key});
+  final VoidCallback? onShowGuide;
+  const SettingsView({super.key, this.onShowGuide});
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +154,37 @@ class SettingsView extends StatelessWidget {
                     _actionRow(context, null, l10n.cookiePolicy, () {
                       _showPolicyDialog(context, l10n.cookiePolicy, l10n.cookiePolicyContent);
                     }, imagePath: 'lib/assets/icone/Misc/Book 3.png'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.m),
+
+              DndSectionHeader(
+                title: l10n.support,
+                accentColor: AppColors.magicAccent,
+              ),
+              const SizedBox(height: AppSpacing.s),
+              DndCard(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _actionRow(context, null, l10n.rateVellum, () {
+                      ReviewService.requestReviewManually();
+                    }, imagePath: 'lib/assets/icone/Misc/Book 3.png'),
+                    const Divider(height: 24),
+                    _actionRow(context, null, l10n.sendFeedback, () {
+                      FeedbackService.sendFeedbackEmail(context);
+                    }, imagePath: 'lib/assets/icone/Misc/Scroll.png'),
+                    if (onShowGuide != null) ...[
+                      const Divider(height: 24),
+                      _actionRow(context, null, l10n.showTutorial, () {
+                        AppNavigation.instance.currentTab.value = 0;
+                        Future.delayed(const Duration(milliseconds: 300), () {
+                          onShowGuide!();
+                        });
+                      }, imagePath: 'lib/assets/icone/Misc/Map.png'),
+                    ],
                   ],
                 ),
               ),

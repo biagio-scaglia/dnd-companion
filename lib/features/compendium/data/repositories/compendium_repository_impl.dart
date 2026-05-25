@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:sqflite/sqflite.dart';
 import '../../../../core/database/database_helper.dart';
 import '../../domain/models/compendium_filter.dart';
 import '../../domain/models/compendium_item.dart';
@@ -10,6 +11,9 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
 
   static const _ttlDays = 7;
+
+  // In-memory cache to make page filtering instantaneous and avoid database reads on each filter change
+  List<CompendiumItem>? _cachedItems;
 
   @override
   Future<void> syncWithApi() async {
@@ -29,29 +33,51 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
       final isStale = await _isStale('compendium_data', now, ttlMillis);
       
       if (force || isStale) {
+        debugPrint('Sync con API in corso...');
         final items = await _apiClient.fetchAllItems();
         
-        for (var item in items) {
-          final existing = await getItemById(item.id);
-          
-          final toInsert = existing != null 
-              ? item.copyWith(
-                  isFavorite: existing.isFavorite,
-                ) 
-              : item;
-              
-          await _dbHelper.insertItem(toInsert.toMap());
-        }
+        // 1. Carica tutti i record esistenti dal database una volta sola per velocizzare i controlli esistenti (O(1) lookup invece di O(N) query ripetute)
+        final maps = await _dbHelper.queryAllItems();
+        final existingItems = {
+          for (var m in maps) m['id'] as String: CompendiumItem.fromMap(m)
+        };
         
+        // 2. Utilizza una transazione ed un batch SQLite per caricare tutti gli elementi in pochissimi millisecondi invece di svariati secondi
+        final db = await _dbHelper.database;
+        await db.transaction((txn) async {
+          final batch = txn.batch();
+          
+          for (var item in items) {
+            final existing = existingItems[item.id];
+            
+            final toInsert = existing != null 
+                ? item.copyWith(
+                    isFavorite: existing.isFavorite,
+                  ) 
+                : item;
+                
+            batch.insert(
+              DatabaseHelper.tableCompendium,
+              toInsert.toMap(),
+              conflictAlgorithm: ConflictAlgorithm.replace,
+            );
+          }
+          
+          await batch.commit(noResult: true);
+        });
+
         await _dbHelper.setLastSync('compendium_data', now);
         await _dbHelper.setLastSync('classes', now);
         await _dbHelper.setLastSync('races', now);
+
+        // Svuota la cache in memoria per forzare il ricaricamento dei nuovi dati
+        _cachedItems = null;
+        debugPrint('Sync con API completato con successo. Inseriti ${items.length} elementi.');
       } else {
         debugPrint('Cache valida, salto il sync.');
       }
     } catch (e) {
       debugPrint('Errore durante la sincronizzazione con l\'API: $e');
-      // In offline-first, l'errore di sync viene ignorato e usiamo la cache
     }
   }
 
@@ -62,11 +88,17 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
   }
 
   @override
-
-  @override
   Future<List<CompendiumItem>> fetchItems(CompendiumFilter filter) async {
-    final maps = await _dbHelper.queryAllItems();
-    var results = maps.map((map) => CompendiumItem.fromMap(map)).toList();
+    List<CompendiumItem> allItems;
+    if (_cachedItems != null) {
+      allItems = _cachedItems!;
+    } else {
+      final maps = await _dbHelper.queryAllItems();
+      allItems = maps.map((map) => CompendiumItem.fromMap(map)).toList();
+      _cachedItems = allItems;
+    }
+
+    var results = List<CompendiumItem>.from(allItems);
 
     // Filtro per categoria
     if (filter.selectedCategory != null) {
@@ -97,27 +129,43 @@ class CompendiumRepositoryImpl implements CompendiumRepository {
     final updatedItem = item.copyWith(isFavorite: !item.isFavorite);
     await _dbHelper.updateItem(updatedItem.toMap());
 
+    // Aggiorna l'elemento direttamente nella cache in memoria
+    if (_cachedItems != null) {
+      final index = _cachedItems!.indexWhere((element) => element.id == id);
+      if (index != -1) {
+        _cachedItems![index] = updatedItem;
+      }
+    }
+
     return updatedItem;
   }
 
   @override
   Future<CompendiumItem?> getItemById(String id) async {
-    final maps = await _dbHelper.queryAllItems();
-    try {
-      final map = maps.firstWhere((element) => element['id'] == id);
-      return CompendiumItem.fromMap(map);
-    } catch (_) {
-      return null;
+    // Prova prima la cache in memoria
+    if (_cachedItems != null) {
+      try {
+        return _cachedItems!.firstWhere((element) => element.id == id);
+      } catch (_) {}
     }
+
+    // Altrimenti eseguiamo una query mirata a singola riga su SQLite
+    final map = await _dbHelper.queryItemById(id);
+    if (map != null) {
+      return CompendiumItem.fromMap(map);
+    }
+    return null;
   }
 
   @override
   Future<void> addCustomItem(CompendiumItem item) async {
-    // Generiamo un ID univoco se non lo ha (usiamo uuid, oppure datetime)
     final customItem = item.copyWith(
       id: item.id.isEmpty ? DateTime.now().millisecondsSinceEpoch.toString() : item.id,
       isCustom: true,
     );
     await _dbHelper.insertItem(customItem.toMap());
+    
+    // Invalida la cache in memoria per includere l'elemento personalizzato
+    _cachedItems = null;
   }
 }

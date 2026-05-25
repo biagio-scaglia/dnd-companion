@@ -323,5 +323,22 @@
   "tileStairsDown": "Scale Giù",
   "tileChest": "Forziere",
   "tileTable": "Tavolo",
-  "tileBarrel": "Barile"
+  "tileBarrel": "Barile",
+  "support": "Supporto e Aiuto",
+  "rateVellum": "Valuta Vellum",
+  "sendFeedback": "Segnala Bug e Feedback",
+  "showTutorial": "Mostra Guida Interattiva",
+  "positiveMomentRoll20": "Un 20 naturale! Gli dei ti assistono! Ti andrebbe di valutare Vellum?",
+  "feedbackSubject": "Feedback e Segnalazione Bug Vellum",
+  "feedbackBody": "Ciao Sviluppatore,\n\nEcco il mio feedback/segnalazione di bug:\n[Scrivi qui]\n\n---\nDettagli Sistema:\nVersione App: 1.0.0 (Build 4)\nVersione OS: {osVersion}\nDispositivo: {device}",
+  "@feedbackBody": {
+    "placeholders": {
+      "osVersion": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      }
+    }
+  }
 }

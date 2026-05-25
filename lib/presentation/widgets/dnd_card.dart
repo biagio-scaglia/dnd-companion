@@ -117,22 +117,56 @@ class DndCard extends StatelessWidget {
 
     final cardBgColor = bgColor ?? (isGlass ? AppColors.surface.withValues(alpha: 0.7) : AppColors.surface);
 
-    final Widget card = Container(
-      decoration: BoxDecoration(
-        color: gradient == null ? cardBgColor : null,
-        gradient: gradient != null
-            ? LinearGradient(
-                colors: gradient,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : null,
-        borderRadius: AppRadius.lBorderRadius,
-        border: gradientBorderColors == null ? Border.all(color: border, width: 1) : null,
-        boxShadow: shadows,
-      ),
-      child: content,
-    );
+    final Widget card;
+    if (onTap != null) {
+      card = Container(
+        decoration: BoxDecoration(
+          borderRadius: AppRadius.lBorderRadius,
+          boxShadow: shadows,
+        ),
+        child: Material(
+          color: gradient == null ? cardBgColor : Colors.transparent,
+          borderRadius: AppRadius.lBorderRadius,
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: AppRadius.lBorderRadius,
+            splashColor: (accentColor ?? AppColors.magicAccent).withValues(alpha: 0.15),
+            highlightColor: (accentColor ?? AppColors.magicAccent).withValues(alpha: 0.05),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: gradient != null
+                    ? LinearGradient(
+                        colors: gradient,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      )
+                    : null,
+                border: gradientBorderColors == null ? Border.all(color: border, width: 1) : null,
+              ),
+              child: content,
+            ),
+          ),
+        ),
+      );
+    } else {
+      card = Container(
+        decoration: BoxDecoration(
+          color: gradient == null ? cardBgColor : null,
+          gradient: gradient != null
+              ? LinearGradient(
+                  colors: gradient,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          borderRadius: AppRadius.lBorderRadius,
+          border: gradientBorderColors == null ? Border.all(color: border, width: 1) : null,
+          boxShadow: shadows,
+        ),
+        child: content,
+      );
+    }
 
     // Gestione Bordo Gradiente (da DndFantasyCard)
     Widget result;
@@ -154,12 +188,6 @@ class DndCard extends StatelessWidget {
       result = card;
     }
 
-    if (onTap != null) {
-      return GestureDetector(
-        onTap: onTap,
-        child: result,
-      );
-    }
     return result;
   }
 }

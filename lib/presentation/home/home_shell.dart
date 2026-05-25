@@ -98,7 +98,7 @@ class _HomeShellState extends State<HomeShell> {
     HomeView(onShowGuide: _showGuide),
     const CompendiumView(),
     const NotesView(),
-    const SettingsView(),
+    SettingsView(onShowGuide: _showGuide),
     const MapTabView(),
   ];
 

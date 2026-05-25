@@ -170,7 +170,8 @@ class _CompendiumViewState extends State<CompendiumView> with SingleTickerProvid
   }
 
   Widget _buildBody() {
-    if (_controller.state == CompendiumState.loadingFirstTime || _controller.state == CompendiumState.refreshingInBackground) {
+    if (_controller.state == CompendiumState.loadingFirstTime ||
+        (_controller.state == CompendiumState.refreshingInBackground && _controller.items.isEmpty)) {
       return Center(
         key: const ValueKey('loading'),
         child: DndLoadingIndicator(

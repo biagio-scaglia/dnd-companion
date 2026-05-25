@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/services/review_service.dart';
 
 class DiceRollerDialog extends StatefulWidget {
   final int? initialDice;
@@ -60,6 +61,12 @@ class _DiceRollerDialogState extends State<DiceRollerDialog> with SingleTickerPr
       _history.insert(0, historyEntry);
       if (_history.length > 5) {
         _history.removeLast();
+      }
+
+      if (max == 20 && roll == 20) {
+        ReviewService.requestReviewAutomatically(context);
+      } else {
+        ReviewService.incrementPositiveEvents(context);
       }
     });
   }

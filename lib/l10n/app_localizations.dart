@@ -1933,6 +1933,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Barrel'**
   String get tileBarrel;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support & Help'**
+  String get support;
+
+  /// No description provided for @rateVellum.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Vellum'**
+  String get rateVellum;
+
+  /// No description provided for @sendFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Bug & Feedback'**
+  String get sendFeedback;
+
+  /// No description provided for @showTutorial.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Interactive Guide'**
+  String get showTutorial;
+
+  /// No description provided for @positiveMomentRoll20.
+  ///
+  /// In en, this message translates to:
+  /// **'A natural 20! The gods favor you! Would you like to rate Vellum?'**
+  String get positiveMomentRoll20;
+
+  /// No description provided for @feedbackSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Vellum Feedback & Bug Report'**
+  String get feedbackSubject;
+
+  /// No description provided for @feedbackBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi Developer,\n\nHere is my feedback/bug report:\n[Write here]\n\n---\nSystem Details:\nApp Version: 1.0.0 (Build 4)\nOS Version: {osVersion}\nDevice: {device}'**
+  String feedbackBody(String osVersion, String device);
 }
 
 class _AppLocalizationsDelegate

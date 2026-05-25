@@ -162,6 +162,22 @@ class DatabaseHelper {
     return await db.query(tableCompendium);
   }
 
+  Future<Map<String, dynamic>?> queryItemById(String id) async {
+    if (kIsWeb) {
+      try {
+        return _webCache.firstWhere((item) => item[columnId] == id);
+      } catch (_) {
+        return null;
+      }
+    }
+    Database db = await instance.database;
+    final res = await db.query(tableCompendium, where: '$columnId = ?', whereArgs: [id]);
+    if (res.isNotEmpty) {
+      return res.first;
+    }
+    return null;
+  }
+
   Future<int> updateItem(Map<String, dynamic> row) async {
     if (kIsWeb) {
       final index = _webCache.indexWhere((item) => item[columnId] == row[columnId]);
