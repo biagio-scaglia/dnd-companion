@@ -74,11 +74,15 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
         }
       }
 
+      if (!mounted) return;
+
       // 2. Cattura l'immagine
       final boundary = _screenshotKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       final image = await boundary.toImage(pixelRatio: 2.0); // Alta definizione
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final pngBytes = byteData!.buffer.asUint8List();
+
+      if (!mounted) return;
 
       // 3. Salva nel dispositivo
       if (kIsWeb) {
@@ -92,6 +96,8 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
           quality: 100,
           name: "mappa_${DateTime.now().millisecondsSinceEpoch}",
         );
+        
+        if (!mounted) return;
         
         if (result != null && result['isSuccess'] == true) {
           messenger.showSnackBar(

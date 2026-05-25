@@ -45,25 +45,8 @@ class NotesRepositoryImpl implements NotesRepository {
   /// JSON di default per la prima installazione
   String _buildDefaultJson() {
     return jsonEncode({
-      'sessions': [
-        {
-          'id': 'session-1',
-          'title': 'Il Lamento della Banshee',
-          'date': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
-          'summary': 'Il party ha affrontato gli spiriti nelle cripte e trovato il medaglione antico.',
-        }
-      ],
-      'notes': [
-        {
-          'id': 'note-1',
-          'title': 'Medaglione Antico',
-          'content': 'Abbiamo trovato un medaglione nelle cripte. Emette una debole luce viola quando ci si avvicina a un non-morto.',
-          'date': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
-          'isImportant': true,
-          'sessionId': 'session-1',
-          'tags': ['Oggetti', 'Mistero'],
-        }
-      ],
+      'sessions': [],
+      'notes': [],
       'attachments': [],
       'characters': [],
     });
