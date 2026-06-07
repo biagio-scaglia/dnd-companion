@@ -59,18 +59,40 @@ class _MapTabViewState extends State<MapTabView> with AutomaticKeepAliveClientMi
     try {
       // 1. Richiedi permessi (su mobile)
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-        final storageStatus = await Permission.storage.status;
-        final photosStatus = await Permission.photos.status;
-        
-        if (!storageStatus.isGranted && !photosStatus.isGranted) {
-          final result = await [Permission.storage, Permission.photos].request();
-          if (result[Permission.storage] != PermissionStatus.granted && 
-              result[Permission.photos] != PermissionStatus.granted) {
-            messenger.showSnackBar(
-              SnackBar(content: Text(l10n.storagePermissionDenied)),
-            );
-            return;
+        bool hasPermission = true;
+        if (Platform.isIOS) {
+          final photosStatus = await Permission.photosAddOnly.status;
+          if (!photosStatus.isGranted) {
+            final result = await Permission.photosAddOnly.request();
+            hasPermission = result.isGranted;
           }
+        } else if (Platform.isAndroid) {
+          int sdkVersion = 0;
+          try {
+            final versionString = Platform.operatingSystemVersion.toLowerCase();
+            final apiMatch = RegExp(r'api\s*(\d+)').firstMatch(versionString);
+            if (apiMatch != null) {
+              sdkVersion = int.parse(apiMatch.group(1)!);
+            }
+          } catch (e) {
+            debugPrint('⚠️ [MapTabView] Errore parsing versione SDK Android: $e');
+          }
+          
+          // Su Android 9 (API 28) o inferiore serve il permesso di scrittura/archiviazione
+          if (sdkVersion > 0 && sdkVersion < 29) {
+            final storageStatus = await Permission.storage.status;
+            if (!storageStatus.isGranted) {
+              final result = await Permission.storage.request();
+              hasPermission = result.isGranted;
+            }
+          }
+        }
+
+        if (!hasPermission) {
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.storagePermissionDenied)),
+          );
+          return;
         }
       }
 

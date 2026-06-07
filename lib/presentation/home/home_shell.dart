@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:dnd/l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/compendium/presentation/compendium_view.dart';
@@ -28,9 +25,7 @@ class _HomeShellState extends State<HomeShell> {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
     AppNavigation.instance.currentTab.addListener(_onTabChanged); // BUG FIX 5: rimosso il doppio addListener
-    // BUG FIX 5: delay permessi al post-frame per non bloccare il mount iniziale
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 500), _requestPermissions);
       _checkGuide();
     });
   }
@@ -61,18 +56,7 @@ class _HomeShellState extends State<HomeShell> {
   final GlobalKey _settingsKey = GlobalKey();
   final GlobalKey _mapKey = GlobalKey();
 
-  Future<void> _requestPermissions() async {
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      try {
-        await [
-          Permission.storage,
-          Permission.photos,
-        ].request();
-      } catch (e) {
-        debugPrint('⚠️ [HomeShell] Errore richiesta permessi: $e');
-      }
-    }
-  }
+
 
   void _onTabChanged() {
     final newIndex = AppNavigation.instance.currentTab.value;
