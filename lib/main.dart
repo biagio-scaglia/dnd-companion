@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:dnd/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
@@ -20,6 +21,15 @@ void main() {
   // BUG FIX 1: Necessario prima di qualsiasi utilizzo di plugin nativi
   // (SharedPreferences, sqflite, path_provider, permission_handler, etc.)
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Abilita la visualizzazione edge-to-edge e rende trasparenti le barre di sistema
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    systemNavigationBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarIconBrightness: Brightness.light,
+  ));
 
   // BUG FIX 2: Global Flutter error handler — cattura errori nei widget builder
   FlutterError.onError = (FlutterErrorDetails details) {
