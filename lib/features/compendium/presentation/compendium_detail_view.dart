@@ -3,8 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dnd/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/models/compendium_item.dart';
-import '../data/datasources/dnd_api_client.dart';
-import '../../../../core/database/database_helper.dart';
 
 class CompendiumDetailView extends StatefulWidget {
   final CompendiumItem item;
@@ -17,9 +15,6 @@ class CompendiumDetailView extends StatefulWidget {
 
 class _CompendiumDetailViewState extends State<CompendiumDetailView> {
   late CompendiumItem _item;
-  bool _isLoadingDesc = false;
-
-  bool _detailsFetched = false;
 
   String _translateMetaInfo(BuildContext context, String metaInfo) {
     final l10n = AppLocalizations.of(context)!;
@@ -38,47 +33,6 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
   void initState() {
     super.initState();
     _item = widget.item;
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_detailsFetched) {
-      _fetchDetailsIfNeeded();
-      _detailsFetched = true;
-    }
-  }
-
-  Future<void> _fetchDetailsIfNeeded() async {
-    final l10n = AppLocalizations.of(context)!;
-    // Controlla se la descrizione è quella generica e non è un item custom
-    if (!_item.isCustom && 
-        (_item.description.contains(l10n.detailsNotAvailable) || 
-         _item.description.contains('__DETAILS_NOT_AVAILABLE_OFFLINE__') ||
-         _item.description == '__TAP_TO_LOAD_DETAILS__')) {
-      setState(() => _isLoadingDesc = true);
-      try {
-        final client = DndApiClient();
-        final result = await client.fetchItemDescription(_item.type, _item.id);
-        
-        setState(() {
-          _item = _item.copyWith(
-            description: result['description'] ?? '',
-            shortDescription: result['shortDescription'] ?? _item.shortDescription,
-            metaInfo: result['metaInfo'] ?? _item.metaInfo,
-          );
-          _isLoadingDesc = false;
-        });
-
-        // Aggiorna il DB in locale così rimane salvato offline
-        DatabaseHelper.instance.updateItem(_item.toMap());
-      } catch (e) {
-        setState(() {
-          _isLoadingDesc = false;
-        });
-        debugPrint('Errore fetch dettaglio: $e');
-      }
-    }
   }
 
   @override
@@ -269,21 +223,18 @@ class _CompendiumDetailViewState extends State<CompendiumDetailView> {
               ),
             ),
             const SizedBox(height: 16),
-            if (_isLoadingDesc)
-              const Center(child: CircularProgressIndicator(color: AppColors.highlight))
-            else
-              Text(
-                _item.description == '__TAP_TO_LOAD_DETAILS__'
-                    ? AppLocalizations.of(context)!.tapToLoadDetails
-                    : (_item.description.startsWith('__DETAILS_NOT_AVAILABLE_OFFLINE__')
-                        ? _item.description.replaceFirst('__DETAILS_NOT_AVAILABLE_OFFLINE__', AppLocalizations.of(context)!.detailsNotAvailableOffline)
-                        : _item.description),
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: AppColors.textSecondary,
-                  height: 1.6,
-                ),
+            Text(
+              _item.description == '__TAP_TO_LOAD_DETAILS__'
+                  ? AppLocalizations.of(context)!.tapToLoadDetails
+                  : (_item.description.startsWith('__DETAILS_NOT_AVAILABLE_OFFLINE__')
+                      ? _item.description.replaceFirst('__DETAILS_NOT_AVAILABLE_OFFLINE__', AppLocalizations.of(context)!.detailsNotAvailableOffline)
+                      : _item.description),
+              style: const TextStyle(
+                fontSize: 16,
+                color: AppColors.textSecondary,
+                height: 1.6,
               ),
+            ),
           ],
         ),
       ),

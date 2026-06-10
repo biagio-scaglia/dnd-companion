@@ -20,38 +20,19 @@ class CompendiumController extends ChangeNotifier {
 
   Future<void> _initializeData() async {
     debugPrint('🚀 [CompendiumController] Inizializzazione dati Compendio...');
-    // 1. Carica subito i dati locali
     _state = CompendiumState.loadingFirstTime;
     notifyListeners();
     
-    await _fetchItemsSilently();
-    
-    if (_items.isEmpty) {
-      _state = CompendiumState.loadingFirstTime;
-    } else {
-      _state = CompendiumState.showingCached;
-    }
-    notifyListeners();
-
-    // 2. Avvia il sync in background
     try {
-      if (_items.isNotEmpty) {
-        _state = CompendiumState.refreshingInBackground;
-        notifyListeners();
-      }
+      // Inizializza/Aggiorna da asset se necessario
+      await repository.initializeCompendium();
       
-      await repository.syncWithApi();
-      
-      // Ricarica i dati dopo il sync
+      // Carica i dati in memoria
       await _fetchItemsSilently();
       _state = CompendiumState.loaded;
     } catch (e) {
-      debugPrint('Errore sync in background: $e');
-      if (_items.isEmpty) {
-        _state = CompendiumState.hardError;
-      } else {
-        _state = CompendiumState.showingCached; // Resta su cached se il sync fallisce
-      }
+      debugPrint('Errore inizializzazione compendio: $e');
+      _state = CompendiumState.hardError;
     } finally {
       notifyListeners();
     }
@@ -120,12 +101,13 @@ class CompendiumController extends ChangeNotifier {
     _state = CompendiumState.refreshingInBackground;
     notifyListeners();
     try {
+      // Forza la re-inizializzazione locale e ricarica i dati
       await repository.forceSync();
       await _fetchItemsSilently();
       _state = CompendiumState.loaded;
     } catch (e) {
       debugPrint('Errore durante il refresh: $e');
-      _state = CompendiumState.showingCached;
+      _state = CompendiumState.loaded;
     } finally {
       notifyListeners();
     }

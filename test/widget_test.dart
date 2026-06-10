@@ -1,30 +1,27 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:dnd/main.dart';
+import 'package:dnd/features/compendium/domain/models/compendium_item.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const DndCompanionApp());
+  test('CompendiumItem serialization and deserialization test', () {
+    const item = CompendiumItem(
+      id: 'acid-arrow',
+      name: 'Acid Arrow',
+      type: CompendiumItemType.spell,
+      shortDescription: 'School: Evocation.',
+      description: 'A shimmering green arrow streaks toward a target.',
+      metaInfo: 'Spell (Evocation)',
+      isFavorite: true,
+      isCustom: false,
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    final map = item.toMap();
+    expect(map['id'], 'acid-arrow');
+    expect(map['type'], 'spell');
+    expect(map['isFavorite'], 1);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    final item2 = CompendiumItem.fromMap(map);
+    expect(item2.id, 'acid-arrow');
+    expect(item2.type, CompendiumItemType.spell);
+    expect(item2.isFavorite, true);
   });
 }

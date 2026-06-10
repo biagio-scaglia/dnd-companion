@@ -1,90 +1,109 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart' show debugPrint;
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:sqflite/sqflite.dart';
 import '../../../../core/database/database_helper.dart';
 import '../../domain/models/compendium_filter.dart';
 import '../../domain/models/compendium_item.dart';
 import '../../domain/repositories/compendium_repository.dart';
-import '../datasources/dnd_api_client.dart';
 
 class CompendiumRepositoryImpl implements CompendiumRepository {
-  final DndApiClient _apiClient = DndApiClient();
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
-
-  static const _ttlDays = 7;
 
   // In-memory cache to make page filtering instantaneous and avoid database reads on each filter change
   List<CompendiumItem>? _cachedItems;
 
   @override
-  Future<void> syncWithApi() async {
-    await _syncAll(force: false);
-  }
-
-  @override
-  Future<void> forceSync() async {
-    await _syncAll(force: true);
-  }
-
-  Future<void> _syncAll({required bool force}) async {
-    final now = DateTime.now().millisecondsSinceEpoch;
-    final ttlMillis = _ttlDays * 24 * 60 * 60 * 1000;
-
+  Future<void> initializeCompendium() async {
     try {
-      final isStale = await _isStale('compendium_data', now, ttlMillis);
+      // 1. Carica la versione salvata dell'asset importato
+      final lastSyncVersion = await _dbHelper.getLastSync('compendium_asset_version');
+
+      // 2. Carica l'asset JSON
+      debugPrint('📖 [CompendiumRepository] Caricamento asset compendium.json...');
+      final jsonString = await rootBundle.loadString('lib/assets/compendium.json');
+      final data = json.decode(jsonString);
       
-      if (force || isStale) {
-        debugPrint('Sync con API in corso...');
-        final items = await _apiClient.fetchAllItems();
+      final metadata = data['metadata'] as Map<String, dynamic>? ?? {};
+      final assetVersionStr = metadata['lastSyncAt'] as String? ?? '1.0';
+      
+      // Converte la stringa timestamp in epoch per confronto rapido
+      int assetVersion;
+      try {
+        assetVersion = DateTime.parse(assetVersionStr).millisecondsSinceEpoch;
+      } catch (_) {
+        assetVersion = 1; // Fallback se non è una data valida
+      }
+
+      // Se non è mai stato importato, o se l'asset è più recente di quello già importato
+      if (lastSyncVersion == null || assetVersion > lastSyncVersion) {
+        debugPrint('🔄 [CompendiumRepository] Importazione/Aggiornamento compendio in corso...');
+        final itemsList = data['items'] as List<dynamic>? ?? [];
         
-        // 1. Carica tutti i record esistenti dal database una volta sola per velocizzare i controlli esistenti (O(1) lookup invece di O(N) query ripetute)
+        final items = itemsList.map((r) {
+          final typeStr = r['type'];
+          CompendiumItemType type = CompendiumItemType.item;
+          if (typeStr == 'spell') type = CompendiumItemType.spell;
+          if (typeStr == 'monster') type = CompendiumItemType.monster;
+          if (typeStr == 'class') type = CompendiumItemType.characterClass;
+          if (typeStr == 'race') type = CompendiumItemType.race;
+
+          return CompendiumItem(
+            id: r['id'],
+            name: r['name'],
+            type: type,
+            shortDescription: r['shortDescription'] ?? '',
+            description: r['description'] ?? '',
+            metaInfo: r['metaInfo'] ?? '',
+          );
+        }).toList();
+
+        // Preserva i preferiti caricando quelli esistenti dal database
         final maps = await _dbHelper.queryAllItems();
         final existingItems = {
           for (var m in maps) m['id'] as String: CompendiumItem.fromMap(m)
         };
-        
-        // 2. Utilizza una transazione ed un batch SQLite per caricare tutti gli elementi in pochissimi millisecondi invece di svariati secondi
+
         final db = await _dbHelper.database;
         await db.transaction((txn) async {
           final batch = txn.batch();
-          
           for (var item in items) {
             final existing = existingItems[item.id];
-            
             final toInsert = existing != null 
-                ? item.copyWith(
-                    isFavorite: existing.isFavorite,
-                  ) 
+                ? item.copyWith(isFavorite: existing.isFavorite) 
                 : item;
-                
+
             batch.insert(
               DatabaseHelper.tableCompendium,
               toInsert.toMap(),
               conflictAlgorithm: ConflictAlgorithm.replace,
             );
           }
-          
           await batch.commit(noResult: true);
         });
 
-        await _dbHelper.setLastSync('compendium_data', now);
-        await _dbHelper.setLastSync('classes', now);
-        await _dbHelper.setLastSync('races', now);
-
-        // Svuota la cache in memoria per forzare il ricaricamento dei nuovi dati
+        // Salva la versione dell'asset importata
+        await _dbHelper.setLastSync('compendium_asset_version', assetVersion);
+        
+        // Svuota cache
         _cachedItems = null;
-        debugPrint('Sync con API completato con successo. Inseriti ${items.length} elementi.');
+        debugPrint('✅ [CompendiumRepository] Importazione completata! ${items.length} elementi.');
       } else {
-        debugPrint('Cache valida, salto il sync.');
+        debugPrint('✅ [CompendiumRepository] Compendio locale già aggiornato alla versione: $assetVersionStr');
       }
     } catch (e) {
-      debugPrint('Errore durante la sincronizzazione con l\'API: $e');
+      debugPrint('🔴 [CompendiumRepository] Errore inizializzazione compendio locale: $e');
     }
   }
 
-  Future<bool> _isStale(String dataset, int now, int ttlMillis) async {
-    final lastSync = await _dbHelper.getLastSync(dataset);
-    if (lastSync == null) return true;
-    return (now - lastSync) > ttlMillis;
+  @override
+  Future<void> syncWithApi() async {
+    await initializeCompendium();
+  }
+
+  @override
+  Future<void> forceSync() async {
+    await initializeCompendium();
   }
 
   @override

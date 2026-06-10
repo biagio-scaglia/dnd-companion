@@ -121,6 +121,7 @@ flutter:
     - lib/assets/monster/
     - lib/assets/spell/
     - lib/assets/weapon/
+    - lib/assets/compendium.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
